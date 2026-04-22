@@ -1,0 +1,151 @@
+{
+  "id": "ec2",
+  "title": "Amazon EC2",
+  "subtitle": "Elastic Compute Cloud — virtual servers in the AWS cloud",
+  "type": "hierarchy",
+  "theme": "amber",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Amazon EC2",
+      "icon": "🖥️",
+      "type": "root",
+      "description": "Resizable virtual machines in AWS — the foundation of cloud compute"
+    },
+    {
+      "id": "instance-types",
+      "label": "Instance Families",
+      "icon": "⚙️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Choose Right",
+      "color": "#f97316",
+      "description": "Pick instance type based on workload requirements"
+    },
+    {
+      "id": "general",
+      "label": "General Purpose",
+      "icon": "⚖️",
+      "type": "leaf",
+      "parent": "instance-types",
+      "items": [
+        "t3/t4g: burstable, cheapest",
+        "m6i/m6g: balanced CPU/RAM",
+        "Best for: web servers, dev/test",
+        "t3.micro: free tier eligible"
+      ]
+    },
+    {
+      "id": "compute-opt",
+      "label": "Compute Optimized",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "instance-types",
+      "items": [
+        "c6i / c7g: high CPU:RAM ratio",
+        "Best for: batch jobs, ML inference",
+        "Media transcoding, gaming servers",
+        "2x CPU performance vs general purpose"
+      ]
+    },
+    {
+      "id": "memory-opt",
+      "label": "Memory Optimized",
+      "icon": "🧠",
+      "type": "leaf",
+      "parent": "instance-types",
+      "items": [
+        "r6i / r6g: 8× RAM vs vCPU",
+        "x2idn: up to 6144 GB RAM",
+        "Best for: in-memory DBs (Redis, SAP HANA)",
+        "Large caches, real-time analytics"
+      ]
+    },
+    {
+      "id": "pricing",
+      "label": "Pricing Models",
+      "icon": "💰",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Save 90%",
+      "color": "#10b981",
+      "description": "Choose pricing model to optimize cost"
+    },
+    {
+      "id": "on-demand",
+      "label": "On-Demand",
+      "icon": "💳",
+      "type": "leaf",
+      "parent": "pricing",
+      "items": [
+        "Pay per second, no commitment",
+        "Most flexible, highest unit price",
+        "Best for: unpredictable workloads",
+        "Good for dev/test environments"
+      ]
+    },
+    {
+      "id": "reserved",
+      "label": "Reserved Instances",
+      "icon": "📅",
+      "type": "leaf",
+      "parent": "pricing",
+      "items": [
+        "1yr or 3yr commitment",
+        "Up to 72% discount vs On-Demand",
+        "Best for: steady-state production",
+        "Standard or Convertible RIs"
+      ]
+    },
+    {
+      "id": "spot",
+      "label": "Spot Instances",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "pricing",
+      "items": [
+        "Bid on spare AWS capacity",
+        "Up to 90% discount",
+        "Can be interrupted with 2-min notice",
+        "Best for: batch, fault-tolerant workloads"
+      ]
+    },
+    {
+      "id": "networking",
+      "label": "Networking & Access",
+      "icon": "🌐",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Connect",
+      "color": "#6366f1",
+      "description": "How EC2 instances connect to the world"
+    },
+    {
+      "id": "security-groups",
+      "label": "Security Groups",
+      "icon": "🛡️",
+      "type": "leaf",
+      "parent": "networking",
+      "items": [
+        "Stateful virtual firewall at instance level",
+        "Inbound rules: allow port 443 from 0.0.0.0",
+        "Outbound: allow all by default",
+        "Changes apply immediately (no restart)"
+      ]
+    },
+    {
+      "id": "ebs-vol",
+      "label": "EBS Volumes",
+      "icon": "💾",
+      "type": "leaf",
+      "parent": "networking",
+      "items": [
+        "Block storage attached to EC2",
+        "gp3: 16,000 IOPS, 1000 MiB/s",
+        "io2 Block Express: 256,000 IOPS",
+        "Persists after instance stop"
+      ]
+    }
+  ]
+}

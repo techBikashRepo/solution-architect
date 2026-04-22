@@ -1,0 +1,155 @@
+{
+  "id": "sliding-window",
+  "title": "Sliding Window",
+  "subtitle": "Reduce O(n²) brute force to O(n) — the ultimate subarray/substring pattern",
+  "type": "architecture",
+  "theme": "cyan",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "concept",
+      "label": "Sliding Window",
+      "icon": "🪟",
+      "type": "start",
+      "description": "A window (left, right pointers) that slides over an array/string to track a subproblem efficiently"
+    },
+    {
+      "id": "fixed-window",
+      "label": "Fixed-Size Window",
+      "icon": "📐",
+      "type": "process",
+      "badge": "Type 1",
+      "color": "#6366f1",
+      "description": "Window size k is constant — never changes",
+      "items": [
+        "Init: compute first window of size k",
+        "Slide: add new element, remove old element",
+        "Update max/min/sum as window moves",
+        "O(n) — each element added and removed once"
+      ]
+    },
+    {
+      "id": "fixed-examples",
+      "label": "Fixed Window Problems",
+      "icon": "💡",
+      "type": "process",
+      "badge": "Examples",
+      "color": "#10b981",
+      "description": "Classic fixed-window LeetCode problems",
+      "items": [
+        "Max Average Subarray of Size K (#643)",
+        "Find All Anagrams in String (#438)",
+        "Max Sum Subarray of Size K (variant)",
+        "Sliding Window Maximum (#239) — deque trick"
+      ]
+    },
+    {
+      "id": "variable-window",
+      "label": "Variable-Size Window",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Type 2",
+      "color": "#8b5cf6",
+      "description": "Window grows and shrinks based on a constraint condition",
+      "items": [
+        "Expand right pointer to include new elements",
+        "Shrink left pointer when constraint violated",
+        "Track: window state (sum, freq map, char count)",
+        "Answer: update on valid window state"
+      ]
+    },
+    {
+      "id": "variable-examples",
+      "label": "Variable Window Problems",
+      "icon": "💡",
+      "type": "process",
+      "badge": "Examples",
+      "color": "#10b981",
+      "description": "Classic variable-window problems to master",
+      "items": [
+        "Longest Substring Without Repeating (#3)",
+        "Minimum Window Substring (#76)",
+        "Longest Repeating Char Replacement (#424)",
+        "Fruits Into Baskets (#904)"
+      ]
+    },
+    {
+      "id": "template",
+      "label": "Universal Template",
+      "icon": "📋",
+      "type": "process",
+      "badge": "Template",
+      "color": "#f59e0b",
+      "description": "The code template that solves all sliding window problems",
+      "items": [
+        "left = 0; for right in range(n):",
+        "  add arr[right] to window state",
+        "  while window violates constraint:",
+        "    remove arr[left]; left++",
+        "  update answer (window is valid)"
+      ]
+    },
+    {
+      "id": "when-to-use",
+      "label": "When to Apply",
+      "icon": "🎯",
+      "type": "process",
+      "badge": "Signal Words",
+      "color": "#f43f5e",
+      "description": "Keywords in the problem that signal sliding window",
+      "items": [
+        "'Contiguous subarray/substring'",
+        "'Longest / shortest subarray with condition'",
+        "'At most K distinct / characters'",
+        "'Sum equals / at most / at least K'"
+      ]
+    },
+    {
+      "id": "complexity",
+      "label": "Complexity",
+      "icon": "⏱️",
+      "type": "process",
+      "badge": "Big-O",
+      "color": "#6366f1",
+      "description": "Why sliding window beats brute force",
+      "items": [
+        "Brute force: O(n²) — check all subarrays",
+        "Sliding window: O(n) — each element touched twice",
+        "Space: O(1) fixed, O(k) for frequency map",
+        "Key insight: don't recompute window overlap"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "concept",
+      "to": "fixed-window",
+      "style": "solid",
+      "label": "fixed k",
+      "animated": true
+    },
+    {
+      "from": "concept",
+      "to": "variable-window",
+      "style": "solid",
+      "label": "dynamic k",
+      "animated": true
+    },
+    { "from": "fixed-window", "to": "fixed-examples", "style": "solid" },
+    { "from": "variable-window", "to": "variable-examples", "style": "solid" },
+    {
+      "from": "variable-window",
+      "to": "template",
+      "style": "dashed",
+      "label": "use template"
+    },
+    {
+      "from": "fixed-window",
+      "to": "template",
+      "style": "dashed",
+      "label": "use template"
+    },
+    { "from": "template", "to": "when-to-use", "style": "dashed" },
+    { "from": "template", "to": "complexity", "style": "dashed" }
+  ]
+}

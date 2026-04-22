@@ -1,0 +1,185 @@
+{
+  "id": "api-gateway",
+  "title": "API Gateway",
+  "subtitle": "The single entry point for all client requests to backend services",
+  "type": "architecture",
+  "theme": "amber",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "clients",
+      "label": "Clients",
+      "icon": "📱",
+      "type": "start",
+      "description": "Browser, Mobile App, IoT device, Third-party API consumer"
+    },
+    {
+      "id": "gateway",
+      "label": "API Gateway",
+      "icon": "🚪",
+      "type": "process",
+      "badge": "Core",
+      "color": "#f97316",
+      "description": "Single entry point that handles cross-cutting concerns for all APIs",
+      "items": [
+        "Request routing to correct microservice",
+        "SSL/TLS termination",
+        "Protocol translation (HTTP → gRPC)"
+      ]
+    },
+    {
+      "id": "auth",
+      "label": "Authentication",
+      "icon": "🔐",
+      "type": "process",
+      "badge": "Security",
+      "color": "#f43f5e",
+      "description": "Validates identity before reaching any service",
+      "items": [
+        "JWT validation (stateless)",
+        "OAuth 2.0 / OpenID Connect",
+        "API key verification",
+        "Lambda Authorizer (custom logic)"
+      ]
+    },
+    {
+      "id": "rate-limit",
+      "label": "Rate Limiting",
+      "icon": "🚦",
+      "type": "process",
+      "badge": "Protection",
+      "color": "#f59e0b",
+      "description": "Prevent abuse and ensure fair usage per consumer",
+      "items": [
+        "Token bucket / sliding window algorithms",
+        "Per-IP, per-user, per-API key limits",
+        "429 Too Many Requests response",
+        "Burst allowance for temporary spikes"
+      ]
+    },
+    {
+      "id": "transform",
+      "label": "Request Transform",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Mapping",
+      "color": "#8b5cf6",
+      "description": "Modify requests/responses between client and backend",
+      "items": [
+        "Add/remove headers",
+        "Request body transformation",
+        "Response aggregation (BFF pattern)",
+        "API versioning (v1, v2)"
+      ]
+    },
+    {
+      "id": "routing",
+      "label": "Routing Layer",
+      "icon": "🗺️",
+      "type": "process",
+      "badge": "Dispatch",
+      "color": "#06b6d4",
+      "description": "Routes to appropriate downstream microservice",
+      "items": [
+        "Path-based: /users → User Service",
+        "Host-based: api.shop.com → Shop API",
+        "Canary routing: 5% to new version",
+        "Blue-green traffic splitting"
+      ]
+    },
+    {
+      "id": "user-svc",
+      "label": "User Service",
+      "icon": "👤",
+      "type": "process",
+      "color": "#10b981",
+      "description": "Manages user accounts, profiles, auth"
+    },
+    {
+      "id": "order-svc",
+      "label": "Order Service",
+      "icon": "📦",
+      "type": "process",
+      "color": "#10b981",
+      "description": "Manages orders, checkout flow"
+    },
+    {
+      "id": "product-svc",
+      "label": "Product Service",
+      "icon": "🏷️",
+      "type": "process",
+      "color": "#10b981",
+      "description": "Product catalog, pricing, inventory"
+    },
+    {
+      "id": "observability",
+      "label": "Observability",
+      "icon": "📊",
+      "type": "process",
+      "badge": "Insight",
+      "color": "#6366f1",
+      "description": "Cross-cutting logging, metrics, and tracing",
+      "items": [
+        "Request/response logging",
+        "Latency histograms per endpoint",
+        "Distributed trace correlation IDs",
+        "Alarm on error rate > 1%"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "clients",
+      "to": "gateway",
+      "style": "solid",
+      "animated": true,
+      "label": "HTTPS"
+    },
+    { "from": "gateway", "to": "auth", "style": "solid", "label": "validate" },
+    {
+      "from": "gateway",
+      "to": "rate-limit",
+      "style": "solid",
+      "label": "check limit"
+    },
+    {
+      "from": "gateway",
+      "to": "transform",
+      "style": "solid",
+      "label": "transform"
+    },
+    {
+      "from": "transform",
+      "to": "routing",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "routing",
+      "to": "user-svc",
+      "style": "solid",
+      "animated": true,
+      "label": "/users"
+    },
+    {
+      "from": "routing",
+      "to": "order-svc",
+      "style": "solid",
+      "animated": true,
+      "label": "/orders"
+    },
+    {
+      "from": "routing",
+      "to": "product-svc",
+      "style": "solid",
+      "animated": true,
+      "label": "/products"
+    },
+    {
+      "from": "gateway",
+      "to": "observability",
+      "style": "dashed",
+      "label": "logs + metrics"
+    }
+  ]
+}

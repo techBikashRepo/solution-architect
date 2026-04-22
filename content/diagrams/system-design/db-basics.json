@@ -1,0 +1,187 @@
+{
+  "id": "db-basics",
+  "title": "Database Fundamentals",
+  "subtitle": "SQL, NoSQL, storage engines, and when to use what",
+  "type": "hierarchy",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Database Basics",
+      "icon": "🗄️",
+      "type": "root",
+      "description": "Organized collection of data with efficient access, management, and update capabilities"
+    },
+    {
+      "id": "relational",
+      "label": "Relational (SQL)",
+      "icon": "🏛️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "ACID",
+      "color": "#3b82f6",
+      "description": "Structured data in tables with relationships and strong guarantees"
+    },
+    {
+      "id": "sql-structure",
+      "label": "Structure",
+      "icon": "📋",
+      "type": "leaf",
+      "parent": "relational",
+      "items": [
+        "Tables → Rows → Columns",
+        "Fixed schema (DDL changes = migration)",
+        "Primary & foreign keys for relations",
+        "Normalization reduces redundancy"
+      ]
+    },
+    {
+      "id": "sql-acid",
+      "label": "ACID Properties",
+      "icon": "🔒",
+      "type": "leaf",
+      "parent": "relational",
+      "items": [
+        "Atomicity — all or nothing",
+        "Consistency — valid state always",
+        "Isolation — concurrent tx don't interfere",
+        "Durability — committed = persisted"
+      ]
+    },
+    {
+      "id": "sql-use",
+      "label": "Best For",
+      "icon": "✅",
+      "type": "leaf",
+      "parent": "relational",
+      "items": [
+        "Financial systems, e-commerce orders",
+        "Complex JOINs across entities",
+        "Strong transactional guarantees needed",
+        "PostgreSQL, MySQL, Aurora, SQLite"
+      ]
+    },
+    {
+      "id": "nosql",
+      "label": "NoSQL",
+      "icon": "⚡",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Flexible",
+      "color": "#10b981",
+      "description": "Schema-flexible databases built for scale and speed"
+    },
+    {
+      "id": "nosql-types",
+      "label": "NoSQL Types",
+      "icon": "🗂️",
+      "type": "leaf",
+      "parent": "nosql",
+      "items": [
+        "Key-Value: Redis, DynamoDB — ultra-fast",
+        "Document: MongoDB, Firestore — JSON docs",
+        "Wide-Column: Cassandra — time-series data",
+        "Graph: Neo4j — relationship traversal"
+      ]
+    },
+    {
+      "id": "nosql-base",
+      "label": "BASE Properties",
+      "icon": "📐",
+      "type": "leaf",
+      "parent": "nosql",
+      "items": [
+        "Basically Available — always responds",
+        "Soft state — data may change over time",
+        "Eventually Consistent — converges to truth",
+        "Opposite philosophy to ACID"
+      ]
+    },
+    {
+      "id": "nosql-use",
+      "label": "Best For",
+      "icon": "✅",
+      "type": "leaf",
+      "parent": "nosql",
+      "items": [
+        "User profiles, session data (key-value)",
+        "Product catalogs, content (document)",
+        "IoT sensor streams (wide-column)",
+        "Social networks (graph)"
+      ]
+    },
+    {
+      "id": "storage",
+      "label": "Storage Engines",
+      "icon": "💾",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Internals",
+      "color": "#8b5cf6",
+      "description": "How data is stored and retrieved at the physical level"
+    },
+    {
+      "id": "btree",
+      "label": "B-Tree Index",
+      "icon": "🌲",
+      "type": "leaf",
+      "parent": "storage",
+      "items": [
+        "Self-balancing tree structure",
+        "O(log n) reads and writes",
+        "Best for range queries (BETWEEN, <, >)",
+        "Used in: PostgreSQL, MySQL InnoDB"
+      ]
+    },
+    {
+      "id": "lsm",
+      "label": "LSM-Tree",
+      "icon": "📝",
+      "type": "leaf",
+      "parent": "storage",
+      "items": [
+        "Log-Structured Merge-Tree",
+        "Write-optimized: sequential writes only",
+        "Compaction merges sorted runs over time",
+        "Used in: Cassandra, RocksDB, LevelDB"
+      ]
+    },
+    {
+      "id": "optimization",
+      "label": "Optimization",
+      "icon": "🚀",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Perf",
+      "color": "#f59e0b",
+      "description": "Key techniques to tune database performance"
+    },
+    {
+      "id": "indexes",
+      "label": "Indexes",
+      "icon": "🔍",
+      "type": "leaf",
+      "parent": "optimization",
+      "items": [
+        "Trade write overhead for fast reads",
+        "Covering index: index includes all query cols",
+        "Composite index: multiple column index",
+        "Avoid over-indexing — slows writes"
+      ]
+    },
+    {
+      "id": "connection-pool",
+      "label": "Connection Pooling",
+      "icon": "🔗",
+      "type": "leaf",
+      "parent": "optimization",
+      "items": [
+        "Reuse DB connections (expensive to open)",
+        "PgBouncer for PostgreSQL",
+        "RDS Proxy for AWS Lambda + RDS",
+        "Pool size = num_cores × 2 + disk_spindles"
+      ]
+    }
+  ]
+}

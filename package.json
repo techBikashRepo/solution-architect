@@ -1,0 +1,9 @@
+{
+  "name": "solution-architect-learning",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve . --listen 3000 --no-clipboard",
+    "dev": "npx --yes serve . --listen 3000"
+  }
+}

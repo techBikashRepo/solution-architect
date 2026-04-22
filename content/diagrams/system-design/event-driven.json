@@ -1,0 +1,205 @@
+{
+  "id": "event-driven",
+  "title": "Event-Driven Architecture",
+  "subtitle": "Loose coupling through asynchronous events — the backbone of modern microservices",
+  "type": "mindmap",
+  "theme": "violet",
+  "layout": "radial",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Event-Driven Architecture",
+      "icon": "⚡",
+      "type": "root",
+      "description": "Services communicate by producing and consuming events, not direct calls"
+    },
+    {
+      "id": "core-concepts",
+      "label": "Core Concepts",
+      "icon": "🧠",
+      "type": "branch",
+      "parent": "root",
+      "color": "#8b5cf6",
+      "description": "Fundamental building blocks of EDA"
+    },
+    {
+      "id": "event",
+      "label": "Event",
+      "icon": "📌",
+      "type": "leaf",
+      "parent": "core-concepts",
+      "items": [
+        "Immutable fact: 'OrderPlaced at 14:32'",
+        "Has: eventId, timestamp, type, payload",
+        "Describes what happened, not what to do",
+        "Replay to reconstruct state (Event Sourcing)"
+      ]
+    },
+    {
+      "id": "producer-consumer",
+      "label": "Producers & Consumers",
+      "icon": "🔄",
+      "type": "leaf",
+      "parent": "core-concepts",
+      "items": [
+        "Producer: emits event (no care who receives)",
+        "Consumer: subscribes and reacts to events",
+        "Zero coupling — neither knows the other",
+        "Consumer can be added without changing producer"
+      ]
+    },
+    {
+      "id": "patterns",
+      "label": "Patterns",
+      "icon": "🧩",
+      "type": "branch",
+      "parent": "root",
+      "color": "#06b6d4",
+      "description": "Key patterns built on event-driven foundations"
+    },
+    {
+      "id": "pub-sub",
+      "label": "Pub/Sub",
+      "icon": "📡",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Publisher → Topic ← Multiple Subscribers",
+        "Fan-out: 1 event → many consumers",
+        "AWS: SNS → multiple SQS queues",
+        "Google PubSub, Redis Pub/Sub"
+      ]
+    },
+    {
+      "id": "event-sourcing",
+      "label": "Event Sourcing",
+      "icon": "📜",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Store all state changes as events",
+        "Current state = replay of all events",
+        "Audit trail: full history always available",
+        "EventStore, Kafka as event log"
+      ]
+    },
+    {
+      "id": "cqrs",
+      "label": "CQRS",
+      "icon": "✂️",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Separate Read and Write models",
+        "Command → Write DB (normalized)",
+        "Query → Read DB (denormalized, fast)",
+        "Events sync write → read projection"
+      ]
+    },
+    {
+      "id": "benefits",
+      "label": "Benefits",
+      "icon": "✅",
+      "type": "branch",
+      "parent": "root",
+      "color": "#10b981",
+      "description": "Why event-driven beats synchronous architectures at scale"
+    },
+    {
+      "id": "decoupling",
+      "label": "Loose Coupling",
+      "icon": "🔓",
+      "type": "leaf",
+      "parent": "benefits",
+      "items": [
+        "Services don't need to know each other",
+        "Add new consumer without modifying producer",
+        "Independent deployment & scaling",
+        "Resilient: producer continues if consumer down"
+      ]
+    },
+    {
+      "id": "scalability-ev",
+      "label": "Scalability",
+      "icon": "📈",
+      "type": "leaf",
+      "parent": "benefits",
+      "items": [
+        "Consumers scale independently",
+        "Kafka: add partitions → add consumers",
+        "Buffer absorbs traffic spikes",
+        "Process millions of events/second"
+      ]
+    },
+    {
+      "id": "challenges",
+      "label": "Challenges",
+      "icon": "⚠️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f43f5e",
+      "description": "Tradeoffs and complexities to manage in EDA"
+    },
+    {
+      "id": "ordering",
+      "label": "Ordering",
+      "icon": "🔢",
+      "type": "leaf",
+      "parent": "challenges",
+      "items": [
+        "Kafka: order guaranteed within partition",
+        "SQS Standard: best-effort ordering",
+        "Use partition key = entity ID for order",
+        "SQS FIFO for strict global ordering"
+      ]
+    },
+    {
+      "id": "idempotency-ev",
+      "label": "Idempotency",
+      "icon": "🔁",
+      "type": "leaf",
+      "parent": "challenges",
+      "items": [
+        "At-least-once = possible duplicate events",
+        "Consumers must be idempotent",
+        "Dedup ID or check-then-apply pattern",
+        "SQS FIFO: built-in deduplication ID"
+      ]
+    },
+    {
+      "id": "tools",
+      "label": "Tools & Platforms",
+      "icon": "🛠️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f59e0b",
+      "description": "Real-world platforms for event-driven systems"
+    },
+    {
+      "id": "kafka",
+      "label": "Apache Kafka",
+      "icon": "🌊",
+      "type": "leaf",
+      "parent": "tools",
+      "items": [
+        "High-throughput distributed log",
+        "Partitioned, replicated, durable",
+        "Consumer groups for parallel processing",
+        "Replay events from any offset"
+      ]
+    },
+    {
+      "id": "aws-events",
+      "label": "AWS Event Services",
+      "icon": "☁️",
+      "type": "leaf",
+      "parent": "tools",
+      "items": [
+        "EventBridge: serverless event bus",
+        "SNS + SQS: fan-out + queuing",
+        "Kinesis: real-time streaming analytics",
+        "MSK: managed Kafka on AWS"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "id": "core-services",
+  "title": "AWS Core Services",
+  "subtitle": "Essential services every Solution Architect must know",
+  "type": "mindmap",
+  "theme": "amber",
+  "layout": "radial",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "AWS",
+      "icon": "☁️",
+      "type": "root",
+      "description": "Amazon Web Services — the world's leading cloud platform"
+    },
+    {
+      "id": "compute",
+      "label": "Compute",
+      "icon": "🖥️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f97316",
+      "description": "Run code and applications"
+    },
+    {
+      "id": "ec2",
+      "label": "EC2",
+      "icon": "🖥️",
+      "type": "leaf",
+      "parent": "compute",
+      "items": [
+        "Virtual machines",
+        "100s of instance types",
+        "On-demand / Spot / Reserved"
+      ]
+    },
+    {
+      "id": "lambda",
+      "label": "Lambda",
+      "icon": "λ",
+      "type": "leaf",
+      "parent": "compute",
+      "items": [
+        "Serverless functions",
+        "Pay per invocation",
+        "Auto-scales to 1000s"
+      ]
+    },
+    {
+      "id": "ecs-eks",
+      "label": "ECS / EKS",
+      "icon": "🐳",
+      "type": "leaf",
+      "parent": "compute",
+      "items": [
+        "Container orchestration",
+        "ECS: AWS-native",
+        "EKS: Kubernetes managed"
+      ]
+    },
+    {
+      "id": "storage",
+      "label": "Storage",
+      "icon": "🪣",
+      "type": "branch",
+      "parent": "root",
+      "color": "#10b981",
+      "description": "Store data at any scale"
+    },
+    {
+      "id": "s3",
+      "label": "S3",
+      "icon": "🪣",
+      "type": "leaf",
+      "parent": "storage",
+      "items": [
+        "Object storage (11 9s durability)",
+        "Static website hosting",
+        "Versioning + lifecycle policies"
+      ]
+    },
+    {
+      "id": "ebs",
+      "label": "EBS",
+      "icon": "💾",
+      "type": "leaf",
+      "parent": "storage",
+      "items": [
+        "Block storage for EC2",
+        "gp3, io1/io2, st1 types",
+        "Snapshots to S3"
+      ]
+    },
+    {
+      "id": "efs",
+      "label": "EFS",
+      "icon": "📁",
+      "type": "leaf",
+      "parent": "storage",
+      "items": [
+        "Shared NFS file system",
+        "Multi-AZ access",
+        "Auto-scales to petabytes"
+      ]
+    },
+    {
+      "id": "database",
+      "label": "Database",
+      "icon": "🗄️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#3b82f6",
+      "description": "Managed database services"
+    },
+    {
+      "id": "rds",
+      "label": "RDS",
+      "icon": "🗄️",
+      "type": "leaf",
+      "parent": "database",
+      "items": [
+        "Managed relational DB",
+        "MySQL, PostgreSQL, Aurora",
+        "Multi-AZ, read replicas"
+      ]
+    },
+    {
+      "id": "dynamodb",
+      "label": "DynamoDB",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "database",
+      "items": [
+        "Serverless NoSQL",
+        "Single-digit ms latency",
+        "On-demand autoscaling"
+      ]
+    },
+    {
+      "id": "elasticache",
+      "label": "ElastiCache",
+      "icon": "🔥",
+      "type": "leaf",
+      "parent": "database",
+      "items": [
+        "Managed Redis / Memcached",
+        "Sub-millisecond latency",
+        "Session & cache store"
+      ]
+    },
+    {
+      "id": "networking",
+      "label": "Networking",
+      "icon": "🌐",
+      "type": "branch",
+      "parent": "root",
+      "color": "#8b5cf6",
+      "description": "Isolate and connect your resources"
+    },
+    {
+      "id": "vpc",
+      "label": "VPC",
+      "icon": "🔒",
+      "type": "leaf",
+      "parent": "networking",
+      "items": [
+        "Private network in AWS",
+        "Subnets (public/private)",
+        "NAT Gateway, IGW, VPN"
+      ]
+    },
+    {
+      "id": "alb",
+      "label": "ALB / NLB",
+      "icon": "⚖️",
+      "type": "leaf",
+      "parent": "networking",
+      "items": [
+        "Application Load Balancer (L7)",
+        "Network Load Balancer (L4)",
+        "Target groups + health checks"
+      ]
+    },
+    {
+      "id": "cloudfront",
+      "label": "CloudFront",
+      "icon": "🌍",
+      "type": "leaf",
+      "parent": "networking",
+      "items": ["Global CDN", "400+ edge locations", "WAF integration"]
+    },
+    {
+      "id": "messaging",
+      "label": "Messaging",
+      "icon": "📨",
+      "type": "branch",
+      "parent": "root",
+      "color": "#06b6d4",
+      "description": "Async communication between services"
+    },
+    {
+      "id": "sqs",
+      "label": "SQS",
+      "icon": "📬",
+      "type": "leaf",
+      "parent": "messaging",
+      "items": [
+        "Managed message queue",
+        "Standard (at-least-once)",
+        "FIFO (exactly-once, ordered)"
+      ]
+    },
+    {
+      "id": "sns",
+      "label": "SNS",
+      "icon": "📢",
+      "type": "leaf",
+      "parent": "messaging",
+      "items": [
+        "Pub/Sub messaging",
+        "Fan-out to SQS, Lambda, email",
+        "Topic-based routing"
+      ]
+    },
+    {
+      "id": "eventbridge",
+      "label": "EventBridge",
+      "icon": "🔀",
+      "type": "leaf",
+      "parent": "messaging",
+      "items": [
+        "Event bus",
+        "Rules-based routing",
+        "Integrates 200+ AWS services"
+      ]
+    },
+    {
+      "id": "security",
+      "label": "Security",
+      "icon": "🔐",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f43f5e",
+      "description": "Identity, access, and compliance"
+    },
+    {
+      "id": "iam",
+      "label": "IAM",
+      "icon": "👤",
+      "type": "leaf",
+      "parent": "security",
+      "items": [
+        "Users, groups, roles, policies",
+        "Least privilege principle",
+        "Role-based access"
+      ]
+    },
+    {
+      "id": "secrets",
+      "label": "Secrets Manager",
+      "icon": "🔑",
+      "type": "leaf",
+      "parent": "security",
+      "items": [
+        "Store DB passwords, API keys",
+        "Automatic rotation",
+        "Audit trail in CloudTrail"
+      ]
+    }
+  ]
+}

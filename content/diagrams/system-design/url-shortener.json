@@ -1,0 +1,201 @@
+{
+  "id": "url-shortener",
+  "title": "URL Shortener Design",
+  "subtitle": "System design for a URL shortening service (e.g., bit.ly)",
+  "type": "architecture",
+  "theme": "indigo",
+  "layout": "left-right",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client",
+      "icon": "💻",
+      "type": "start",
+      "description": "Browser or API consumer"
+    },
+    {
+      "id": "api-gw",
+      "label": "API Gateway",
+      "icon": "🚪",
+      "type": "process",
+      "badge": "Entry Point",
+      "color": "#8b5cf6",
+      "description": "Rate limiting, auth, request routing",
+      "items": [
+        "Rate limit: 100 req/min per IP",
+        "Auth via API key",
+        "Routes to write/read service"
+      ]
+    },
+    {
+      "id": "write-svc",
+      "label": "URL Write Service",
+      "icon": "✍️",
+      "type": "process",
+      "color": "#6366f1",
+      "description": "Generates short codes and stores mappings",
+      "items": [
+        "Base62 encoding of ID",
+        "7-char code = 3.5 trillion URLs",
+        "Collision detection"
+      ]
+    },
+    {
+      "id": "read-svc",
+      "label": "URL Read Service",
+      "icon": "🔍",
+      "type": "process",
+      "color": "#06b6d4",
+      "description": "Resolves short URL → original URL",
+      "items": [
+        "Cache-first lookup",
+        "< 10ms p99 target",
+        "301 vs 302 redirect decision"
+      ]
+    },
+    {
+      "id": "cache",
+      "label": "Redis Cache",
+      "icon": "⚡",
+      "type": "process",
+      "badge": "Hot Data",
+      "color": "#f43f5e",
+      "description": "In-memory cache for hot short codes",
+      "items": [
+        "TTL-based expiry",
+        "~20% of URLs = 80% traffic",
+        "Cache-aside pattern"
+      ]
+    },
+    {
+      "id": "db-primary",
+      "label": "Primary DB",
+      "icon": "🗄️",
+      "type": "process",
+      "badge": "Writes",
+      "color": "#f59e0b",
+      "description": "Source of truth for URL mappings",
+      "items": [
+        "DynamoDB or Cassandra",
+        "Partition key = short_code",
+        "Consistent writes"
+      ]
+    },
+    {
+      "id": "db-replica",
+      "label": "Read Replicas",
+      "icon": "📖",
+      "type": "process",
+      "badge": "Reads",
+      "color": "#10b981",
+      "description": "Scale read traffic horizontally",
+      "items": [
+        "Async replication from primary",
+        "Low latency reads",
+        "Multi-region replicas"
+      ]
+    },
+    {
+      "id": "analytics",
+      "label": "Analytics Pipeline",
+      "icon": "📊",
+      "type": "process",
+      "color": "#8b5cf6",
+      "description": "Track click events and usage stats",
+      "items": [
+        "Kinesis stream for click events",
+        "Lambda aggregation",
+        "S3 + Athena for queries"
+      ]
+    },
+    {
+      "id": "cdn",
+      "label": "CDN (CloudFront)",
+      "icon": "🌐",
+      "type": "process",
+      "color": "#06b6d4",
+      "description": "Cache popular redirects at edge",
+      "items": [
+        "Edge location cache",
+        "Reduces origin load by ~60%",
+        "301 redirect caching"
+      ]
+    },
+    {
+      "id": "estimation",
+      "label": "Scale Estimation",
+      "icon": "🧮",
+      "type": "process",
+      "badge": "Back-of-Envelope",
+      "color": "#f43f5e",
+      "description": "Scale calculations — always impress interviewers",
+      "items": [
+        "300M new URLs/month = 100 writes/sec",
+        "Read/Write ratio 100:1 → 10K reads/sec",
+        "Storage: 500B per URL × 300M = 150 GB/month",
+        "5 years: 150 GB × 60 months = 9 TB total"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "client",
+      "to": "cdn",
+      "label": "GET /abc123",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "cdn", "to": "api-gw", "label": "cache miss", "style": "dashed" },
+    {
+      "from": "client",
+      "to": "api-gw",
+      "label": "POST /shorten",
+      "style": "solid"
+    },
+    {
+      "from": "api-gw",
+      "to": "write-svc",
+      "label": "create",
+      "style": "solid"
+    },
+    {
+      "from": "api-gw",
+      "to": "read-svc",
+      "label": "resolve",
+      "style": "solid"
+    },
+    {
+      "from": "write-svc",
+      "to": "db-primary",
+      "label": "INSERT",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "read-svc",
+      "to": "cache",
+      "label": "GET",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "cache",
+      "to": "db-replica",
+      "label": "cache miss",
+      "style": "dashed"
+    },
+    {
+      "from": "db-primary",
+      "to": "db-replica",
+      "label": "replicate",
+      "style": "dashed"
+    },
+    {
+      "from": "read-svc",
+      "to": "analytics",
+      "label": "click event",
+      "style": "dashed",
+      "animated": true
+    }
+  ]
+}

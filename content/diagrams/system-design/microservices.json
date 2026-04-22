@@ -1,0 +1,224 @@
+{
+  "id": "microservices",
+  "title": "Microservices Architecture",
+  "subtitle": "Decomposed, independently deployable services",
+  "type": "mindmap",
+  "theme": "violet",
+  "layout": "radial",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Microservices",
+      "icon": "🧩",
+      "type": "root",
+      "description": "Architecture pattern: single-responsibility, independently deployable services"
+    },
+    {
+      "id": "services",
+      "label": "Service Design",
+      "icon": "🏗️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#6366f1",
+      "description": "How to define service boundaries"
+    },
+    {
+      "id": "ddd",
+      "label": "Domain-Driven Design",
+      "icon": "📦",
+      "type": "leaf",
+      "parent": "services",
+      "items": ["Bounded contexts", "Ubiquitous language", "Aggregates"]
+    },
+    {
+      "id": "srp",
+      "label": "Single Responsibility",
+      "icon": "🎯",
+      "type": "leaf",
+      "parent": "services",
+      "items": [
+        "One service = one domain",
+        "Independent data store",
+        "Team ownership"
+      ]
+    },
+    {
+      "id": "communication",
+      "label": "Communication",
+      "icon": "📡",
+      "type": "branch",
+      "parent": "root",
+      "color": "#06b6d4",
+      "description": "How services talk to each other"
+    },
+    {
+      "id": "sync-comm",
+      "label": "Synchronous",
+      "icon": "🔗",
+      "type": "leaf",
+      "parent": "communication",
+      "items": [
+        "REST over HTTP/HTTPS",
+        "gRPC (Protocol Buffers)",
+        "GraphQL federation"
+      ]
+    },
+    {
+      "id": "async-comm",
+      "label": "Asynchronous",
+      "icon": "📨",
+      "type": "leaf",
+      "parent": "communication",
+      "items": [
+        "Message queues (SQS, RabbitMQ)",
+        "Event streaming (Kafka)",
+        "Pub/Sub (SNS, PubSub)"
+      ]
+    },
+    {
+      "id": "data",
+      "label": "Data Management",
+      "icon": "🗄️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#10b981",
+      "description": "Database per service pattern"
+    },
+    {
+      "id": "db-per-svc",
+      "label": "DB Per Service",
+      "icon": "💾",
+      "type": "leaf",
+      "parent": "data",
+      "items": [
+        "Independent schema evolution",
+        "Polyglot persistence",
+        "No shared tables"
+      ]
+    },
+    {
+      "id": "saga",
+      "label": "Saga Pattern",
+      "icon": "🔄",
+      "type": "leaf",
+      "parent": "data",
+      "items": [
+        "Distributed transactions",
+        "Choreography vs Orchestration",
+        "Compensating transactions"
+      ]
+    },
+    {
+      "id": "deployment",
+      "label": "Deployment",
+      "icon": "🚀",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f59e0b",
+      "description": "How services are packaged and deployed"
+    },
+    {
+      "id": "containers",
+      "label": "Containers",
+      "icon": "🐳",
+      "type": "leaf",
+      "parent": "deployment",
+      "items": [
+        "Docker containers",
+        "Kubernetes orchestration",
+        "ECS / EKS on AWS"
+      ]
+    },
+    {
+      "id": "cicd",
+      "label": "CI/CD",
+      "icon": "⚙️",
+      "type": "leaf",
+      "parent": "deployment",
+      "items": [
+        "Independent pipelines per service",
+        "Blue-green deployments",
+        "Feature flags"
+      ]
+    },
+    {
+      "id": "observability",
+      "label": "Observability",
+      "icon": "👁️",
+      "type": "branch",
+      "parent": "root",
+      "color": "#f43f5e",
+      "description": "Monitoring distributed systems"
+    },
+    {
+      "id": "logging",
+      "label": "Centralized Logging",
+      "icon": "📋",
+      "type": "leaf",
+      "parent": "observability",
+      "items": [
+        "Correlation IDs",
+        "CloudWatch / ELK Stack",
+        "Structured JSON logs"
+      ]
+    },
+    {
+      "id": "tracing",
+      "label": "Distributed Tracing",
+      "icon": "🔍",
+      "type": "leaf",
+      "parent": "observability",
+      "items": [
+        "Jaeger, Zipkin, X-Ray",
+        "Trace full request path",
+        "Identify bottlenecks"
+      ]
+    },
+    {
+      "id": "patterns",
+      "label": "Key Patterns",
+      "icon": "🧱",
+      "type": "branch",
+      "parent": "root",
+      "color": "#8b5cf6",
+      "description": "Common microservices design patterns"
+    },
+    {
+      "id": "api-gw",
+      "label": "API Gateway",
+      "icon": "🚪",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Single entry point",
+        "Auth, rate limit, routing",
+        "BFF pattern"
+      ]
+    },
+    {
+      "id": "circuit-breaker",
+      "label": "Circuit Breaker",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Prevent cascade failures",
+        "Open / Half-open / Closed states",
+        "Hystrix, Resilience4j, Istio built-in"
+      ]
+    },
+    {
+      "id": "service-mesh",
+      "label": "Service Mesh",
+      "icon": "🕸️",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Istio / Linkerd / Envoy sidecar proxy",
+        "mTLS between services automatically",
+        "Traffic management, retries, timeouts",
+        "Observability: metrics + traces built in"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "id": "rate-limiting",
+  "title": "Rate Limiting",
+  "subtitle": "Controlling request frequency to protect services from overload and abuse",
+  "type": "hierarchy",
+  "theme": "amber",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Rate Limiting",
+      "icon": "🚦",
+      "type": "root",
+      "description": "Controls how many requests a client can make in a given time window to protect system stability"
+    },
+    {
+      "id": "algorithms",
+      "label": "Algorithms",
+      "icon": "⚙️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "How",
+      "color": "#f59e0b",
+      "description": "Four common rate limiting algorithm implementations"
+    },
+    {
+      "id": "token-bucket",
+      "label": "Token Bucket",
+      "icon": "🪣",
+      "type": "leaf",
+      "parent": "algorithms",
+      "items": [
+        "Bucket has N tokens (capacity)",
+        "Tokens refill at fixed rate",
+        "Each request consumes 1 token",
+        "Burst allowed while tokens remain",
+        "AWS API Gateway uses this"
+      ]
+    },
+    {
+      "id": "leaky-bucket",
+      "label": "Leaky Bucket",
+      "icon": "💧",
+      "type": "leaf",
+      "parent": "algorithms",
+      "items": [
+        "Requests enter a queue (bucket)",
+        "Processed at fixed constant rate",
+        "Overflow requests dropped/rejected",
+        "Smooths burst traffic into steady stream",
+        "Good for shaping egress traffic"
+      ]
+    },
+    {
+      "id": "fixed-window",
+      "label": "Fixed Window Counter",
+      "icon": "🪟",
+      "type": "leaf",
+      "parent": "algorithms",
+      "items": [
+        "Count resets every N seconds",
+        "100 req/min: counter resets at :00",
+        "Problem: 200 req possible at boundary",
+        "Simple to implement with Redis INCR",
+        "Susceptible to boundary burst attacks"
+      ]
+    },
+    {
+      "id": "sliding-log",
+      "label": "Sliding Window Log",
+      "icon": "📜",
+      "type": "leaf",
+      "parent": "algorithms",
+      "items": [
+        "Track timestamp of every request",
+        "Count requests in last N seconds",
+        "Most accurate — no boundary problem",
+        "Memory-heavy: O(max_requests) per user",
+        "Best for precision-critical APIs"
+      ]
+    },
+    {
+      "id": "sliding-counter",
+      "label": "Sliding Window Counter",
+      "icon": "🔢",
+      "type": "leaf",
+      "parent": "algorithms",
+      "items": [
+        "Hybrid: current + weighted previous window",
+        "formula: prev × overlap% + current",
+        "Memory efficient vs sliding log",
+        "Used by Cloudflare, Redis-based limiters"
+      ]
+    },
+    {
+      "id": "strategies",
+      "label": "Limiting Dimensions",
+      "icon": "📐",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Scope",
+      "color": "#6366f1",
+      "description": "What to rate limit on — multiple axes possible"
+    },
+    {
+      "id": "by-ip",
+      "label": "By IP Address",
+      "icon": "🌐",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "Simplest — block abusive IPs",
+        "Problem: shared NAT (office WiFi)",
+        "Combine with: user-level limiting",
+        "Redis key: rate:ip:{ip_address}"
+      ]
+    },
+    {
+      "id": "by-user",
+      "label": "By User / API Key",
+      "icon": "👤",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "Fair usage per authenticated user",
+        "Different tiers: free=100/hr, paid=10K/hr",
+        "API key → rate limit bucket mapping",
+        "Redis key: rate:user:{user_id}"
+      ]
+    },
+    {
+      "id": "by-endpoint",
+      "label": "By Endpoint",
+      "icon": "🎯",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "Critical endpoints get tighter limits",
+        "/login: 5/min, /search: 100/min",
+        "Protects expensive endpoints specifically",
+        "Combined with global user limits"
+      ]
+    },
+    {
+      "id": "distributed",
+      "label": "Distributed Rate Limiting",
+      "icon": "🌍",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Scale",
+      "color": "#10b981",
+      "description": "Rate limiting across multiple API gateway instances"
+    },
+    {
+      "id": "redis-central",
+      "label": "Centralized Redis",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "distributed",
+      "items": [
+        "All nodes share Redis counter",
+        "INCR + EXPIRE: atomic rate check",
+        "Redis Lua script for atomic check+decrement",
+        "~1ms overhead per request"
+      ]
+    },
+    {
+      "id": "local-approx",
+      "label": "Local Approximation",
+      "icon": "💻",
+      "type": "leaf",
+      "parent": "distributed",
+      "items": [
+        "Each node tracks local count",
+        "Sync to Redis periodically",
+        "May allow slight over-limit bursts",
+        "Higher throughput, eventual accuracy"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "id": "auto-scaling",
+  "title": "AWS Auto Scaling",
+  "subtitle": "Automatically adjust capacity to maintain performance and minimize cost",
+  "type": "architecture",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "traffic",
+      "label": "Incoming Traffic",
+      "icon": "📈",
+      "type": "start",
+      "description": "Variable load — 100 RPS at night, 10K RPS at noon"
+    },
+    {
+      "id": "asg",
+      "label": "Auto Scaling Group (ASG)",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Core",
+      "color": "#10b981",
+      "description": "Manages a fleet of EC2 instances, maintaining desired capacity",
+      "items": [
+        "Min: 2 (always running for HA)",
+        "Desired: 4 (current target capacity)",
+        "Max: 20 (cost ceiling)",
+        "Launches instances from Launch Template"
+      ]
+    },
+    {
+      "id": "scaling-policies",
+      "label": "Scaling Policies",
+      "icon": "⚙️",
+      "type": "process",
+      "badge": "Triggers",
+      "color": "#6366f1",
+      "description": "When and how much to scale",
+      "items": [
+        "Target Tracking: keep CPU at 60% (recommended)",
+        "Step Scaling: add 2 at 70%, 4 at 90%",
+        "Scheduled: 8 AM scale up, 10 PM scale down",
+        "Predictive: ML model forecasts load"
+      ]
+    },
+    {
+      "id": "cloudwatch-alarms",
+      "label": "CloudWatch Alarms",
+      "icon": "🔔",
+      "type": "process",
+      "badge": "Monitor",
+      "color": "#f59e0b",
+      "description": "Metrics that trigger scaling actions",
+      "items": [
+        "CPU Utilization > 70% for 2 minutes → scale out",
+        "CPU Utilization < 30% for 10 minutes → scale in",
+        "Custom metric: SQS queue depth",
+        "ALB RequestCountPerTarget"
+      ]
+    },
+    {
+      "id": "scale-out",
+      "label": "Scale Out (Add)",
+      "icon": "➕",
+      "type": "process",
+      "badge": "Expand",
+      "color": "#10b981",
+      "description": "Launch new EC2 instances when load increases",
+      "items": [
+        "Launch from AMI in Launch Template",
+        "Bootstrap via User Data script",
+        "Register to ALB Target Group",
+        "Warmup period before receiving traffic"
+      ]
+    },
+    {
+      "id": "scale-in",
+      "label": "Scale In (Remove)",
+      "icon": "➖",
+      "type": "process",
+      "badge": "Contract",
+      "color": "#f43f5e",
+      "description": "Terminate EC2 instances when load decreases",
+      "items": [
+        "Termination policy: oldest launch config first",
+        "Scale-in protection: mark critical instances",
+        "Connection draining: finish in-flight requests",
+        "Cooldown period: 300s (prevent thrashing)"
+      ]
+    },
+    {
+      "id": "health-check",
+      "label": "Health Checks",
+      "icon": "💓",
+      "type": "process",
+      "badge": "Self-Heal",
+      "color": "#8b5cf6",
+      "description": "ASG replaces unhealthy instances automatically",
+      "items": [
+        "EC2 status check: hardware/network failure",
+        "ELB health check: app-level /health endpoint",
+        "Unhealthy → terminate + launch replacement",
+        "Self-healing: no manual intervention needed"
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "traffic", "to": "asg", "style": "solid", "animated": true },
+    {
+      "from": "cloudwatch-alarms",
+      "to": "scaling-policies",
+      "style": "solid",
+      "animated": true,
+      "label": "alarm triggers"
+    },
+    {
+      "from": "scaling-policies",
+      "to": "scale-out",
+      "label": "high load",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "scaling-policies",
+      "to": "scale-in",
+      "label": "low load",
+      "style": "dashed"
+    },
+    {
+      "from": "scale-out",
+      "to": "asg",
+      "style": "solid",
+      "label": "add instances"
+    },
+    {
+      "from": "scale-in",
+      "to": "asg",
+      "style": "dashed",
+      "label": "remove instances"
+    },
+    {
+      "from": "asg",
+      "to": "cloudwatch-alarms",
+      "style": "dashed",
+      "label": "metrics"
+    },
+    {
+      "from": "health-check",
+      "to": "asg",
+      "style": "dashed",
+      "label": "replace unhealthy"
+    }
+  ]
+}

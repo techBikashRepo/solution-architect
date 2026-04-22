@@ -1,0 +1,200 @@
+{
+  "id": "monolith-vs-micro",
+  "title": "Monolith vs Microservices",
+  "subtitle": "Architectural trade-offs side by side",
+  "type": "comparison",
+  "theme": "cyan",
+  "layout": "side-by-side",
+  "nodes": [
+    {
+      "id": "monolith",
+      "label": "Monolith",
+      "icon": "🏛️",
+      "type": "header-left",
+      "color": "#f59e0b",
+      "description": "Single deployable unit containing all functionality"
+    },
+    {
+      "id": "microservices",
+      "label": "Microservices",
+      "icon": "🧩",
+      "type": "header-right",
+      "color": "#6366f1",
+      "description": "Suite of small, independently deployable services"
+    },
+    {
+      "id": "m-deploy",
+      "label": "Deployment",
+      "icon": "🚀",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Deploy entire app as one unit",
+        "Single artifact (JAR, Docker image)",
+        "One codebase, one CI/CD pipeline"
+      ]
+    },
+    {
+      "id": "ms-deploy",
+      "label": "Deployment",
+      "icon": "🚀",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "Deploy services independently",
+        "Many artifacts, many pipelines",
+        "Blue-green per service"
+      ]
+    },
+    {
+      "id": "m-scale",
+      "label": "Scaling",
+      "icon": "📈",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Scale entire app",
+        "Waste resources on idle parts",
+        "Vertical scale typical"
+      ]
+    },
+    {
+      "id": "ms-scale",
+      "label": "Scaling",
+      "icon": "📈",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "Scale individual services",
+        "Target hot services only",
+        "Horizontal + autoscaling"
+      ]
+    },
+    {
+      "id": "m-complexity",
+      "label": "Complexity",
+      "icon": "🧠",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Low operational complexity",
+        "Simple local function calls",
+        "No network overhead"
+      ]
+    },
+    {
+      "id": "ms-complexity",
+      "label": "Complexity",
+      "icon": "🧠",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "High operational complexity",
+        "Network calls, retries, timeouts",
+        "Service discovery needed"
+      ]
+    },
+    {
+      "id": "m-data",
+      "label": "Data",
+      "icon": "🗄️",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Single shared database",
+        "ACID transactions easy",
+        "Schema changes affect all"
+      ]
+    },
+    {
+      "id": "ms-data",
+      "label": "Data",
+      "icon": "🗄️",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "DB per service",
+        "Eventual consistency",
+        "Saga for distributed txns"
+      ]
+    },
+    {
+      "id": "m-teams",
+      "label": "Team Structure",
+      "icon": "👥",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Single large team",
+        "Merge conflicts common",
+        "Faster for small teams (<10)"
+      ]
+    },
+    {
+      "id": "ms-teams",
+      "label": "Team Structure",
+      "icon": "👥",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "Small autonomous teams",
+        "Conway's Law applies",
+        "Each team owns a service"
+      ]
+    },
+    {
+      "id": "m-when",
+      "label": "Use When",
+      "icon": "✅",
+      "type": "footer-left",
+      "parent": "monolith",
+      "color": "#f59e0b",
+      "items": [
+        "Early-stage startup",
+        "Small team (<10 devs)",
+        "Simple domain",
+        "Budget constraints"
+      ]
+    },
+    {
+      "id": "ms-when",
+      "label": "Use When",
+      "icon": "✅",
+      "type": "footer-right",
+      "parent": "microservices",
+      "color": "#6366f1",
+      "items": [
+        "Scaling org/team",
+        "Independent release cycles needed",
+        "Different scaling requirements",
+        "Clear domain boundaries"
+      ]
+    },
+    {
+      "id": "m-migration",
+      "label": "Migration Path",
+      "icon": "🔄",
+      "type": "row-left",
+      "parent": "monolith",
+      "items": [
+        "Strangler Fig: extract services incrementally",
+        "Start with least coupled modules",
+        "Anti-Corruption Layer for compatibility",
+        "Martin Fowler recommends: start monolith!"
+      ]
+    },
+    {
+      "id": "ms-migration",
+      "label": "Migration Path",
+      "icon": "🔄",
+      "type": "row-right",
+      "parent": "microservices",
+      "items": [
+        "Identify bounded contexts (DDD)",
+        "Shared DB → DB per service (hardest step)",
+        "Add API Gateway as unified entry point",
+        "Migrate one service at a time, not big bang"
+      ]
+    }
+  ]
+}

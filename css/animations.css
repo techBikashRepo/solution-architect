@@ -1,0 +1,370 @@
+/* ================================================================
+   ANIMATIONS — Keyframes, Entrance, Loading, Micro-interactions
+================================================================ */
+
+/* ── ENTRANCE ANIMATIONS ────────────────────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── LOADING ANIMATIONS ─────────────────────────────────────── */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes spinnerBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── MICRO-INTERACTION ANIMATIONS ───────────────────────────── */
+
+/* Spring pop-in (Duolingo-style) */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Completion celebration flash */
+@keyframes completeFlash {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  }
+  30% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+  }
+  60% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Progress bar entrance */
+@keyframes progressBarGrow {
+  from {
+    width: 0 !important;
+  }
+}
+
+/* Button press feedback */
+@keyframes btnPress {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.94);
+  }
+}
+
+/* Success check bounce */
+@keyframes checkBounce {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Glow pulse on primary elements */
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  }
+}
+
+/* Float animation for decorative elements */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Hero gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Progress ring fill entrance */
+@keyframes progressFill {
+  from {
+    stroke-dashoffset: 138.23;
+  }
+  to {
+    stroke-dashoffset: var(--target-offset, 0);
+  }
+}
+
+/* Content article entrance */
+@keyframes contentIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── STAGGER DELAYS FOR GRID ────────────────────────────────── */
+.subjects-grid .subject-card:nth-child(1) {
+  animation-delay: 0ms;
+}
+.subjects-grid .subject-card:nth-child(2) {
+  animation-delay: 80ms;
+}
+.subjects-grid .subject-card:nth-child(3) {
+  animation-delay: 160ms;
+}
+.subjects-grid .subject-card:nth-child(4) {
+  animation-delay: 240ms;
+}
+.subjects-grid .subject-card:nth-child(5) {
+  animation-delay: 320ms;
+}
+.subjects-grid .subject-card:nth-child(6) {
+  animation-delay: 400ms;
+}
+
+/* ── CONTENT AREA ───────────────────────────────────────────── */
+.content-article {
+  animation: contentIn 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── HOVER SCALE for interactive elements ───────────────────── */
+.stat-pill {
+  transition:
+    transform var(--ease-spring),
+    border-color var(--ease-base),
+    box-shadow var(--ease-base);
+}
+
+.stat-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── PAGE TRANSITION ────────────────────────────────────────── */
+.view-enter {
+  animation: popIn 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.view-leave {
+  animation: fadeIn 200ms reverse both;
+}
+
+/* ── COMPLETE BUTTON ANIMATION ──────────────────────────────── */
+.btn--success.is-done {
+  animation: completeFlash 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn--success .check-icon {
+  transition: transform var(--ease-spring);
+}
+
+.btn--success.is-done .check-icon {
+  animation: checkBounce var(--ease-spring) both;
+}
+
+/* ── PROGRESS BAR FILL ENTRANCE ─────────────────────────────── */
+.subject-card__progress-fill,
+.sidebar__progress-fill {
+  animation: progressBarGrow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 200ms;
+}
+
+/* ── TOC HIGHLIGHT ──────────────────────────────────────────── */
+.toc-nav-item {
+  transition:
+    color var(--ease-fast),
+    border-left-color var(--ease-fast),
+    background var(--ease-fast),
+    padding-left var(--ease-fast);
+}
+
+/* ── READING PROGRESS ───────────────────────────────────────── */
+.reading-progress-bar__fill {
+  transition: width 120ms linear;
+}
+
+/* ── HERO FLOATING ──────────────────────────────────────────── */
+.hero__stats .stat-pill:nth-child(1) {
+  animation: float 4s ease-in-out infinite;
+}
+.hero__stats .stat-pill:nth-child(2) {
+  animation: float 4s ease-in-out 0.7s infinite;
+}
+.hero__stats .stat-pill:nth-child(3) {
+  animation: float 4s ease-in-out 1.4s infinite;
+}
+
+/* ── LOGO GLOW ON HOVER ─────────────────────────────────────── */
+.logo:hover .logo__icon {
+  animation: glowPulse 1s ease-in-out;
+}
+
+/* ── SIDEBAR ACTIVE ITEM ────────────────────────────────────── */
+.sidebar-topic__btn.is-active {
+  animation: slideInLeft 200ms var(--ease-out) both;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

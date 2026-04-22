@@ -1,0 +1,164 @@
+{
+  "id": "hashmap",
+  "title": "Hash Maps",
+  "subtitle": "O(1) average-case lookup, insert, and delete — the most powerful interview tool",
+  "type": "hierarchy",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Hash Maps",
+      "icon": "#",
+      "type": "root",
+      "description": "Key-value store using hash function to compute array index — O(1) on average for all operations"
+    },
+    {
+      "id": "internals",
+      "label": "How It Works",
+      "icon": "⚙️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Internals",
+      "color": "#10b981",
+      "description": "Understanding the mechanics to answer 'how would you implement'"
+    },
+    {
+      "id": "hash-fn",
+      "label": "Hash Function",
+      "icon": "🔢",
+      "type": "leaf",
+      "parent": "internals",
+      "items": [
+        "key → hash(key) % array_size → index",
+        "Good hash: uniform distribution",
+        "Java: hashCode() built-in",
+        "String hash: sum of char * prime positions"
+      ]
+    },
+    {
+      "id": "collision",
+      "label": "Collision Handling",
+      "icon": "💥",
+      "type": "leaf",
+      "parent": "internals",
+      "items": [
+        "Chaining: each bucket is a linked list",
+        "Open Addressing: probe next empty slot",
+        "Load factor > 0.75 → resize (rehash)",
+        "Java HashMap: chaining + tree at 8 items"
+      ]
+    },
+    {
+      "id": "complexity",
+      "label": "Complexity",
+      "icon": "⏱️",
+      "type": "leaf",
+      "parent": "internals",
+      "items": [
+        "Average: O(1) get/put/delete",
+        "Worst case (all hash to same bucket): O(n)",
+        "Space: O(n) for n entries",
+        "Resize (rehash): O(n) amortized"
+      ]
+    },
+    {
+      "id": "patterns",
+      "label": "Problem Patterns",
+      "icon": "🧩",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Must Know",
+      "color": "#6366f1",
+      "description": "HashMap patterns that unlock dozens of problems"
+    },
+    {
+      "id": "frequency",
+      "label": "Frequency Count",
+      "icon": "📊",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "map[char]++ for each element",
+        "Anagram check: compare frequency maps",
+        "Top K elements: map + heap",
+        "Problems: Valid Anagram, Word Frequency, Group Anagrams"
+      ]
+    },
+    {
+      "id": "two-sum-pattern",
+      "label": "Complement Lookup",
+      "icon": "🎯",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Store seen elements as you iterate",
+        "Check if complement = target - current exists",
+        "Single pass: O(n) time, O(n) space",
+        "Problems: Two Sum, Four Sum, Pair with Target"
+      ]
+    },
+    {
+      "id": "prefix-hashmap",
+      "label": "Prefix Sum + Map",
+      "icon": "∑",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "map[prefixSum] = index",
+        "Subarray sum = k: check map[currentSum - k]",
+        "Count subarrays with 0 sum",
+        "Problems: Subarray Sum Equals K (#560)"
+      ]
+    },
+    {
+      "id": "memoization",
+      "label": "Memoization / DP Cache",
+      "icon": "💾",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Cache computed results: map[state] = result",
+        "Avoids recomputing subproblems",
+        "Top-down DP with HashMap",
+        "Problems: Word Break, Coin Change, LRU Cache"
+      ]
+    },
+    {
+      "id": "variants",
+      "label": "Variants",
+      "icon": "🗂️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Related",
+      "color": "#f59e0b",
+      "description": "Specialized map structures for specific needs"
+    },
+    {
+      "id": "linked-hashmap",
+      "label": "LinkedHashMap",
+      "icon": "🔗",
+      "type": "leaf",
+      "parent": "variants",
+      "items": [
+        "Maintains insertion order",
+        "LRU Cache implementation",
+        "O(1) get + O(1) move-to-front",
+        "Java: LinkedHashMap with accessOrder=true"
+      ]
+    },
+    {
+      "id": "treemap",
+      "label": "TreeMap / SortedMap",
+      "icon": "🌲",
+      "type": "leaf",
+      "parent": "variants",
+      "items": [
+        "Keys in sorted order (Red-Black Tree)",
+        "O(log n) get/put vs O(1) HashMap",
+        "floorKey, ceilingKey operations",
+        "Use when: need ordering or range queries"
+      ]
+    }
+  ]
+}

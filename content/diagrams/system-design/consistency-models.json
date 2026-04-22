@@ -1,0 +1,152 @@
+{
+  "id": "consistency-models",
+  "title": "Consistency Models",
+  "subtitle": "The distributed systems spectrum: Strong → Causal → Eventual",
+  "type": "hierarchy",
+  "theme": "violet",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Consistency Models",
+      "icon": "⚖️",
+      "type": "root",
+      "description": "Contract defining what value a read returns after a write in a distributed system"
+    },
+    {
+      "id": "strong",
+      "label": "Strong Consistency",
+      "icon": "🔒",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Safe",
+      "color": "#6366f1",
+      "description": "After a write, ALL readers immediately see the new value"
+    },
+    {
+      "id": "linearizability",
+      "label": "Linearizability",
+      "icon": "🎯",
+      "type": "leaf",
+      "parent": "strong",
+      "items": [
+        "Strictest model — real-time ordering",
+        "Operations appear instantaneous",
+        "Globally consistent view across nodes",
+        "Used in: etcd, ZooKeeper, Spanner",
+        "Cost: highest latency, quorum writes"
+      ]
+    },
+    {
+      "id": "sequential",
+      "label": "Sequential Consistency",
+      "icon": "🔢",
+      "type": "leaf",
+      "parent": "strong",
+      "items": [
+        "All nodes see writes in same order",
+        "Not necessarily in real-time",
+        "Like multi-core CPU memory model",
+        "Weaker than linearizability"
+      ]
+    },
+    {
+      "id": "middle",
+      "label": "Session / Causal",
+      "icon": "🔄",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Balanced",
+      "color": "#f59e0b",
+      "description": "Partial consistency guarantees for practical distributed patterns"
+    },
+    {
+      "id": "causal",
+      "label": "Causal Consistency",
+      "icon": "🔗",
+      "type": "leaf",
+      "parent": "middle",
+      "items": [
+        "Causally related ops are ordered",
+        "Concurrent ops may see different orders",
+        "Analogy: Git commits — you see your parent",
+        "Used in: CockroachDB, Dynamo (partial)"
+      ]
+    },
+    {
+      "id": "read-your-writes",
+      "label": "Read-Your-Writes",
+      "icon": "✍️",
+      "type": "leaf",
+      "parent": "middle",
+      "items": [
+        "You always see your own writes",
+        "Other clients may see stale data",
+        "Common for user profile updates",
+        "Implemented via session sticky routing"
+      ]
+    },
+    {
+      "id": "monotonic",
+      "label": "Monotonic Read",
+      "icon": "📈",
+      "type": "leaf",
+      "parent": "middle",
+      "items": [
+        "Once you read value X, never read older",
+        "Reads are non-decreasing over time",
+        "Session-scoped consistency guarantee",
+        "Common in read replica setups"
+      ]
+    },
+    {
+      "id": "eventual",
+      "label": "Eventual Consistency",
+      "icon": "⏳",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Fast",
+      "color": "#10b981",
+      "description": "Replicas converge eventually — stale reads are acceptable"
+    },
+    {
+      "id": "eventual-leaf",
+      "label": "Eventual Model",
+      "icon": "🌐",
+      "type": "leaf",
+      "parent": "eventual",
+      "items": [
+        "Lowest latency — no cross-node sync",
+        "Best availability (AP in CAP theorem)",
+        "Stale reads possible for ms to seconds",
+        "Cassandra, DynamoDB (default), DNS"
+      ]
+    },
+    {
+      "id": "quorum",
+      "label": "Quorum Formula",
+      "icon": "🧮",
+      "type": "leaf",
+      "parent": "eventual",
+      "items": [
+        "R + W > N → strong consistency",
+        "N=3, W=2, R=2 → 4 > 3 ✅ strong",
+        "N=3, W=1, R=1 → 2 < 3 ❌ eventual",
+        "DynamoDB: ConsistentRead = true → strong"
+      ]
+    },
+    {
+      "id": "conflict",
+      "label": "Conflict Resolution",
+      "icon": "⚔️",
+      "type": "leaf",
+      "parent": "eventual",
+      "items": [
+        "Last-Write-Wins (LWW) — timestamp-based",
+        "CRDTs — conflict-free data structures",
+        "Application-level merge logic",
+        "Vector clocks for version tracking"
+      ]
+    }
+  ]
+}

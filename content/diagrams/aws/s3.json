@@ -1,0 +1,151 @@
+{
+  "id": "s3",
+  "title": "Amazon S3",
+  "subtitle": "Infinitely scalable object storage — 99.999999999% (11 9s) durability",
+  "type": "hierarchy",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Amazon S3",
+      "icon": "🪣",
+      "type": "root",
+      "description": "Store any amount of data, from anywhere — objects up to 5TB each"
+    },
+    {
+      "id": "storage-classes",
+      "label": "Storage Classes",
+      "icon": "🗂️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Cost Tiers",
+      "color": "#10b981",
+      "description": "Choose class based on access frequency to optimize cost"
+    },
+    {
+      "id": "standard",
+      "label": "S3 Standard",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "storage-classes",
+      "items": [
+        "Frequent access — hot data",
+        "11 9s durability, 99.99% availability",
+        "Highest cost ($0.023/GB/month)",
+        "Best for: active assets, user uploads"
+      ]
+    },
+    {
+      "id": "ia",
+      "label": "Infrequent Access (IA)",
+      "icon": "📦",
+      "type": "leaf",
+      "parent": "storage-classes",
+      "items": [
+        "Access < 1x per month",
+        "40% cheaper than Standard",
+        "Minimum 30-day storage charge",
+        "Best for: backups, disaster recovery"
+      ]
+    },
+    {
+      "id": "glacier",
+      "label": "Glacier / Deep Archive",
+      "icon": "❄️",
+      "type": "leaf",
+      "parent": "storage-classes",
+      "items": [
+        "Glacier Instant: retrieval in ms",
+        "Glacier Flexible: 1-12 hour retrieval",
+        "Deep Archive: 12-48hr, cheapest ($0.00099/GB)",
+        "Best for: compliance archives, audit logs"
+      ]
+    },
+    {
+      "id": "intelligent",
+      "label": "Intelligent-Tiering",
+      "icon": "🤖",
+      "type": "leaf",
+      "parent": "storage-classes",
+      "items": [
+        "Auto-moves objects between tiers",
+        "No retrieval fees",
+        "Small monitoring fee per 1000 objects",
+        "Best for: unpredictable access patterns"
+      ]
+    },
+    {
+      "id": "security",
+      "label": "Security",
+      "icon": "🔐",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Protect",
+      "color": "#f43f5e",
+      "description": "Multiple layers of access control and encryption"
+    },
+    {
+      "id": "bucket-policy",
+      "label": "Bucket Policies",
+      "icon": "📋",
+      "type": "leaf",
+      "parent": "security",
+      "items": [
+        "JSON policy attached to bucket",
+        "Allow/deny by IAM principal, IP, VPC",
+        "Block public access: 4 settings",
+        "Cross-account access via resource policy"
+      ]
+    },
+    {
+      "id": "encryption",
+      "label": "Encryption",
+      "icon": "🔒",
+      "type": "leaf",
+      "parent": "security",
+      "items": [
+        "SSE-S3: AWS manages keys (free)",
+        "SSE-KMS: customer manages via KMS",
+        "SSE-C: customer provides key each request",
+        "In-transit: HTTPS mandatory"
+      ]
+    },
+    {
+      "id": "features",
+      "label": "Key Features",
+      "icon": "🌟",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Power",
+      "color": "#6366f1",
+      "description": "Advanced capabilities beyond basic storage"
+    },
+    {
+      "id": "versioning",
+      "label": "Versioning",
+      "icon": "🔖",
+      "type": "leaf",
+      "parent": "features",
+      "items": [
+        "Keep all versions of an object",
+        "Recover from accidental deletes",
+        "MFA Delete protection for compliance",
+        "Lifecycle rules to expire old versions"
+      ]
+    },
+    {
+      "id": "events",
+      "label": "Event Notifications",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "features",
+      "items": [
+        "Trigger Lambda on s3:ObjectCreated",
+        "Send to SNS or SQS queue",
+        "EventBridge for advanced filtering",
+        "Use case: thumbnail on image upload"
+      ]
+    }
+  ]
+}

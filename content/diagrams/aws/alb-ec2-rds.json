@@ -1,0 +1,161 @@
+{
+  "id": "alb-ec2-rds",
+  "title": "Traditional Web Architecture",
+  "subtitle": "ALB → EC2 Auto Scaling → RDS pattern",
+  "type": "architecture",
+  "theme": "amber",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "internet",
+      "label": "Internet",
+      "icon": "🌍",
+      "type": "start"
+    },
+    {
+      "id": "route53",
+      "label": "Route 53",
+      "icon": "🗺️",
+      "type": "process",
+      "badge": "DNS",
+      "color": "#8b5cf6",
+      "description": "Managed DNS + health routing",
+      "items": ["Latency-based routing", "Failover routing", "Health checks"]
+    },
+    {
+      "id": "waf",
+      "label": "WAF",
+      "icon": "🛡️",
+      "type": "process",
+      "badge": "Security",
+      "color": "#f43f5e",
+      "description": "Web Application Firewall",
+      "items": [
+        "Block SQL injection / XSS",
+        "IP reputation rules",
+        "Rate-based rules"
+      ]
+    },
+    {
+      "id": "alb",
+      "label": "Application Load Balancer",
+      "icon": "⚖️",
+      "type": "process",
+      "badge": "Layer 7",
+      "color": "#f97316",
+      "description": "Routes HTTP/HTTPS traffic to target groups",
+      "items": ["Path-based routing", "Host-based routing", "SSL termination"]
+    },
+    {
+      "id": "asg",
+      "label": "Auto Scaling Group",
+      "icon": "📈",
+      "type": "process",
+      "badge": "Compute",
+      "color": "#06b6d4",
+      "description": "Automatically adjusts EC2 fleet size",
+      "items": [
+        "Min: 2, Max: 20 instances",
+        "Scale on CPU / custom metrics",
+        "Multi-AZ deployment"
+      ]
+    },
+    {
+      "id": "ec2-1",
+      "label": "EC2 (AZ-1a)",
+      "icon": "🖥️",
+      "type": "process",
+      "color": "#10b981"
+    },
+    {
+      "id": "ec2-2",
+      "label": "EC2 (AZ-1b)",
+      "icon": "🖥️",
+      "type": "process",
+      "color": "#10b981"
+    },
+    {
+      "id": "elasticache",
+      "label": "ElastiCache (Redis)",
+      "icon": "⚡",
+      "type": "process",
+      "badge": "Cache",
+      "color": "#f43f5e",
+      "description": "In-memory cache for session state and hot data",
+      "items": [
+        "Session storage",
+        "API response cache",
+        "Multi-AZ with failover"
+      ]
+    },
+    {
+      "id": "rds-primary",
+      "label": "RDS Primary",
+      "icon": "🗄️",
+      "type": "process",
+      "badge": "Writes",
+      "color": "#3b82f6",
+      "description": "Primary database handling all writes",
+      "items": [
+        "Multi-AZ synchronous replication",
+        "Automated backups",
+        "Point-in-time recovery"
+      ]
+    },
+    {
+      "id": "rds-replica",
+      "label": "RDS Read Replica",
+      "icon": "📖",
+      "type": "process",
+      "badge": "Reads",
+      "color": "#6366f1",
+      "description": "Async read replica for reporting and analytics",
+      "items": [
+        "Offload read traffic",
+        "Up to 5 replicas (MySQL)",
+        "Cross-region replica possible"
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "internet", "to": "route53", "style": "solid", "animated": true },
+    { "from": "route53", "to": "waf", "style": "solid" },
+    { "from": "waf", "to": "alb", "style": "solid" },
+    {
+      "from": "alb",
+      "to": "asg",
+      "label": "distribute",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "asg", "to": "ec2-1", "style": "solid" },
+    { "from": "asg", "to": "ec2-2", "style": "solid" },
+    {
+      "from": "ec2-1",
+      "to": "elasticache",
+      "label": "cache read/write",
+      "style": "dashed"
+    },
+    { "from": "ec2-2", "to": "elasticache", "style": "dashed" },
+    {
+      "from": "ec2-1",
+      "to": "rds-primary",
+      "label": "read/write",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "ec2-2", "to": "rds-primary", "style": "solid" },
+    {
+      "from": "ec2-1",
+      "to": "rds-replica",
+      "label": "read only",
+      "style": "dashed"
+    },
+    {
+      "from": "rds-primary",
+      "to": "rds-replica",
+      "label": "async replication",
+      "style": "dashed"
+    }
+  ]
+}

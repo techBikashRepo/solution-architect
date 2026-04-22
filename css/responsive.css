@@ -1,0 +1,355 @@
+/* ================================================================
+   RESPONSIVE — Mobile-first media queries
+================================================================ */
+
+/* ── BASE: Mobile (< 640px) ─────────────────────────────────── */
+
+/* Show hamburger, hide desktop search */
+.hamburger {
+  display: flex;
+}
+
+.header-search {
+  display: none;
+}
+
+/* Hero: single column, smaller */
+.hero {
+  grid-template-columns: 1fr;
+  padding-top: var(--sp-8);
+  padding-bottom: var(--sp-8);
+  gap: var(--sp-6);
+}
+
+.hero__stats {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+}
+
+.stat-pill {
+  min-width: 90px;
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.stat-pill__value {
+  font-size: var(--text-2xl);
+}
+
+/* Hide float animations on mobile */
+.hero__stats .stat-pill {
+  animation: none;
+}
+
+/* Content layout: single column on mobile */
+.content-layout {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+}
+
+.sidebar {
+  display: none; /* shown in drawer */
+}
+
+.toc-aside {
+  display: none;
+}
+
+.content-main {
+  grid-column: 1;
+  padding: var(--sp-5) var(--sp-4);
+}
+
+/* Subjects grid: single column */
+.subjects-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Filter bar: vertical stack */
+.filter-bar {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.filter-bar__search {
+  width: 100%;
+}
+
+.filter-bar__input {
+  width: 100%;
+}
+
+/* Shortcuts grid: single column */
+.shortcuts-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Topic footer: 3-button layout stays but smaller */
+.topic-footer {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Overview sections: single column */
+.overview-sections {
+  grid-template-columns: 1fr;
+}
+
+/* Overview stats */
+.overview-stats {
+  gap: var(--sp-3);
+}
+
+.overview-stat {
+  min-width: 80px;
+}
+
+/* Hero CTA: wrap */
+.hero__cta {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.btn--lg {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── SM: Small tablets (≥ 480px) ───────────────────────────── */
+@media (min-width: 480px) {
+  .subjects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .hero__cta {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .btn--lg {
+    width: auto;
+  }
+}
+
+/* ── MD: Tablets (≥ 768px) ──────────────────────────────────── */
+@media (min-width: 768px) {
+  /* Show desktop header search */
+  .header-search {
+    display: block;
+  }
+
+  /* Still hide hamburger (sidebar accessible via button if needed) */
+  /* Keep hamburger if sidebar is collapsed */
+
+  /* Hero: two columns */
+  .hero {
+    grid-template-columns: 1fr auto;
+    padding-top: var(--sp-12);
+    padding-bottom: var(--sp-12);
+    gap: var(--sp-8);
+  }
+
+  .hero__stats {
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .stat-pill {
+    min-width: 120px;
+    padding: var(--sp-4) var(--sp-5);
+  }
+
+  .stat-pill__value {
+    font-size: var(--text-3xl);
+  }
+
+  /* Float animations back on */
+  .hero__stats .stat-pill:nth-child(1) {
+    animation: float 4s ease-in-out infinite;
+  }
+  .hero__stats .stat-pill:nth-child(2) {
+    animation: float 4s ease-in-out 0.7s infinite;
+  }
+  .hero__stats .stat-pill:nth-child(3) {
+    animation: float 4s ease-in-out 1.4s infinite;
+  }
+
+  /* Filter bar: horizontal */
+  .filter-bar {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .filter-bar__search {
+    width: auto;
+  }
+
+  .filter-bar__input {
+    width: 160px;
+  }
+
+  /* Content layout: 2 columns (sidebar + content) */
+  .content-layout {
+    grid-template-columns: var(--sidebar-w) 1fr;
+  }
+
+  .sidebar {
+    display: flex;
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .content-main {
+    grid-column: 2;
+    padding: var(--sp-8) var(--sp-8);
+  }
+
+  /* Shortcuts grid: 2 columns */
+  .shortcuts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Overview sections: 2 columns */
+  .overview-sections {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  /* Hero title bigger */
+  .hero__title {
+    font-size: var(--text-4xl);
+  }
+}
+
+/* ── LG: Laptops (≥ 1024px) ────────────────────────────────── */
+@media (min-width: 1024px) {
+  /* Content layout: full 3 columns */
+  .content-layout {
+    grid-template-columns: var(--sidebar-w) 1fr var(--toc-w);
+  }
+
+  .toc-aside {
+    display: block;
+  }
+
+  .content-main {
+    grid-column: 2;
+    padding: var(--sp-8) var(--sp-10);
+  }
+
+  /* Subjects grid: auto 3 columns */
+  .subjects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+}
+
+/* ── XL: Large desktops (≥ 1280px) ─────────────────────────── */
+@media (min-width: 1280px) {
+  :root {
+    --sidebar-w: 288px;
+    --toc-w: 248px;
+  }
+
+  .hero__title {
+    font-size: var(--text-5xl);
+  }
+
+  .content-main {
+    padding: var(--sp-10) var(--sp-12);
+  }
+}
+
+/* ── 2XL: Ultra-wide (≥ 1536px) ────────────────────────────── */
+@media (min-width: 1536px) {
+  :root {
+    --container-xl: 1600px;
+  }
+}
+
+/* ── HIGH DPI ────────────────────────────────────────────────── */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .logo__icon {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* ── PRINT ───────────────────────────────────────────────────── */
+@media print {
+  .header,
+  .sidebar,
+  .toc-aside,
+  .topic-footer,
+  .toast-container,
+  .modal,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .content-main {
+    padding: 0;
+  }
+
+  .md-content {
+    max-width: 100%;
+  }
+
+  .main {
+    margin-top: 0;
+  }
+}
+
+/* ── TOUCH DEVICES ───────────────────────────────────────────── */
+@media (hover: none) {
+  /* Disable hover transforms on touch */
+  .subject-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn--primary:hover {
+    transform: none;
+  }
+
+  .btn--success:hover {
+    transform: none;
+  }
+}
+
+/* ── DARK MODE SPECIFIC OVERRIDES ───────────────────────────── */
+[data-theme="light"] .md-content pre {
+  border-color: #dde1f0;
+}
+
+[data-theme="light"] .md-content pre::before {
+  background: #eef0f8;
+}
+
+[data-theme="light"] .md-content code {
+  background: #eef0f8;
+  color: #5a5adc;
+  border-color: #dde1f0;
+}
+
+[data-theme="light"] .md-content blockquote {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+[data-theme="light"] .header {
+  box-shadow: 0 1px 0 var(--border);
+}
+
+[data-theme="light"] .subject-card {
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .subject-card:hover {
+  box-shadow:
+    0 8px 32px rgba(99, 102, 241, 0.15),
+    0 0 0 1px var(--primary-light);
+}

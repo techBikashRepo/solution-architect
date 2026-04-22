@@ -1,0 +1,138 @@
+{
+  "id": "iam",
+  "title": "AWS IAM",
+  "subtitle": "Identity and Access Management — who can do what to which resource",
+  "type": "hierarchy",
+  "theme": "rose",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "AWS IAM",
+      "icon": "🔐",
+      "type": "root",
+      "description": "Controls authentication (who you are) and authorization (what you can do)"
+    },
+    {
+      "id": "identities",
+      "label": "Identities (Who)",
+      "icon": "👤",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Principals",
+      "color": "#f43f5e",
+      "description": "Entities that can request AWS actions"
+    },
+    {
+      "id": "users",
+      "label": "IAM Users",
+      "icon": "🧑",
+      "type": "leaf",
+      "parent": "identities",
+      "items": [
+        "Represents a person or service",
+        "Has long-term credentials (access key)",
+        "Best practice: use roles instead",
+        "Enable MFA for console access"
+      ]
+    },
+    {
+      "id": "roles",
+      "label": "IAM Roles",
+      "icon": "🎭",
+      "type": "leaf",
+      "parent": "identities",
+      "items": [
+        "Assumed by services, users, or accounts",
+        "Short-term credentials (STS tokens)",
+        "EC2 Instance Profile = role for EC2",
+        "Lambda execution role = role for Lambda"
+      ]
+    },
+    {
+      "id": "groups",
+      "label": "IAM Groups",
+      "icon": "👥",
+      "type": "leaf",
+      "parent": "identities",
+      "items": [
+        "Collection of IAM users",
+        "Attach policies to group (not users)",
+        "Users inherit group permissions",
+        "e.g., Developers, Admins, ReadOnly"
+      ]
+    },
+    {
+      "id": "policies",
+      "label": "Policies (What)",
+      "icon": "📋",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Permissions",
+      "color": "#8b5cf6",
+      "description": "JSON documents defining allowed/denied actions"
+    },
+    {
+      "id": "managed",
+      "label": "Managed Policies",
+      "icon": "📦",
+      "type": "leaf",
+      "parent": "policies",
+      "items": [
+        "AWS Managed: AWS creates and maintains",
+        "Customer Managed: you create, reusable",
+        "Can attach to multiple identities",
+        "e.g., AmazonS3ReadOnlyAccess"
+      ]
+    },
+    {
+      "id": "inline",
+      "label": "Inline Policies",
+      "icon": "📝",
+      "type": "leaf",
+      "parent": "policies",
+      "items": [
+        "Embedded directly in identity",
+        "1:1 relationship (not reusable)",
+        "Deleted when identity is deleted",
+        "Use for unique permissions per identity"
+      ]
+    },
+    {
+      "id": "evaluation",
+      "label": "Policy Evaluation",
+      "icon": "⚙️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Logic",
+      "color": "#f59e0b",
+      "description": "How AWS evaluates allow/deny decisions"
+    },
+    {
+      "id": "deny-first",
+      "label": "Explicit Deny Wins",
+      "icon": "🚫",
+      "type": "leaf",
+      "parent": "evaluation",
+      "items": [
+        "Deny always overrides Allow",
+        "SCPs (Service Control Policies) set ceiling",
+        "Default: everything DENIED (deny-by-default)",
+        "Must explicitly Allow every action"
+      ]
+    },
+    {
+      "id": "least-privilege",
+      "label": "Least Privilege",
+      "icon": "🔒",
+      "type": "leaf",
+      "parent": "evaluation",
+      "items": [
+        "Grant only minimum required permissions",
+        "Use conditions: aws:SourceIp, aws:RequestedRegion",
+        "IAM Access Analyzer: find unused permissions",
+        "Rotate access keys every 90 days"
+      ]
+    }
+  ]
+}

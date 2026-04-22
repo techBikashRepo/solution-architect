@@ -1,0 +1,151 @@
+{
+  "id": "dynamodb",
+  "title": "Amazon DynamoDB",
+  "subtitle": "Serverless NoSQL database — single-digit millisecond at any scale",
+  "type": "hierarchy",
+  "theme": "indigo",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Amazon DynamoDB",
+      "icon": "⚡",
+      "type": "root",
+      "description": "Fully managed key-value and document database — no server management needed"
+    },
+    {
+      "id": "data-model",
+      "label": "Data Model",
+      "icon": "📋",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Core",
+      "color": "#6366f1",
+      "description": "How data is structured and accessed in DynamoDB"
+    },
+    {
+      "id": "keys",
+      "label": "Primary Keys",
+      "icon": "🔑",
+      "type": "leaf",
+      "parent": "data-model",
+      "items": [
+        "Simple: Partition Key (PK) only",
+        "Composite: PK + Sort Key (SK)",
+        "PK determines the partition (shard)",
+        "SK enables range queries within partition"
+      ]
+    },
+    {
+      "id": "access-patterns",
+      "label": "Access Patterns",
+      "icon": "🎯",
+      "type": "leaf",
+      "parent": "data-model",
+      "items": [
+        "GetItem: exact PK (O(1), < 1ms)",
+        "Query: PK + SK condition (range scan)",
+        "Scan: full table — avoid in production",
+        "Design table for access patterns upfront"
+      ]
+    },
+    {
+      "id": "indexes",
+      "label": "Secondary Indexes",
+      "icon": "🔍",
+      "type": "leaf",
+      "parent": "data-model",
+      "items": [
+        "GSI: Global Secondary Index (new PK+SK)",
+        "LSI: Local Secondary Index (same PK, new SK)",
+        "Up to 20 GSIs per table",
+        "GSI enables alternate access patterns"
+      ]
+    },
+    {
+      "id": "capacity",
+      "label": "Capacity Modes",
+      "icon": "📈",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Billing",
+      "color": "#10b981",
+      "description": "How read/write throughput is provisioned and billed"
+    },
+    {
+      "id": "on-demand",
+      "label": "On-Demand Mode",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "capacity",
+      "items": [
+        "Pay per read/write request unit",
+        "Scales to 40,000 RCU/WCU instantly",
+        "Best for: unpredictable workloads",
+        "No capacity planning required"
+      ]
+    },
+    {
+      "id": "provisioned",
+      "label": "Provisioned Mode",
+      "icon": "📅",
+      "type": "leaf",
+      "parent": "capacity",
+      "items": [
+        "Pre-specify RCU (read) & WCU (write)",
+        "30% cheaper than on-demand for steady load",
+        "Auto Scaling adjusts based on usage",
+        "Reserved Capacity: up to 77% savings"
+      ]
+    },
+    {
+      "id": "advanced",
+      "label": "Advanced Features",
+      "icon": "🌟",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Power",
+      "color": "#8b5cf6",
+      "description": "Features that make DynamoDB production-ready"
+    },
+    {
+      "id": "transactions",
+      "label": "Transactions",
+      "icon": "🔒",
+      "type": "leaf",
+      "parent": "advanced",
+      "items": [
+        "TransactWriteItems: all-or-nothing across 100 items",
+        "TransactGetItems: consistent multi-item read",
+        "Costs 2× RCU/WCU compared to regular",
+        "Use for: order creation, payment deduction"
+      ]
+    },
+    {
+      "id": "streams",
+      "label": "DynamoDB Streams",
+      "icon": "🌊",
+      "type": "leaf",
+      "parent": "advanced",
+      "items": [
+        "Ordered stream of item-level changes",
+        "24-hour retention window",
+        "Trigger Lambda on insert/update/delete",
+        "Use for: audit log, replication, search sync"
+      ]
+    },
+    {
+      "id": "dax",
+      "label": "DAX (Cache)",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "advanced",
+      "items": [
+        "In-memory cache in front of DynamoDB",
+        "Microsecond latency vs milliseconds",
+        "API-compatible — no code changes",
+        "Best for: read-heavy, hot keys"
+      ]
+    }
+  ]
+}

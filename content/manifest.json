@@ -1,0 +1,479 @@
+{
+  "subjects": [
+    {
+      "id": "system-design",
+      "title": "System Design",
+      "description": "Master scalable system architecture, distributed systems, and design patterns used in top tech companies.",
+      "icon": "🏗️",
+      "gradient": "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+      "color": "#6366f1",
+      "path": "01-System-Design",
+      "sections": [
+        {
+          "id": "fundamentals",
+          "title": "Fundamentals",
+          "icon": "📐",
+          "path": "01-Fundamentals",
+          "topics": [
+            {
+              "id": "scalability",
+              "title": "Scalability",
+              "file": "01-scalability.md",
+              "readTime": 8
+            },
+            {
+              "id": "latency-throughput",
+              "title": "Latency & Throughput",
+              "file": "02-latency-throughput.md",
+              "readTime": 6
+            },
+            {
+              "id": "cap-theorem",
+              "title": "CAP Theorem",
+              "file": "03-cap-theorem.md",
+              "readTime": 7
+            },
+            {
+              "id": "consistency-models",
+              "title": "Consistency Models",
+              "file": "04-consistency-models.md",
+              "readTime": 9
+            },
+            {
+              "id": "load-balancing",
+              "title": "Load Balancing",
+              "file": "05-load-balancing.md",
+              "readTime": 7
+            },
+            {
+              "id": "caching",
+              "title": "Caching",
+              "file": "06-caching.md",
+              "readTime": 10
+            },
+            {
+              "id": "db-basics",
+              "title": "Database Basics",
+              "file": "07-db-basics.md",
+              "readTime": 8
+            }
+          ]
+        },
+        {
+          "id": "estimation",
+          "title": "Estimation",
+          "icon": "🔢",
+          "path": "02-Estimation",
+          "topics": [
+            {
+              "id": "users-to-rps",
+              "title": "Users to RPS",
+              "file": "01-users-to-rps.md",
+              "readTime": 5
+            },
+            {
+              "id": "storage-calculation",
+              "title": "Storage Calculation",
+              "file": "02-storage-calculation.md",
+              "readTime": 5
+            },
+            {
+              "id": "read-write-ratio",
+              "title": "Read/Write Ratio",
+              "file": "03-read-write-ratio.md",
+              "readTime": 4
+            }
+          ]
+        },
+        {
+          "id": "core-components",
+          "title": "Core Components",
+          "icon": "⚙️",
+          "path": "03-Core-Components",
+          "topics": [
+            {
+              "id": "api-gateway",
+              "title": "API Gateway",
+              "file": "01-api-gateway.md",
+              "readTime": 7
+            },
+            { "id": "cdn", "title": "CDN", "file": "02-cdn.md", "readTime": 6 },
+            {
+              "id": "load-balancer",
+              "title": "Load Balancer",
+              "file": "03-load-balancer.md",
+              "readTime": 7
+            },
+            {
+              "id": "message-queue",
+              "title": "Message Queue",
+              "file": "04-message-queue.md",
+              "readTime": 8
+            },
+            {
+              "id": "rate-limiting",
+              "title": "Rate Limiting",
+              "file": "05-rate-limiting.md",
+              "readTime": 7
+            },
+            {
+              "id": "circuit-breaker",
+              "title": "Circuit Breaker",
+              "file": "06-circuit-breaker.md",
+              "readTime": 6
+            }
+          ]
+        },
+        {
+          "id": "data-layer",
+          "title": "Data Layer",
+          "icon": "🗄️",
+          "path": "04-Data-Layer",
+          "topics": [
+            {
+              "id": "indexing",
+              "title": "Indexing",
+              "file": "01-indexing.md",
+              "readTime": 7
+            },
+            {
+              "id": "sharding",
+              "title": "Sharding",
+              "file": "02-sharding.md",
+              "readTime": 8
+            },
+            {
+              "id": "replication",
+              "title": "Replication",
+              "file": "03-replication.md",
+              "readTime": 7
+            },
+            {
+              "id": "partitioning",
+              "title": "Partitioning",
+              "file": "04-partitioning.md",
+              "readTime": 6
+            }
+          ]
+        },
+        {
+          "id": "reliability",
+          "title": "Reliability & Failure",
+          "icon": "🛡️",
+          "path": "05-Reliability-and-Failure",
+          "topics": [
+            {
+              "id": "retry-mechanisms",
+              "title": "Retry Mechanisms",
+              "file": "01-retry-mechanisms.md",
+              "readTime": 6
+            },
+            {
+              "id": "idempotency",
+              "title": "Idempotency",
+              "file": "02-idempotency.md",
+              "readTime": 5
+            },
+            {
+              "id": "circuit-breaker-deep",
+              "title": "Circuit Breaker Deep",
+              "file": "03-circuit-breaker-deep.md",
+              "readTime": 8
+            },
+            {
+              "id": "dlq",
+              "title": "Dead Letter Queue",
+              "file": "04-dlq.md",
+              "readTime": 6
+            },
+            {
+              "id": "graceful-degradation",
+              "title": "Graceful Degradation",
+              "file": "05-graceful-degradation.md",
+              "readTime": 7
+            }
+          ]
+        },
+        {
+          "id": "design-patterns",
+          "title": "Design Patterns",
+          "icon": "🎨",
+          "path": "06-Design-Patterns",
+          "topics": [
+            {
+              "id": "event-driven",
+              "title": "Event-Driven Architecture",
+              "file": "01-event-driven.md",
+              "readTime": 9
+            },
+            {
+              "id": "microservices",
+              "title": "Microservices",
+              "file": "02-microservices.md",
+              "readTime": 10
+            },
+            {
+              "id": "monolith-vs-micro",
+              "title": "Monolith vs Microservices",
+              "file": "03-monolith-vs-micro.md",
+              "readTime": 8
+            }
+          ]
+        },
+        {
+          "id": "tradeoffs",
+          "title": "Trade-offs",
+          "icon": "⚖️",
+          "path": "07-Trade-offs",
+          "topics": [
+            {
+              "id": "sql-vs-nosql",
+              "title": "SQL vs NoSQL",
+              "file": "01-sql-vs-nosql.md",
+              "readTime": 8
+            },
+            {
+              "id": "cache-vs-no-cache",
+              "title": "Cache vs No-Cache",
+              "file": "02-cache-vs-no-cache.md",
+              "readTime": 6
+            },
+            {
+              "id": "sync-vs-async",
+              "title": "Sync vs Async",
+              "file": "03-sync-vs-async.md",
+              "readTime": 7
+            },
+            {
+              "id": "consistency-tradeoff",
+              "title": "Consistency Trade-offs",
+              "file": "04-consistency-tradeoff.md",
+              "readTime": 7
+            }
+          ]
+        },
+        {
+          "id": "practice-designs",
+          "title": "Must-Practice Designs",
+          "icon": "🎯",
+          "path": "08-Must-Practice-Designs",
+          "topics": [
+            {
+              "id": "url-shortener",
+              "title": "URL Shortener",
+              "file": "01-url-shortener.md",
+              "readTime": 12
+            },
+            {
+              "id": "rate-limiter-design",
+              "title": "Rate Limiter Design",
+              "file": "02-rate-limiter-design.md",
+              "readTime": 10
+            },
+            {
+              "id": "notification-system",
+              "title": "Notification System",
+              "file": "03-notification-system.md",
+              "readTime": 11
+            },
+            {
+              "id": "chat-system",
+              "title": "Chat System",
+              "file": "04-chat-system.md",
+              "readTime": 13
+            },
+            {
+              "id": "ecommerce-backend",
+              "title": "E-commerce Backend",
+              "file": "05-ecommerce-backend.md",
+              "readTime": 14
+            },
+            {
+              "id": "file-upload",
+              "title": "File Upload System",
+              "file": "06-file-upload.md",
+              "readTime": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aws-cloud",
+      "title": "AWS Cloud",
+      "description": "Deep dive into Amazon Web Services — core services, architecture patterns, high availability and cost optimization.",
+      "icon": "☁️",
+      "gradient": "linear-gradient(135deg, #f97316 0%, #ef4444 100%)",
+      "color": "#f97316",
+      "path": "02-AWS-Cloud",
+      "sections": [
+        {
+          "id": "core-services",
+          "title": "Core Services",
+          "icon": "🔧",
+          "path": "01-Core-Services",
+          "topics": [
+            {
+              "id": "ec2",
+              "title": "EC2",
+              "file": "01-ec2.md",
+              "readTime": 10
+            },
+            {
+              "id": "lambda",
+              "title": "Lambda",
+              "file": "02-lambda.md",
+              "readTime": 8
+            },
+            { "id": "s3", "title": "S3", "file": "03-s3.md", "readTime": 9 },
+            { "id": "ebs", "title": "EBS", "file": "04-ebs.md", "readTime": 6 },
+            { "id": "rds", "title": "RDS", "file": "05-rds.md", "readTime": 8 },
+            {
+              "id": "dynamodb",
+              "title": "DynamoDB",
+              "file": "06-dynamodb.md",
+              "readTime": 10
+            },
+            {
+              "id": "vpc",
+              "title": "VPC",
+              "file": "07-vpc.md",
+              "readTime": 10
+            },
+            { "id": "alb", "title": "ALB", "file": "08-alb.md", "readTime": 7 },
+            { "id": "sqs", "title": "SQS", "file": "09-sqs.md", "readTime": 8 },
+            { "id": "sns", "title": "SNS", "file": "10-sns.md", "readTime": 7 },
+            { "id": "iam", "title": "IAM", "file": "11-iam.md", "readTime": 9 },
+            {
+              "id": "cloudwatch",
+              "title": "CloudWatch",
+              "file": "12-cloudwatch.md",
+              "readTime": 7
+            }
+          ]
+        },
+        {
+          "id": "architecture-mapping",
+          "title": "Architecture Mapping",
+          "icon": "🗺️",
+          "path": "02-Architecture-Mapping",
+          "topics": [
+            {
+              "id": "apigw-lambda-dynamo",
+              "title": "API GW + Lambda + DynamoDB",
+              "file": "01-apigw-lambda-dynamo.md",
+              "readTime": 10
+            },
+            {
+              "id": "alb-ec2-rds",
+              "title": "ALB + EC2 + RDS",
+              "file": "02-alb-ec2-rds.md",
+              "readTime": 10
+            },
+            {
+              "id": "s3-cloudfront",
+              "title": "S3 + CloudFront",
+              "file": "03-s3-cloudfront.md",
+              "readTime": 8
+            }
+          ]
+        },
+        {
+          "id": "high-availability",
+          "title": "High Availability",
+          "icon": "🔄",
+          "path": "03-High-Availability",
+          "topics": [
+            {
+              "id": "multi-az",
+              "title": "Multi-AZ",
+              "file": "01-multi-az.md",
+              "readTime": 7
+            },
+            {
+              "id": "auto-scaling",
+              "title": "Auto Scaling",
+              "file": "02-auto-scaling.md",
+              "readTime": 8
+            }
+          ]
+        },
+        {
+          "id": "cost-awareness",
+          "title": "Cost Awareness",
+          "icon": "💰",
+          "path": "04-Cost-Awareness",
+          "topics": [
+            {
+              "id": "lambda-vs-ec2-cost",
+              "title": "Lambda vs EC2 Cost",
+              "file": "01-lambda-vs-ec2-cost.md",
+              "readTime": 7
+            },
+            {
+              "id": "s3-cheap-storage",
+              "title": "S3 Cheap Storage",
+              "file": "02-s3-cheap-storage.md",
+              "readTime": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa",
+      "title": "DSA",
+      "description": "Essential Data Structures and Algorithms for technical interviews at FAANG and top product companies.",
+      "icon": "🧮",
+      "gradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      "color": "#10b981",
+      "path": "03-DSA",
+      "sections": [
+        {
+          "id": "core-topics",
+          "title": "Core Topics",
+          "icon": "💡",
+          "path": "01-Core-Topics",
+          "topics": [
+            {
+              "id": "arrays",
+              "title": "Arrays",
+              "file": "01-arrays.md",
+              "readTime": 10
+            },
+            {
+              "id": "strings",
+              "title": "Strings",
+              "file": "02-strings.md",
+              "readTime": 8
+            },
+            {
+              "id": "hashmap",
+              "title": "HashMap",
+              "file": "03-hashmap.md",
+              "readTime": 9
+            },
+            {
+              "id": "sliding-window",
+              "title": "Sliding Window",
+              "file": "04-sliding-window.md",
+              "readTime": 10
+            },
+            {
+              "id": "basic-recursion",
+              "title": "Basic Recursion",
+              "file": "05-basic-recursion.md",
+              "readTime": 11
+            },
+            {
+              "id": "sorting",
+              "title": "Sorting",
+              "file": "06-sorting.md",
+              "readTime": 9
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

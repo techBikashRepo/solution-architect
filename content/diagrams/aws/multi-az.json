@@ -1,0 +1,156 @@
+{
+  "id": "multi-az",
+  "title": "Multi-AZ & High Availability",
+  "subtitle": "Designing AWS systems for 99.99% availability across Availability Zones",
+  "type": "architecture",
+  "theme": "cyan",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "internet",
+      "label": "Internet / Users",
+      "icon": "🌍",
+      "type": "start",
+      "description": "Global users accessing the application"
+    },
+    {
+      "id": "route53",
+      "label": "Route 53 (DNS)",
+      "icon": "🗺️",
+      "type": "process",
+      "badge": "Global",
+      "color": "#8b5cf6",
+      "description": "Global DNS with health checks and routing policies",
+      "items": [
+        "Failover routing: primary/secondary",
+        "Latency routing: route to nearest region",
+        "Health check every 10-30 seconds",
+        "Alias records for AWS resources"
+      ]
+    },
+    {
+      "id": "alb",
+      "label": "Application Load Balancer",
+      "icon": "⚖️",
+      "type": "process",
+      "badge": "Multi-AZ",
+      "color": "#06b6d4",
+      "description": "ALB spans multiple AZs and routes to healthy instances only",
+      "items": [
+        "Deployed across all AZs in region",
+        "Routes only to healthy EC2s",
+        "Cross-zone load balancing (default ON)",
+        "SSL termination at ALB"
+      ]
+    },
+    {
+      "id": "az1",
+      "label": "Availability Zone 1a",
+      "icon": "🏢",
+      "type": "process",
+      "badge": "AZ 1",
+      "color": "#10b981",
+      "description": "Independent data center with own power, cooling, and networking",
+      "items": [
+        "EC2 instances (app servers)",
+        "RDS Primary (writes)",
+        "ElastiCache Primary",
+        "Independent failure domain"
+      ]
+    },
+    {
+      "id": "az2",
+      "label": "Availability Zone 1b",
+      "icon": "🏢",
+      "type": "process",
+      "badge": "AZ 2",
+      "color": "#10b981",
+      "description": "Second independent data center — mirrors AZ 1",
+      "items": [
+        "EC2 instances (app servers)",
+        "RDS Standby (sync replica)",
+        "ElastiCache Replica",
+        "Automatic failover target"
+      ]
+    },
+    {
+      "id": "az3",
+      "label": "Availability Zone 1c",
+      "icon": "🏢",
+      "type": "process",
+      "badge": "AZ 3",
+      "color": "#10b981",
+      "description": "Third AZ — Aurora uses all 3 for 6-copy replication",
+      "items": [
+        "EC2 instances (app servers)",
+        "Aurora cluster member",
+        "Read Replica (optional)",
+        "Further isolation from AZ1/AZ2"
+      ]
+    },
+    {
+      "id": "failover",
+      "label": "Failover Behavior",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Auto",
+      "color": "#f59e0b",
+      "description": "What happens when an AZ or service fails",
+      "items": [
+        "ALB: stops routing to unhealthy targets",
+        "RDS: promotes standby in 1-2 minutes",
+        "ASG: launches replacement in healthy AZ",
+        "Total: < 2-3 minute recovery time"
+      ]
+    },
+    {
+      "id": "availability-calc",
+      "label": "Availability Math",
+      "icon": "🧮",
+      "type": "process",
+      "badge": "SLA",
+      "color": "#f43f5e",
+      "description": "Calculate composite availability from component SLAs",
+      "items": [
+        "1 AZ (99.9%) → 8.76 hrs/yr downtime",
+        "2 AZs: 1 - (0.001)² = 99.9999%",
+        "3 AZs: 1 - (0.001)³ ≈ 99.9999999%",
+        "Plus: use Circuit Breakers, retries, caching"
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "internet", "to": "route53", "style": "solid", "animated": true },
+    { "from": "route53", "to": "alb", "style": "solid", "animated": true },
+    {
+      "from": "alb",
+      "to": "az1",
+      "style": "solid",
+      "animated": true,
+      "label": "healthy"
+    },
+    {
+      "from": "alb",
+      "to": "az2",
+      "style": "solid",
+      "animated": true,
+      "label": "healthy"
+    },
+    {
+      "from": "alb",
+      "to": "az3",
+      "style": "solid",
+      "animated": true,
+      "label": "healthy"
+    },
+    { "from": "az1", "to": "az2", "style": "dashed", "label": "sync replica" },
+    { "from": "az1", "to": "az3", "style": "dashed", "label": "Aurora copy" },
+    {
+      "from": "failover",
+      "to": "alb",
+      "style": "dashed",
+      "label": "health check"
+    },
+    { "from": "availability-calc", "to": "failover", "style": "dashed" }
+  ]
+}

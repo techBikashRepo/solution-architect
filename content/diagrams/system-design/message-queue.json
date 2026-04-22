@@ -1,0 +1,142 @@
+{
+  "id": "message-queue",
+  "title": "Message Queues",
+  "subtitle": "Async decoupling between producers and consumers with guaranteed delivery",
+  "type": "architecture",
+  "theme": "rose",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "producers",
+      "label": "Producers",
+      "icon": "📤",
+      "type": "start",
+      "description": "Services that publish messages: API servers, microservices, IoT devices"
+    },
+    {
+      "id": "queue",
+      "label": "Message Queue",
+      "icon": "📨",
+      "type": "process",
+      "badge": "Buffer",
+      "color": "#f43f5e",
+      "description": "Durable buffer that stores messages until consumers process them",
+      "items": [
+        "Decouples producer speed from consumer speed",
+        "Guarantees at-least-once delivery",
+        "Persists messages across consumer restarts",
+        "Acts as traffic smoother under burst load"
+      ]
+    },
+    {
+      "id": "queue-types",
+      "label": "Queue Patterns",
+      "icon": "🔀",
+      "type": "process",
+      "badge": "Models",
+      "color": "#8b5cf6",
+      "description": "Different messaging delivery models",
+      "items": [
+        "Point-to-Point: 1 producer → 1 consumer (SQS)",
+        "Pub/Sub: 1 producer → N consumers (SNS, Kafka)",
+        "FIFO: strict ordered delivery (SQS FIFO)",
+        "Dead Letter Queue: failed message storage"
+      ]
+    },
+    {
+      "id": "consumers",
+      "label": "Consumers",
+      "icon": "📥",
+      "type": "process",
+      "badge": "Workers",
+      "color": "#10b981",
+      "description": "Services that process messages at their own pace",
+      "items": [
+        "Pull model: consumer polls the queue",
+        "Push model: queue triggers consumer (Lambda)",
+        "Scale consumers independently from producers",
+        "Visibility timeout: message hidden during processing"
+      ]
+    },
+    {
+      "id": "dlq",
+      "label": "Dead Letter Queue",
+      "icon": "💀",
+      "type": "process",
+      "badge": "Safety Net",
+      "color": "#f97316",
+      "description": "Captures messages that fail processing after max retries",
+      "items": [
+        "After N failures → message moved to DLQ",
+        "Alert + investigate DLQ messages",
+        "Replay from DLQ after bug fix",
+        "Essential for production reliability"
+      ]
+    },
+    {
+      "id": "ordering",
+      "label": "Ordering & Idempotency",
+      "icon": "🔢",
+      "type": "process",
+      "badge": "Guarantees",
+      "color": "#06b6d4",
+      "description": "How to handle message ordering and duplicate delivery",
+      "items": [
+        "At-most-once: fire-and-forget (may lose)",
+        "At-least-once: may deliver duplicates → idempotent consumers",
+        "Exactly-once: Kafka transactions, SQS FIFO + dedup ID",
+        "Idempotency key: same msg = same result"
+      ]
+    },
+    {
+      "id": "aws-options",
+      "label": "AWS Services",
+      "icon": "☁️",
+      "type": "process",
+      "badge": "AWS",
+      "color": "#f59e0b",
+      "description": "Managed queue and streaming services on AWS",
+      "items": [
+        "SQS Standard: high throughput, best-effort order",
+        "SQS FIFO: 3000 msg/s, strict ordering",
+        "SNS: fan-out pub/sub to multiple SQS",
+        "Kafka (MSK): streaming, 1M+ msg/s, replay"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "producers",
+      "to": "queue",
+      "style": "solid",
+      "animated": true,
+      "label": "publish message"
+    },
+    { "from": "queue", "to": "queue-types", "style": "solid" },
+    {
+      "from": "queue",
+      "to": "consumers",
+      "style": "solid",
+      "animated": true,
+      "label": "deliver"
+    },
+    {
+      "from": "consumers",
+      "to": "dlq",
+      "style": "dashed",
+      "label": "on failure"
+    },
+    {
+      "from": "queue",
+      "to": "ordering",
+      "style": "dashed",
+      "label": "guarantees"
+    },
+    {
+      "from": "queue",
+      "to": "aws-options",
+      "style": "dashed",
+      "label": "implementations"
+    }
+  ]
+}

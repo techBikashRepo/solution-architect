@@ -1,0 +1,151 @@
+{
+  "id": "lambda",
+  "title": "AWS Lambda",
+  "subtitle": "Serverless compute — run code without managing servers, pay per 100ms",
+  "type": "hierarchy",
+  "theme": "rose",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "AWS Lambda",
+      "icon": "λ",
+      "type": "root",
+      "description": "Run any code on-demand, scales to 0, charges only for execution time"
+    },
+    {
+      "id": "triggers",
+      "label": "Trigger Sources",
+      "icon": "⚡",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Invoke",
+      "color": "#f43f5e",
+      "description": "120+ AWS services can trigger a Lambda function"
+    },
+    {
+      "id": "sync-triggers",
+      "label": "Synchronous Triggers",
+      "icon": "📞",
+      "type": "leaf",
+      "parent": "triggers",
+      "items": [
+        "API Gateway: REST/HTTP APIs",
+        "ALB: route traffic to Lambda",
+        "Cognito: custom auth triggers",
+        "Caller waits for function result"
+      ]
+    },
+    {
+      "id": "async-triggers",
+      "label": "Async Triggers",
+      "icon": "📨",
+      "type": "leaf",
+      "parent": "triggers",
+      "items": [
+        "S3: object created/deleted events",
+        "SNS: notification fan-out",
+        "EventBridge: scheduled (cron) or rule-based",
+        "Lambda retries 2x on failure"
+      ]
+    },
+    {
+      "id": "stream-triggers",
+      "label": "Stream Triggers",
+      "icon": "🌊",
+      "type": "leaf",
+      "parent": "triggers",
+      "items": [
+        "SQS: event source mapping polls queue",
+        "Kinesis: process stream shards",
+        "DynamoDB Streams: react to table changes",
+        "Batch size: 1–10,000 records"
+      ]
+    },
+    {
+      "id": "execution",
+      "label": "Execution Model",
+      "icon": "🔄",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Runtime",
+      "color": "#8b5cf6",
+      "description": "How Lambda runs and scales your code"
+    },
+    {
+      "id": "cold-start",
+      "label": "Cold Start",
+      "icon": "🥶",
+      "type": "leaf",
+      "parent": "execution",
+      "items": [
+        "First invocation: download + init container",
+        "100ms–500ms for Node/Python",
+        "1–3s for Java (JVM startup)",
+        "Fix: Provisioned Concurrency (keeps warm)"
+      ]
+    },
+    {
+      "id": "concurrency",
+      "label": "Concurrency",
+      "icon": "📈",
+      "type": "leaf",
+      "parent": "execution",
+      "items": [
+        "1 request = 1 Lambda instance",
+        "Default: 1000 concurrent (soft limit)",
+        "Reserved concurrency: cap a function",
+        "Provisioned: pre-warmed instances"
+      ]
+    },
+    {
+      "id": "limits",
+      "label": "Limits & Config",
+      "icon": "⚙️",
+      "type": "leaf",
+      "parent": "execution",
+      "items": [
+        "Max timeout: 15 minutes",
+        "Memory: 128MB – 10GB",
+        "vCPU scales with memory (1792MB = 1 vCPU)",
+        "Ephemeral storage: 512MB – 10GB /tmp"
+      ]
+    },
+    {
+      "id": "patterns",
+      "label": "Design Patterns",
+      "icon": "🧩",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Architecture",
+      "color": "#f97316",
+      "description": "Common serverless patterns with Lambda"
+    },
+    {
+      "id": "fan-out",
+      "label": "Fan-Out Pattern",
+      "icon": "📡",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Lambda → SNS → N SQS → N Lambdas",
+        "Parallel processing of segments",
+        "Map-reduce on S3 objects",
+        "Process 1TB in minutes"
+      ]
+    },
+    {
+      "id": "saga-lambda",
+      "label": "Step Functions Saga",
+      "icon": "🔄",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "AWS Step Functions orchestrates Lambdas",
+        "Visual workflow with retries and catches",
+        "Long-running sagas (up to 1 year)",
+        "Compensating transactions on failure"
+      ]
+    }
+  ]
+}

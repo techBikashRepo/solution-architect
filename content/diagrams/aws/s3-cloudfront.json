@@ -1,0 +1,154 @@
+{
+  "id": "s3-cloudfront",
+  "title": "S3 + CloudFront CDN",
+  "subtitle": "Static site / media delivery with global edge caching",
+  "type": "architecture",
+  "theme": "amber",
+  "layout": "left-right",
+  "nodes": [
+    {
+      "id": "user-us",
+      "label": "User (US)",
+      "icon": "🇺🇸",
+      "type": "start"
+    },
+    {
+      "id": "user-eu",
+      "label": "User (EU)",
+      "icon": "🇪🇺",
+      "type": "start"
+    },
+    {
+      "id": "user-asia",
+      "label": "User (Asia)",
+      "icon": "🌏",
+      "type": "start"
+    },
+    {
+      "id": "edge-us",
+      "label": "Edge PoP (US)",
+      "icon": "📡",
+      "type": "process",
+      "color": "#f97316",
+      "description": "CloudFront edge in US (Virginia, Oregon, etc.)"
+    },
+    {
+      "id": "edge-eu",
+      "label": "Edge PoP (EU)",
+      "icon": "📡",
+      "type": "process",
+      "color": "#f97316",
+      "description": "CloudFront edge in Europe (Frankfurt, London, etc.)"
+    },
+    {
+      "id": "edge-asia",
+      "label": "Edge PoP (Asia)",
+      "icon": "📡",
+      "type": "process",
+      "color": "#f97316",
+      "description": "CloudFront edge in Asia (Singapore, Tokyo, etc.)"
+    },
+    {
+      "id": "cloudfront",
+      "label": "CloudFront Distribution",
+      "icon": "🌐",
+      "type": "process",
+      "badge": "CDN",
+      "color": "#f97316",
+      "description": "Global CDN with 400+ edge locations",
+      "items": [
+        "Cache-Control / TTL",
+        "Signed URLs / Cookies for private content",
+        "Lambda@Edge for request customization"
+      ]
+    },
+    {
+      "id": "waf",
+      "label": "AWS WAF",
+      "icon": "🛡️",
+      "type": "process",
+      "badge": "Security",
+      "color": "#f43f5e",
+      "description": "Protects at edge before origin is hit"
+    },
+    {
+      "id": "s3",
+      "label": "S3 Origin Bucket",
+      "icon": "🪣",
+      "type": "process",
+      "badge": "Origin",
+      "color": "#10b981",
+      "description": "Source of truth for all static content",
+      "items": [
+        "Private bucket (no public access)",
+        "Origin Access Control (OAC)",
+        "Versioning enabled",
+        "Cross-region replication optional"
+      ]
+    },
+    {
+      "id": "s3-logs",
+      "label": "S3 Access Logs",
+      "icon": "📋",
+      "type": "process",
+      "color": "#6366f1",
+      "description": "CloudFront access logs stored here"
+    },
+    {
+      "id": "athena",
+      "label": "Athena",
+      "icon": "🔍",
+      "type": "process",
+      "color": "#8b5cf6",
+      "description": "Query S3 logs with SQL",
+      "items": [
+        "Analyze traffic patterns",
+        "Top requested files",
+        "Error rate analysis"
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "user-us", "to": "edge-us", "style": "solid", "animated": true },
+    { "from": "user-eu", "to": "edge-eu", "style": "solid", "animated": true },
+    {
+      "from": "user-asia",
+      "to": "edge-asia",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "edge-us",
+      "to": "cloudfront",
+      "label": "cache miss",
+      "style": "dashed"
+    },
+    {
+      "from": "edge-eu",
+      "to": "cloudfront",
+      "label": "cache miss",
+      "style": "dashed"
+    },
+    {
+      "from": "edge-asia",
+      "to": "cloudfront",
+      "label": "cache miss",
+      "style": "dashed"
+    },
+    { "from": "cloudfront", "to": "waf", "style": "solid" },
+    {
+      "from": "waf",
+      "to": "s3",
+      "label": "origin fetch",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "cloudfront",
+      "to": "s3-logs",
+      "label": "access logs",
+      "style": "dashed"
+    },
+    { "from": "s3-logs", "to": "athena", "style": "dashed" }
+  ]
+}

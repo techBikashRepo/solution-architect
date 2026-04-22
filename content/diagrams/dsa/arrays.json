@@ -1,0 +1,151 @@
+{
+  "id": "arrays",
+  "title": "Arrays",
+  "subtitle": "Foundation of DSA — indexed collections with O(1) random access",
+  "type": "hierarchy",
+  "theme": "indigo",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Arrays",
+      "icon": "📊",
+      "type": "root",
+      "description": "Contiguous memory blocks with O(1) indexed access — the most used data structure in interviews"
+    },
+    {
+      "id": "complexity",
+      "label": "Time Complexity",
+      "icon": "⏱️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Big-O",
+      "color": "#6366f1",
+      "description": "Know these cold for every interview"
+    },
+    {
+      "id": "access",
+      "label": "Access & Search",
+      "icon": "🔍",
+      "type": "leaf",
+      "parent": "complexity",
+      "items": [
+        "Access by index: O(1) — direct memory offset",
+        "Linear search: O(n) — unsorted array",
+        "Binary search: O(log n) — SORTED array only",
+        "Sentinel search: O(n) — no bounds check trick"
+      ]
+    },
+    {
+      "id": "modify",
+      "label": "Modify",
+      "icon": "✏️",
+      "type": "leaf",
+      "parent": "complexity",
+      "items": [
+        "Insert at end: O(1) amortized (dynamic array)",
+        "Insert at index: O(n) — shift elements right",
+        "Delete at end: O(1)",
+        "Delete at index: O(n) — shift elements left"
+      ]
+    },
+    {
+      "id": "patterns",
+      "label": "Core Patterns",
+      "icon": "🧩",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Must Know",
+      "color": "#10b981",
+      "description": "Top patterns that solve 80% of array problems"
+    },
+    {
+      "id": "two-pointers",
+      "label": "Two Pointers",
+      "icon": "👉",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Left + right pointers moving inward",
+        "Use on: sorted arrays, palindromes, sums",
+        "Example: Two Sum II, 3Sum, Container with Water",
+        "Avoids O(n²) → reduces to O(n)"
+      ]
+    },
+    {
+      "id": "prefix-sum",
+      "label": "Prefix Sum",
+      "icon": "∑",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "prefix[i] = sum of arr[0..i]",
+        "Range sum: prefix[r] - prefix[l-1] in O(1)",
+        "Use for: subarray sum, range queries",
+        "Example: Subarray Sum Equals K, Product Except Self"
+      ]
+    },
+    {
+      "id": "sliding-w",
+      "label": "Sliding Window",
+      "icon": "🪟",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Fixed or variable-size window over array",
+        "Avoids recomputing overlap: O(n) not O(n²)",
+        "Use for: max subarray, longest substring",
+        "Example: Maximum Average Subarray, Minimum Window"
+      ]
+    },
+    {
+      "id": "kadane",
+      "label": "Kadane's Algorithm",
+      "icon": "🏆",
+      "type": "leaf",
+      "parent": "patterns",
+      "items": [
+        "Max subarray sum in O(n)",
+        "Track: maxEndingHere, maxSoFar",
+        "Key: reset if running sum goes negative",
+        "Example: Maximum Subarray (LeetCode #53)"
+      ]
+    },
+    {
+      "id": "tricks",
+      "label": "Interview Tricks",
+      "icon": "💡",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Pro Tips",
+      "color": "#f59e0b",
+      "description": "Common techniques to spot and apply instantly"
+    },
+    {
+      "id": "sorting-trick",
+      "label": "Sort First",
+      "icon": "📋",
+      "type": "leaf",
+      "parent": "tricks",
+      "items": [
+        "Sorting enables binary search & two-pointer",
+        "O(n log n) sort often beats O(n²) brute force",
+        "Be explicit: 'I'll sort, which changes input order'",
+        "Merge Sort / Quick Sort for custom objects"
+      ]
+    },
+    {
+      "id": "hashmap-trick",
+      "label": "HashMap Lookup",
+      "icon": "#",
+      "type": "leaf",
+      "parent": "tricks",
+      "items": [
+        "O(1) lookup replaces O(n) linear scan",
+        "Two Sum classic: complement = target - num",
+        "Count frequencies: map[num]++",
+        "Track seen elements for cycle detection"
+      ]
+    }
+  ]
+}

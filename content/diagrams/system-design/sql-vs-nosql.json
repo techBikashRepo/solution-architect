@@ -1,0 +1,172 @@
+{
+  "id": "sql-vs-nosql",
+  "title": "SQL vs NoSQL",
+  "subtitle": "Choosing the right database for your workload",
+  "type": "comparison",
+  "theme": "emerald",
+  "layout": "side-by-side",
+  "nodes": [
+    {
+      "id": "sql",
+      "label": "SQL (Relational)",
+      "icon": "🏛️",
+      "type": "header-left",
+      "color": "#3b82f6",
+      "description": "Structured data with strong ACID guarantees"
+    },
+    {
+      "id": "nosql",
+      "label": "NoSQL",
+      "icon": "⚡",
+      "type": "header-right",
+      "color": "#10b981",
+      "description": "Flexible schema, optimized for scale and speed"
+    },
+    {
+      "id": "sql-schema",
+      "label": "Schema",
+      "icon": "📋",
+      "type": "row-left",
+      "parent": "sql",
+      "items": [
+        "Fixed schema (DDL)",
+        "Tables, rows, columns",
+        "Schema changes are migrations"
+      ]
+    },
+    {
+      "id": "nosql-schema",
+      "label": "Schema",
+      "icon": "📋",
+      "type": "row-right",
+      "parent": "nosql",
+      "items": [
+        "Schema-flexible / schemaless",
+        "Documents, key-value, graph, column",
+        "Evolve without migration"
+      ]
+    },
+    {
+      "id": "sql-consistency",
+      "label": "Consistency",
+      "icon": "🔒",
+      "type": "row-left",
+      "parent": "sql",
+      "items": [
+        "ACID transactions",
+        "Strong consistency default",
+        "Foreign keys & constraints"
+      ]
+    },
+    {
+      "id": "nosql-consistency",
+      "label": "Consistency",
+      "icon": "🔒",
+      "type": "row-right",
+      "parent": "nosql",
+      "items": [
+        "Eventual consistency (default)",
+        "Tunable (DynamoDB strongly consistent reads)",
+        "BASE model"
+      ]
+    },
+    {
+      "id": "sql-scale",
+      "label": "Scaling",
+      "icon": "📈",
+      "type": "row-left",
+      "parent": "sql",
+      "items": [
+        "Vertical scale primary",
+        "Read replicas for reads",
+        "Sharding complex"
+      ]
+    },
+    {
+      "id": "nosql-scale",
+      "label": "Scaling",
+      "icon": "📈",
+      "type": "row-right",
+      "parent": "nosql",
+      "items": [
+        "Horizontal scale native",
+        "Auto-sharding built-in",
+        "Multi-region replication easy"
+      ]
+    },
+    {
+      "id": "sql-query",
+      "label": "Query Language",
+      "icon": "🔍",
+      "type": "row-left",
+      "parent": "sql",
+      "items": [
+        "Rich SQL (JOINs, GROUP BY)",
+        "Complex queries across tables",
+        "Indexes, views, stored procs"
+      ]
+    },
+    {
+      "id": "nosql-query",
+      "label": "Query Language",
+      "icon": "🔍",
+      "type": "row-right",
+      "parent": "nosql",
+      "items": [
+        "Limited query (by design)",
+        "No JOINs — denormalize data",
+        "Query by partition key (DynamoDB)"
+      ]
+    },
+    {
+      "id": "sql-examples",
+      "label": "Examples",
+      "icon": "💡",
+      "type": "footer-left",
+      "parent": "sql",
+      "color": "#3b82f6",
+      "items": ["PostgreSQL", "MySQL", "Amazon RDS", "Aurora", "SQLite"]
+    },
+    {
+      "id": "nosql-examples",
+      "label": "Examples",
+      "icon": "💡",
+      "type": "footer-right",
+      "parent": "nosql",
+      "color": "#10b981",
+      "items": [
+        "DynamoDB (key-value/doc)",
+        "MongoDB (document)",
+        "Cassandra (wide-column)",
+        "Redis (key-value)",
+        "Neo4j (graph)"
+      ]
+    },
+    {
+      "id": "sql-use",
+      "label": "Use When",
+      "icon": "✅",
+      "type": "row-left",
+      "parent": "sql",
+      "items": [
+        "Financial data: payments, ledgers, orders",
+        "Complex reporting with JOINs",
+        "Strict data integrity required",
+        "Team knows SQL well"
+      ]
+    },
+    {
+      "id": "nosql-use",
+      "label": "Use When",
+      "icon": "✅",
+      "type": "row-right",
+      "parent": "nosql",
+      "items": [
+        "Massive scale: billions of rows",
+        "Unstructured / variable schema data",
+        "High-speed writes (IoT, clickstream)",
+        "Global multi-region access (DynamoDB Global Tables)"
+      ]
+    }
+  ]
+}

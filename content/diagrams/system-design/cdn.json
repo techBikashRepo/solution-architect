@@ -1,0 +1,181 @@
+{
+  "id": "cdn",
+  "title": "Content Delivery Network (CDN)",
+  "subtitle": "Edge caching to serve content from the nearest location to the user",
+  "type": "architecture",
+  "theme": "indigo",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "user",
+      "label": "End User",
+      "icon": "👤",
+      "type": "start",
+      "description": "User in Tokyo, London, São Paulo, or New York"
+    },
+    {
+      "id": "edge",
+      "label": "CDN Edge Node (PoP)",
+      "icon": "🌐",
+      "type": "process",
+      "badge": "Nearest",
+      "color": "#6366f1",
+      "description": "Point of Presence — server located close to the user (< 50ms away)",
+      "items": [
+        "200+ edge locations globally (CloudFront)",
+        "Caches static: images, JS, CSS, fonts",
+        "Caches dynamic: API responses with TTL",
+        "Serves 95%+ of traffic without origin hit"
+      ]
+    },
+    {
+      "id": "cache-check",
+      "label": "Cache Hit?",
+      "icon": "❓",
+      "type": "decision",
+      "description": "Is the requested content in the edge cache?"
+    },
+    {
+      "id": "cache-hit",
+      "label": "Cache HIT",
+      "icon": "✅",
+      "type": "process",
+      "badge": "Fast",
+      "color": "#10b981",
+      "description": "Served directly from edge — no origin needed",
+      "items": [
+        "~5-15ms response time",
+        "Zero origin bandwidth cost",
+        "No backend processing load"
+      ]
+    },
+    {
+      "id": "cache-miss",
+      "label": "Cache MISS",
+      "icon": "⬇️",
+      "type": "process",
+      "badge": "Fetch",
+      "color": "#f59e0b",
+      "description": "Edge must fetch from origin, then cache the result",
+      "items": [
+        "First request pays full latency",
+        "Origin response cached per Cache-Control",
+        "Subsequent requests → cache hit"
+      ]
+    },
+    {
+      "id": "origin",
+      "label": "Origin Server",
+      "icon": "🏭",
+      "type": "process",
+      "badge": "Source of Truth",
+      "color": "#8b5cf6",
+      "description": "Your actual backend — S3, EC2, or any server",
+      "items": [
+        "AWS S3 for static websites",
+        "ALB + EC2 for dynamic content",
+        "Lambda for API responses",
+        "Only handles cache-miss requests"
+      ]
+    },
+    {
+      "id": "cache-headers",
+      "label": "Cache-Control Headers",
+      "icon": "⚙️",
+      "type": "process",
+      "badge": "Config",
+      "color": "#06b6d4",
+      "description": "HTTP headers that govern how CDN caches content",
+      "items": [
+        "max-age=86400 → cache for 24 hours",
+        "s-maxage → CDN-specific TTL override",
+        "no-cache → always validate with origin",
+        "immutable → never revalidate (static assets)"
+      ]
+    },
+    {
+      "id": "invalidation",
+      "label": "Cache Invalidation",
+      "icon": "🗑️",
+      "type": "process",
+      "badge": "Update",
+      "color": "#f43f5e",
+      "description": "Purge stale content from edge nodes on deploy",
+      "items": [
+        "Versioned filenames: app.v2.js (best practice)",
+        "CloudFront: CreateInvalidation API call",
+        "Cache tag invalidation (Fastly, Cloudflare)",
+        "Time-based TTL expiry (automatic)"
+      ]
+    },
+    {
+      "id": "security",
+      "label": "CDN Security",
+      "icon": "🛡️",
+      "type": "process",
+      "badge": "Protection",
+      "color": "#f43f5e",
+      "description": "CDN provides a security layer in front of origin",
+      "items": [
+        "WAF — block SQLi, XSS at edge",
+        "DDoS absorption — absorbs volumetric attacks",
+        "TLS termination — HTTPS at edge",
+        "Signed URLs — restrict access to content"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "user",
+      "to": "edge",
+      "style": "solid",
+      "animated": true,
+      "label": "request"
+    },
+    { "from": "edge", "to": "cache-check", "style": "solid" },
+    {
+      "from": "cache-check",
+      "to": "cache-hit",
+      "label": "yes",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "cache-check",
+      "to": "cache-miss",
+      "label": "no",
+      "style": "dashed"
+    },
+    {
+      "from": "cache-miss",
+      "to": "origin",
+      "style": "solid",
+      "animated": true,
+      "label": "fetch"
+    },
+    {
+      "from": "origin",
+      "to": "edge",
+      "style": "dashed",
+      "label": "response + cache"
+    },
+    {
+      "from": "cache-headers",
+      "to": "edge",
+      "style": "dashed",
+      "label": "TTL rules"
+    },
+    {
+      "from": "invalidation",
+      "to": "edge",
+      "style": "dashed",
+      "label": "purge"
+    },
+    {
+      "from": "security",
+      "to": "edge",
+      "style": "dashed",
+      "label": "WAF + TLS"
+    }
+  ]
+}

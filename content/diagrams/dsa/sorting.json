@@ -1,0 +1,197 @@
+{
+  "id": "sorting",
+  "title": "Sorting Algorithms",
+  "subtitle": "Complexity, strategies, and when to use each",
+  "type": "hierarchy",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Sorting Algorithms",
+      "icon": "🔢",
+      "type": "root",
+      "description": "Arrange data in a defined order — a fundamental CS building block"
+    },
+    {
+      "id": "comparison",
+      "label": "Comparison-Based",
+      "icon": "⚖️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "O(n log n) min",
+      "color": "#10b981",
+      "description": "Sort by comparing pairs of elements"
+    },
+    {
+      "id": "merge-sort",
+      "label": "Merge Sort",
+      "icon": "🔀",
+      "type": "leaf",
+      "parent": "comparison",
+      "items": [
+        "O(n log n) always",
+        "Stable sort",
+        "O(n) extra space",
+        "Best for linked lists"
+      ]
+    },
+    {
+      "id": "quick-sort",
+      "label": "Quick Sort",
+      "icon": "⚡",
+      "type": "leaf",
+      "parent": "comparison",
+      "items": [
+        "O(n log n) avg, O(n²) worst",
+        "In-place (O(log n) stack)",
+        "Fastest in practice",
+        "Unstable"
+      ]
+    },
+    {
+      "id": "heap-sort",
+      "label": "Heap Sort",
+      "icon": "🏔️",
+      "type": "leaf",
+      "parent": "comparison",
+      "items": [
+        "O(n log n) always",
+        "In-place O(1) extra",
+        "Unstable",
+        "Not cache-friendly"
+      ]
+    },
+    {
+      "id": "simple",
+      "label": "Simple Sorts",
+      "icon": "🐌",
+      "type": "branch",
+      "parent": "root",
+      "badge": "O(n²)",
+      "color": "#f59e0b",
+      "description": "Easy to implement, slow on large inputs"
+    },
+    {
+      "id": "bubble",
+      "label": "Bubble Sort",
+      "icon": "🫧",
+      "type": "leaf",
+      "parent": "simple",
+      "items": [
+        "O(n²) avg/worst",
+        "O(n) best (optimized)",
+        "Stable",
+        "Only for nearly-sorted small arrays"
+      ]
+    },
+    {
+      "id": "insertion",
+      "label": "Insertion Sort",
+      "icon": "📌",
+      "type": "leaf",
+      "parent": "simple",
+      "items": [
+        "O(n²) avg, O(n) best",
+        "Stable + in-place",
+        "Adaptive",
+        "Best for small / nearly sorted"
+      ]
+    },
+    {
+      "id": "non-comparison",
+      "label": "Non-Comparison",
+      "icon": "🚀",
+      "type": "branch",
+      "parent": "root",
+      "badge": "O(n) possible",
+      "color": "#6366f1",
+      "description": "Beat O(n log n) by exploiting data properties"
+    },
+    {
+      "id": "counting",
+      "label": "Counting Sort",
+      "icon": "🔢",
+      "type": "leaf",
+      "parent": "non-comparison",
+      "items": [
+        "O(n + k) where k = range",
+        "Only for integer keys",
+        "Stable",
+        "O(n + k) space"
+      ]
+    },
+    {
+      "id": "radix",
+      "label": "Radix Sort",
+      "icon": "📊",
+      "type": "leaf",
+      "parent": "non-comparison",
+      "items": [
+        "O(d × (n + k))",
+        "Digit-by-digit sort",
+        "Stable",
+        "Fixed-length keys"
+      ]
+    },
+    {
+      "id": "built-in",
+      "label": "Built-in (Timsort)",
+      "icon": "🏆",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Use This",
+      "color": "#8b5cf6",
+      "description": "Python / Java default sort — hybrid of merge + insertion sort"
+    },
+    {
+      "id": "timsort",
+      "label": "Timsort",
+      "icon": "⭐",
+      "type": "leaf",
+      "parent": "built-in",
+      "items": [
+        "O(n log n) worst, O(n) best",
+        "Stable + adaptive",
+        "Python sorted(), Java Arrays.sort()",
+        "Best for real-world data"
+      ]
+    },
+    {
+      "id": "interview-choice",
+      "label": "Interview Choice Guide",
+      "icon": "🎯",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Pick One",
+      "color": "#f43f5e",
+      "description": "Which algorithm to mention for which situation"
+    },
+    {
+      "id": "interview-general",
+      "label": "General / Unknown",
+      "icon": "🔀",
+      "type": "leaf",
+      "parent": "interview-choice",
+      "items": [
+        "→ Quick Sort (in-place, fast in practice)",
+        "Or: Merge Sort if stability required",
+        "Always say: O(n log n) average",
+        "Java: Arrays.sort uses Timsort / Dual-pivot Quick"
+      ]
+    },
+    {
+      "id": "interview-special",
+      "label": "Special Cases",
+      "icon": "💡",
+      "type": "leaf",
+      "parent": "interview-choice",
+      "items": [
+        "Nearly sorted: Insertion Sort O(n)",
+        "Bounded integers: Counting Sort O(n+k)",
+        "Linked list: Merge Sort (no random access needed)",
+        "Top K elements: Heap (O(n log k), not full sort)"
+      ]
+    }
+  ]
+}

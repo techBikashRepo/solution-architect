@@ -1,0 +1,180 @@
+{
+  "id": "notification-system",
+  "title": "Notification System",
+  "subtitle": "Multi-channel notification delivery: Push, Email, SMS at 10M+ notifications/day",
+  "type": "architecture",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "triggers",
+      "label": "Notification Triggers",
+      "icon": "🎯",
+      "type": "start",
+      "description": "Events that generate notifications: order placed, payment done, alert fired"
+    },
+    {
+      "id": "notification-service",
+      "label": "Notification Service",
+      "icon": "🔔",
+      "type": "process",
+      "badge": "Orchestrator",
+      "color": "#10b981",
+      "description": "Central service that receives trigger events and fans out to delivery channels",
+      "items": [
+        "Receives events from 20+ microservices",
+        "Resolves: user preferences, contact details",
+        "Deduplication: suppress duplicate notifications",
+        "Priority queue: critical vs marketing"
+      ]
+    },
+    {
+      "id": "user-prefs",
+      "label": "User Preferences DB",
+      "icon": "👤",
+      "type": "process",
+      "badge": "Config",
+      "color": "#6366f1",
+      "description": "Stores per-user notification preferences and contact details",
+      "items": [
+        "Channel opt-in: push, email, SMS, in-app",
+        "Quiet hours: no notifications 10pm–8am",
+        "Frequency caps: max 3 marketing/day",
+        "DynamoDB: user_id → preferences JSON"
+      ]
+    },
+    {
+      "id": "message-queue-notif",
+      "label": "Message Queues",
+      "icon": "📨",
+      "type": "process",
+      "badge": "Buffer",
+      "color": "#8b5cf6",
+      "description": "Per-channel queues to buffer and rate-control delivery",
+      "items": [
+        "SQS queues per channel type",
+        "Priority queues: critical > transactional > marketing",
+        "DLQ for failed delivery attempts",
+        "Visibility timeout: retry on processing failure"
+      ]
+    },
+    {
+      "id": "push-worker",
+      "label": "Push Notification Worker",
+      "icon": "📲",
+      "type": "process",
+      "badge": "Mobile",
+      "color": "#f97316",
+      "description": "Sends push notifications via APNS and FCM",
+      "items": [
+        "APNS: Apple Push Notification (iOS)",
+        "FCM: Firebase Cloud Messaging (Android)",
+        "Token registry: device_token per user",
+        "Batch sending: 1000 tokens per API call"
+      ]
+    },
+    {
+      "id": "email-worker",
+      "label": "Email Worker",
+      "icon": "📧",
+      "type": "process",
+      "badge": "Email",
+      "color": "#06b6d4",
+      "description": "Sends transactional and marketing emails",
+      "items": [
+        "AWS SES / SendGrid / Mailgun",
+        "HTML templates with personalization",
+        "Bounce handling: mark invalid emails",
+        "Unsubscribe links (CAN-SPAM compliance)"
+      ]
+    },
+    {
+      "id": "sms-worker",
+      "label": "SMS Worker",
+      "icon": "💬",
+      "type": "process",
+      "badge": "SMS",
+      "color": "#f59e0b",
+      "description": "Sends SMS for OTPs and critical alerts",
+      "items": [
+        "Twilio / AWS SNS SMS",
+        "Used for: OTP, bank alerts, order updates",
+        "High cost — reserve for critical only",
+        "International number formatting"
+      ]
+    },
+    {
+      "id": "delivery-tracking",
+      "label": "Delivery Tracking",
+      "icon": "📊",
+      "type": "process",
+      "badge": "Analytics",
+      "color": "#f43f5e",
+      "description": "Track delivery status, open rates, and failures",
+      "items": [
+        "Status: queued → sent → delivered → opened",
+        "Webhook callbacks from APNS/FCM",
+        "Email open/click tracking pixel",
+        "Dashboard: delivery rate, failure reasons"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "triggers",
+      "to": "notification-service",
+      "style": "solid",
+      "animated": true,
+      "label": "event"
+    },
+    {
+      "from": "notification-service",
+      "to": "user-prefs",
+      "style": "dashed",
+      "label": "check preferences"
+    },
+    {
+      "from": "notification-service",
+      "to": "message-queue-notif",
+      "style": "solid",
+      "animated": true,
+      "label": "enqueue"
+    },
+    {
+      "from": "message-queue-notif",
+      "to": "push-worker",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "message-queue-notif",
+      "to": "email-worker",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "message-queue-notif",
+      "to": "sms-worker",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "push-worker",
+      "to": "delivery-tracking",
+      "style": "dashed",
+      "label": "status"
+    },
+    {
+      "from": "email-worker",
+      "to": "delivery-tracking",
+      "style": "dashed",
+      "label": "status"
+    },
+    {
+      "from": "sms-worker",
+      "to": "delivery-tracking",
+      "style": "dashed",
+      "label": "status"
+    }
+  ]
+}

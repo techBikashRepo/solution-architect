@@ -1,0 +1,158 @@
+{
+  "id": "latency-throughput",
+  "title": "Latency vs Throughput",
+  "subtitle": "Two fundamental performance metrics every system must balance",
+  "type": "comparison",
+  "theme": "cyan",
+  "layout": "side-by-side",
+  "nodes": [
+    {
+      "id": "latency",
+      "label": "Latency",
+      "icon": "⏱️",
+      "type": "header-left",
+      "color": "#6366f1",
+      "description": "Time for ONE request to complete — How fast?"
+    },
+    {
+      "id": "throughput",
+      "label": "Throughput",
+      "icon": "🚀",
+      "type": "header-right",
+      "color": "#10b981",
+      "description": "Requests processed per second (RPS/TPS) — How many?"
+    },
+    {
+      "id": "lat-def",
+      "label": "Definition",
+      "icon": "📖",
+      "type": "row-left",
+      "parent": "latency",
+      "items": [
+        "Round-trip time for a single request",
+        "Measured in milliseconds (ms) or µs",
+        "Client-perceived delay at the edge",
+        "Includes: network + processing + DB"
+      ]
+    },
+    {
+      "id": "thr-def",
+      "label": "Definition",
+      "icon": "📖",
+      "type": "row-right",
+      "parent": "throughput",
+      "items": [
+        "Total requests / messages per second",
+        "Measured at system level (RPS, TPS)",
+        "Total work done per unit of time",
+        "Scales with parallelism"
+      ]
+    },
+    {
+      "id": "lat-measure",
+      "label": "Percentiles",
+      "icon": "📊",
+      "type": "row-left",
+      "parent": "latency",
+      "items": [
+        "p50 (median) — typical user experience",
+        "p95 — 95% of requests faster than this",
+        "p99 — worst-case experience to optimize",
+        "p99.9 — tail latency (SLA violations)"
+      ]
+    },
+    {
+      "id": "thr-measure",
+      "label": "Little's Law",
+      "icon": "🧮",
+      "type": "row-right",
+      "parent": "throughput",
+      "items": [
+        "L = λ × W (queue depth formula)",
+        "L = avg items in system",
+        "λ = arrival rate (RPS)",
+        "If latency 2×, queue depth 2× at same RPS"
+      ]
+    },
+    {
+      "id": "lat-optimize",
+      "label": "Reduce Latency",
+      "icon": "⚡",
+      "type": "row-left",
+      "parent": "latency",
+      "items": [
+        "Caching (Redis, CDN, local cache)",
+        "Reduce DB round trips (N+1 fix)",
+        "Connection pooling & keep-alive",
+        "CDN for static assets globally",
+        "Co-locate compute near data"
+      ]
+    },
+    {
+      "id": "thr-optimize",
+      "label": "Increase Throughput",
+      "icon": "📈",
+      "type": "row-right",
+      "parent": "throughput",
+      "items": [
+        "Horizontal scaling (more servers)",
+        "Async processing + message queues",
+        "Batch operations (bulk DB writes)",
+        "Load balancing across instances",
+        "Non-blocking I/O (Node.js, async Java)"
+      ]
+    },
+    {
+      "id": "lat-tradeoff",
+      "label": "Tradeoff",
+      "icon": "⚠️",
+      "type": "row-left",
+      "parent": "latency",
+      "items": [
+        "Adding consistency checks → higher latency",
+        "Encryption / TLS adds ~1–5ms",
+        "Sync replicas slow write latency"
+      ]
+    },
+    {
+      "id": "thr-tradeoff",
+      "label": "Tradeoff",
+      "icon": "⚠️",
+      "type": "row-right",
+      "parent": "throughput",
+      "items": [
+        "High throughput + batching = higher latency",
+        "More concurrency → more contention risk",
+        "Network becomes bottleneck at peak"
+      ]
+    },
+    {
+      "id": "lat-examples",
+      "label": "Real-World Targets",
+      "icon": "🎯",
+      "type": "footer-left",
+      "parent": "latency",
+      "color": "#6366f1",
+      "items": [
+        "Google Search: < 200ms",
+        "Payment API: < 300ms p99",
+        "Game input: < 16ms (60fps)",
+        "Stock trade: < 1ms (HFT)"
+      ]
+    },
+    {
+      "id": "thr-examples",
+      "label": "Real-World Targets",
+      "icon": "🎯",
+      "type": "footer-right",
+      "parent": "throughput",
+      "color": "#10b981",
+      "items": [
+        "Kafka: 1M+ messages/sec",
+        "Uber matching: 10K matches/sec",
+        "Stripe payments: 1000+ TPS",
+        "WhatsApp: 100B msgs/day"
+      ]
+    }
+  ]
+}

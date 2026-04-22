@@ -1,0 +1,170 @@
+{
+  "id": "chat-system",
+  "title": "Real-Time Chat System",
+  "subtitle": "Architecture for WhatsApp/Slack-scale messaging: 100M users, 50B msgs/day",
+  "type": "architecture",
+  "theme": "indigo",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "clients",
+      "label": "Chat Clients",
+      "icon": "📱",
+      "type": "start",
+      "description": "iOS, Android, Web — maintain persistent connection to Chat Server"
+    },
+    {
+      "id": "lb",
+      "label": "Load Balancer",
+      "icon": "⚖️",
+      "type": "process",
+      "badge": "L4/L7",
+      "color": "#6366f1",
+      "description": "Distributes clients to Chat Server nodes via sticky sessions",
+      "items": [
+        "Sticky routing: same user → same server",
+        "Health checks on chat server nodes",
+        "NLB for WebSocket (Layer 4)"
+      ]
+    },
+    {
+      "id": "chat-server",
+      "label": "Chat Server",
+      "icon": "💬",
+      "type": "process",
+      "badge": "Core",
+      "color": "#8b5cf6",
+      "description": "Maintains WebSocket connections and routes messages in real-time",
+      "items": [
+        "WebSocket: persistent bidirectional connection",
+        "Each server: 100K concurrent connections",
+        "Horizontal scale: 1000 servers for 100M users",
+        "Heartbeat: detect dropped connections (30s)"
+      ]
+    },
+    {
+      "id": "presence",
+      "label": "Presence Service",
+      "icon": "🟢",
+      "type": "process",
+      "badge": "Online Status",
+      "color": "#10b981",
+      "description": "Tracks who is online, typing, and last seen",
+      "items": [
+        "Heartbeat every 5s → presence TTL",
+        "Redis: user:{id}:online = timestamp",
+        "Fanout: notify friends of status change",
+        "\"Last seen\" stored in UserDB"
+      ]
+    },
+    {
+      "id": "message-service",
+      "label": "Message Service",
+      "icon": "📨",
+      "type": "process",
+      "badge": "Routing",
+      "color": "#06b6d4",
+      "description": "Determines routing: direct WebSocket or push notification",
+      "items": [
+        "Online user: deliver via WebSocket",
+        "Offline user: store + push notification",
+        "Group chat: fan-out to all members",
+        "Ordered delivery via sequence IDs"
+      ]
+    },
+    {
+      "id": "message-db",
+      "label": "Message Store",
+      "icon": "🗄️",
+      "type": "process",
+      "badge": "Storage",
+      "color": "#f59e0b",
+      "description": "Durable storage for all messages with efficient read patterns",
+      "items": [
+        "Cassandra: write-optimized, time-series",
+        "Primary key: (chat_id, msg_id DESC)",
+        "HBase at Facebook (fbmessenger scale)",
+        "Messages sharded by chat_id"
+      ]
+    },
+    {
+      "id": "notification",
+      "label": "Push Notification",
+      "icon": "🔔",
+      "type": "process",
+      "badge": "Offline",
+      "color": "#f43f5e",
+      "description": "Deliver messages to offline users via APNS/FCM",
+      "items": [
+        "APNS: Apple Push Notification Service",
+        "FCM: Firebase Cloud Messaging (Android)",
+        "Queue notifications in SQS",
+        "SNS fan-out for multi-device"
+      ]
+    },
+    {
+      "id": "media-service",
+      "label": "Media Service",
+      "icon": "🖼️",
+      "type": "process",
+      "badge": "Files",
+      "color": "#f97316",
+      "description": "Handles image, video, and file uploads for chat",
+      "items": [
+        "Presigned S3 URL for direct upload",
+        "CDN delivery via CloudFront",
+        "Thumbnail generation on Lambda",
+        "Virus scan before delivery"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "clients",
+      "to": "lb",
+      "style": "solid",
+      "animated": true,
+      "label": "WebSocket upgrade"
+    },
+    { "from": "lb", "to": "chat-server", "style": "solid", "animated": true },
+    {
+      "from": "chat-server",
+      "to": "presence",
+      "style": "dashed",
+      "label": "heartbeat"
+    },
+    {
+      "from": "chat-server",
+      "to": "message-service",
+      "style": "solid",
+      "animated": true,
+      "label": "send msg"
+    },
+    {
+      "from": "message-service",
+      "to": "message-db",
+      "style": "solid",
+      "animated": true,
+      "label": "persist"
+    },
+    {
+      "from": "message-service",
+      "to": "chat-server",
+      "style": "solid",
+      "animated": true,
+      "label": "deliver online"
+    },
+    {
+      "from": "message-service",
+      "to": "notification",
+      "style": "dashed",
+      "label": "offline user"
+    },
+    {
+      "from": "chat-server",
+      "to": "media-service",
+      "style": "dashed",
+      "label": "upload file"
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "id": "caching",
+  "title": "Caching",
+  "subtitle": "Strategies, Layers, and Eviction Policies",
+  "type": "hierarchy",
+  "theme": "amber",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Caching",
+      "icon": "⚡",
+      "type": "root",
+      "description": "Store frequently accessed data in fast storage to reduce latency and backend load"
+    },
+    {
+      "id": "layers",
+      "label": "Cache Layers",
+      "icon": "📚",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Where",
+      "color": "#f59e0b",
+      "description": "Where caches live in the system"
+    },
+    {
+      "id": "client-cache",
+      "label": "Client Cache",
+      "icon": "💻",
+      "type": "leaf",
+      "parent": "layers",
+      "items": [
+        "Browser cache (HTTP headers)",
+        "Mobile app local storage",
+        "Service Worker cache"
+      ]
+    },
+    {
+      "id": "cdn-cache",
+      "label": "CDN Cache",
+      "icon": "🌐",
+      "type": "leaf",
+      "parent": "layers",
+      "items": [
+        "Edge servers globally",
+        "Static assets (images, CSS, JS)",
+        "CloudFront, Akamai, Fastly"
+      ]
+    },
+    {
+      "id": "app-cache",
+      "label": "Application Cache",
+      "icon": "🖥️",
+      "type": "leaf",
+      "parent": "layers",
+      "items": [
+        "In-process memory (Caffeine)",
+        "Distributed cache (Redis, Memcached)",
+        "Session store"
+      ]
+    },
+    {
+      "id": "db-cache",
+      "label": "DB Cache",
+      "icon": "🗄️",
+      "type": "leaf",
+      "parent": "layers",
+      "items": [
+        "Query cache (MySQL buffer pool)",
+        "Read replicas",
+        "ElastiCache in front of RDS"
+      ]
+    },
+    {
+      "id": "strategies",
+      "label": "Write Strategies",
+      "icon": "✍️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "When",
+      "color": "#6366f1",
+      "description": "How writes are coordinated between cache and DB"
+    },
+    {
+      "id": "write-through",
+      "label": "Write-Through",
+      "icon": "➡️",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "Write to cache AND DB simultaneously",
+        "Always consistent",
+        "Higher write latency"
+      ]
+    },
+    {
+      "id": "write-behind",
+      "label": "Write-Behind",
+      "icon": "⏳",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "Write to cache first, async to DB",
+        "Lower write latency",
+        "Risk of data loss on crash"
+      ]
+    },
+    {
+      "id": "cache-aside",
+      "label": "Cache-Aside",
+      "icon": "🔄",
+      "type": "leaf",
+      "parent": "strategies",
+      "items": [
+        "App manages cache manually",
+        "Read-miss → load from DB → store in cache",
+        "Most common pattern (Redis)"
+      ]
+    },
+    {
+      "id": "eviction",
+      "label": "Eviction Policies",
+      "icon": "🗑️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "When Full",
+      "color": "#10b981",
+      "description": "Which items get removed when cache is full"
+    },
+    {
+      "id": "lru",
+      "label": "LRU",
+      "icon": "⏪",
+      "type": "leaf",
+      "parent": "eviction",
+      "items": [
+        "Least Recently Used",
+        "Evict item not accessed for longest time",
+        "Default in Redis"
+      ]
+    },
+    {
+      "id": "lfu",
+      "label": "LFU",
+      "icon": "📊",
+      "type": "leaf",
+      "parent": "eviction",
+      "items": [
+        "Least Frequently Used",
+        "Evict item accessed fewest times",
+        "Better for skewed access"
+      ]
+    },
+    {
+      "id": "ttl",
+      "label": "TTL",
+      "icon": "⏱️",
+      "type": "leaf",
+      "parent": "eviction",
+      "items": [
+        "Time-To-Live expiry",
+        "Each entry has max age",
+        "Prevents stale data accumulation",
+        "Redis: SET key value EX 3600"
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "label": "Cache Pitfalls",
+      "icon": "⚠️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Failure Modes",
+      "color": "#f43f5e",
+      "description": "Common caching failures to prevent"
+    },
+    {
+      "id": "cache-stampede",
+      "label": "Cache Stampede",
+      "icon": "🐘",
+      "type": "leaf",
+      "parent": "pitfalls",
+      "items": [
+        "Mass cache expiry at same time → DB overwhelmed",
+        "Fix: jitter on TTL (TTL ± random 10%)",
+        "Fix: probabilistic early recompute (PER)",
+        "Fix: mutex lock to let one request populate"
+      ]
+    },
+    {
+      "id": "cache-penetration",
+      "label": "Cache Penetration",
+      "icon": "🕳️",
+      "type": "leaf",
+      "parent": "pitfalls",
+      "items": [
+        "Queries for non-existent keys bypass cache",
+        "Fix: cache null/empty results with short TTL",
+        "Fix: Bloom Filter to pre-check existence",
+        "Attack vector: spam random non-existent IDs"
+      ]
+    },
+    {
+      "id": "read-through",
+      "label": "Read-Through",
+      "icon": "📖",
+      "type": "leaf",
+      "parent": "pitfalls",
+      "items": [
+        "Cache sits in front of DB transparently",
+        "Cache handles miss → fetches from DB itself",
+        "App always talks to cache only",
+        "Used in: ElastiCache + RDS pattern"
+      ]
+    }
+  ]
+}

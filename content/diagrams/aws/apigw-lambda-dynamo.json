@@ -1,0 +1,213 @@
+{
+  "id": "apigw-lambda-dynamo",
+  "title": "Serverless Architecture",
+  "subtitle": "API Gateway → Lambda → DynamoDB pattern on AWS",
+  "type": "architecture",
+  "theme": "amber",
+  "layout": "left-right",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client",
+      "icon": "💻",
+      "type": "start",
+      "description": "Browser, mobile app, or third-party consumer"
+    },
+    {
+      "id": "cloudfront",
+      "label": "CloudFront CDN",
+      "icon": "🌐",
+      "type": "process",
+      "badge": "Edge Cache",
+      "color": "#f59e0b",
+      "description": "Caches GET responses at edge, reduces Lambda invocations",
+      "items": [
+        "Cache-Control headers",
+        "Edge locations globally",
+        "WAF integration"
+      ]
+    },
+    {
+      "id": "apigw",
+      "label": "API Gateway",
+      "icon": "🚪",
+      "type": "process",
+      "badge": "Entry",
+      "color": "#8b5cf6",
+      "description": "Managed REST/HTTP/WebSocket API front door",
+      "items": [
+        "Auth (Cognito / Lambda Authorizer)",
+        "Rate limiting & throttling",
+        "Request/Response mapping"
+      ]
+    },
+    {
+      "id": "cognito",
+      "label": "Cognito",
+      "icon": "🔐",
+      "type": "process",
+      "badge": "Auth",
+      "color": "#f43f5e",
+      "description": "User pools + identity pools",
+      "items": [
+        "JWT token validation",
+        "OAuth 2.0 / OIDC",
+        "Social login (Google, Facebook)"
+      ]
+    },
+    {
+      "id": "lambda",
+      "label": "Lambda Functions",
+      "icon": "λ",
+      "type": "process",
+      "badge": "Compute",
+      "color": "#f97316",
+      "description": "Stateless compute, scales to thousands of concurrent executions",
+      "items": [
+        "Cold start: 100-500ms (provisioned concurrency = 0ms)",
+        "Max 15 min execution",
+        "1000 concurrent default limit"
+      ]
+    },
+    {
+      "id": "dynamo",
+      "label": "DynamoDB",
+      "icon": "🗄️",
+      "type": "process",
+      "badge": "Database",
+      "color": "#3b82f6",
+      "description": "Serverless NoSQL database with single-digit ms latency",
+      "items": [
+        "On-demand or provisioned capacity",
+        "Global Secondary Indexes (GSI)",
+        "DynamoDB Streams for events"
+      ]
+    },
+    {
+      "id": "s3",
+      "label": "S3",
+      "icon": "🪣",
+      "type": "process",
+      "badge": "Storage",
+      "color": "#10b981",
+      "description": "Object storage for files, images, reports",
+      "items": [
+        "Presigned URLs for uploads",
+        "S3 triggers Lambda events",
+        "Lifecycle policies"
+      ]
+    },
+    {
+      "id": "cloudwatch",
+      "label": "CloudWatch",
+      "icon": "📊",
+      "type": "process",
+      "badge": "Monitor",
+      "color": "#6366f1",
+      "description": "Logs, metrics, alarms for all services",
+      "items": [
+        "Lambda invocation metrics",
+        "Error rate alarms",
+        "X-Ray distributed tracing"
+      ]
+    },
+    {
+      "id": "sqs",
+      "label": "SQS Queue",
+      "icon": "📨",
+      "type": "process",
+      "badge": "Async",
+      "color": "#06b6d4",
+      "description": "Decouple services with async message queuing",
+      "items": [
+        "Lambda event source mapping",
+        "DLQ for failed messages",
+        "FIFO for ordered processing"
+      ]
+    },
+    {
+      "id": "step-functions",
+      "label": "Step Functions",
+      "icon": "🔗",
+      "type": "process",
+      "badge": "Orchestrate",
+      "color": "#8b5cf6",
+      "description": "Orchestrate multi-Lambda workflows with state management",
+      "items": [
+        "Visual workflow designer",
+        "Retry + catch built in",
+        "Express vs Standard workflows",
+        "Replace complex Lambda chaining"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "client",
+      "to": "cloudfront",
+      "label": "HTTPS",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "cloudfront",
+      "to": "apigw",
+      "label": "cache miss",
+      "style": "dashed"
+    },
+    {
+      "from": "apigw",
+      "to": "cognito",
+      "label": "validate token",
+      "style": "dashed"
+    },
+    {
+      "from": "apigw",
+      "to": "lambda",
+      "label": "invoke",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "lambda",
+      "to": "dynamo",
+      "label": "read / write",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "lambda", "to": "s3", "label": "put / get", "style": "solid" },
+    {
+      "from": "lambda",
+      "to": "sqs",
+      "label": "enqueue",
+      "style": "dashed",
+      "animated": true
+    },
+    {
+      "from": "sqs",
+      "to": "lambda",
+      "label": "trigger",
+      "style": "dashed",
+      "animated": true
+    },
+    {
+      "from": "lambda",
+      "to": "cloudwatch",
+      "label": "logs / metrics",
+      "style": "dashed"
+    },
+    {
+      "from": "dynamo",
+      "to": "lambda",
+      "label": "DDB Streams",
+      "style": "dashed",
+      "animated": true
+    },
+    {
+      "from": "lambda",
+      "to": "step-functions",
+      "label": "start execution",
+      "style": "dashed"
+    }
+  ]
+}

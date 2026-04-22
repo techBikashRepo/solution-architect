@@ -1,0 +1,157 @@
+{
+  "id": "vpc",
+  "title": "Amazon VPC",
+  "subtitle": "Virtual Private Cloud — isolated network environment inside AWS",
+  "type": "architecture",
+  "theme": "cyan",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "internet",
+      "label": "Internet",
+      "icon": "🌍",
+      "type": "start",
+      "description": "Public internet traffic from users and systems"
+    },
+    {
+      "id": "igw",
+      "label": "Internet Gateway",
+      "icon": "🔌",
+      "type": "process",
+      "badge": "Entry",
+      "color": "#06b6d4",
+      "description": "Connects VPC to the public internet — horizontally scaled and HA",
+      "items": [
+        "1 IGW per VPC (attach/detach)",
+        "Routes public subnet traffic to internet",
+        "No bandwidth limits",
+        "NAT Gateway uses IGW for outbound"
+      ]
+    },
+    {
+      "id": "public-subnet",
+      "label": "Public Subnet",
+      "icon": "🌐",
+      "type": "process",
+      "badge": "Exposed",
+      "color": "#f59e0b",
+      "description": "Subnet with route to IGW — resources get public IPs",
+      "items": [
+        "ALB / NLB (receives public traffic)",
+        "NAT Gateway (for private subnet outbound)",
+        "Bastion Host (SSH jump box)",
+        "Route table: 0.0.0.0/0 → IGW"
+      ]
+    },
+    {
+      "id": "nat-gw",
+      "label": "NAT Gateway",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Outbound",
+      "color": "#8b5cf6",
+      "description": "Allows private subnet resources to access internet (outbound only)",
+      "items": [
+        "No inbound connections allowed",
+        "Managed, no EC2 required",
+        "Per-AZ for high availability",
+        "Cost: $0.045/hr + $0.045/GB"
+      ]
+    },
+    {
+      "id": "private-subnet",
+      "label": "Private Subnet",
+      "icon": "🔒",
+      "type": "process",
+      "badge": "Isolated",
+      "color": "#f43f5e",
+      "description": "No direct internet access — protected backend resources",
+      "items": [
+        "EC2 Auto Scaling Group (app servers)",
+        "ECS/EKS containers",
+        "RDS, ElastiCache (data layer)",
+        "Route table: 0.0.0.0/0 → NAT GW"
+      ]
+    },
+    {
+      "id": "security-layers",
+      "label": "Security Controls",
+      "icon": "🛡️",
+      "type": "process",
+      "badge": "Defense",
+      "color": "#f43f5e",
+      "description": "Two layers of network security — NACLs and Security Groups",
+      "items": [
+        "NACL: stateless, subnet-level firewall",
+        "Security Group: stateful, instance-level",
+        "NACL rules: numbered, first match wins",
+        "SG: allows return traffic automatically"
+      ]
+    },
+    {
+      "id": "vpc-peering",
+      "label": "VPC Connectivity",
+      "icon": "🔗",
+      "type": "process",
+      "badge": "Connect",
+      "color": "#10b981",
+      "description": "Options to connect VPCs and on-premises networks",
+      "items": [
+        "VPC Peering: private connect 2 VPCs",
+        "Transit Gateway: hub-and-spoke for 100s of VPCs",
+        "VPN Gateway: encrypted tunnel to on-prem",
+        "Direct Connect: dedicated private line to AWS"
+      ]
+    },
+    {
+      "id": "endpoints",
+      "label": "VPC Endpoints",
+      "icon": "🎯",
+      "type": "process",
+      "badge": "Private Access",
+      "color": "#6366f1",
+      "description": "Access AWS services without leaving the AWS network",
+      "items": [
+        "Gateway Endpoint: S3 and DynamoDB (free)",
+        "Interface Endpoint: 100+ services via PrivateLink",
+        "No NAT GW needed for AWS service access",
+        "Improved security: traffic stays in AWS backbone"
+      ]
+    }
+  ],
+  "connections": [
+    { "from": "internet", "to": "igw", "style": "solid", "animated": true },
+    {
+      "from": "igw",
+      "to": "public-subnet",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "public-subnet",
+      "to": "nat-gw",
+      "style": "dashed",
+      "label": "outbound"
+    },
+    {
+      "from": "nat-gw",
+      "to": "private-subnet",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "public-subnet", "to": "security-layers", "style": "dashed" },
+    { "from": "private-subnet", "to": "security-layers", "style": "dashed" },
+    {
+      "from": "private-subnet",
+      "to": "vpc-peering",
+      "style": "dashed",
+      "label": "connect"
+    },
+    {
+      "from": "private-subnet",
+      "to": "endpoints",
+      "style": "dashed",
+      "label": "AWS services"
+    }
+  ]
+}

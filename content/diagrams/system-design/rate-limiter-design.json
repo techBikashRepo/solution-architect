@@ -1,0 +1,167 @@
+{
+  "id": "rate-limiter-design",
+  "title": "Rate Limiter — System Design",
+  "subtitle": "Full architecture for a distributed rate limiting service handling 10M+ RPS",
+  "type": "architecture",
+  "theme": "rose",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client",
+      "icon": "💻",
+      "type": "start",
+      "description": "Browser, mobile app, third-party service"
+    },
+    {
+      "id": "edge-lb",
+      "label": "Edge / Load Balancer",
+      "icon": "🌐",
+      "type": "process",
+      "badge": "Entry",
+      "color": "#f43f5e",
+      "description": "First hop — routes to rate limiter middleware",
+      "items": [
+        "CloudFront + WAF at global edge",
+        "Nginx or Envoy sidecar proxy",
+        "Extracts: IP, User-Agent, API key"
+      ]
+    },
+    {
+      "id": "rl-middleware",
+      "label": "Rate Limiter Middleware",
+      "icon": "🚦",
+      "type": "process",
+      "badge": "Core",
+      "color": "#8b5cf6",
+      "description": "Intercepts every request and makes allow/deny decision",
+      "items": [
+        "Runs as sidecar or API GW plugin",
+        "Checks multiple dimensions in parallel",
+        "Decision in < 5ms (Redis round trip)",
+        "Sliding window counter algorithm"
+      ]
+    },
+    {
+      "id": "rules-engine",
+      "label": "Rules Config Service",
+      "icon": "📋",
+      "type": "process",
+      "badge": "Config",
+      "color": "#06b6d4",
+      "description": "Stores rate limit rules — hot-reloaded without restart",
+      "items": [
+        "Rules: {endpoint, user_tier, limit, window}",
+        "Free tier: 100 req/hr per user",
+        "Pro tier: 10,000 req/hr per API key",
+        "Stored in Redis + DB, polled every 60s"
+      ]
+    },
+    {
+      "id": "redis-cluster",
+      "label": "Redis Cluster",
+      "icon": "⚡",
+      "type": "process",
+      "badge": "Counter Store",
+      "color": "#f43f5e",
+      "description": "Distributed counter storage for all rate limit buckets",
+      "items": [
+        "Atomic INCR + EXPIRE per key",
+        "Key schema: rl:{user_id}:{endpoint}:{window}",
+        "Lua script for atomic check+increment",
+        "Redis Cluster: 6 shards, 3 replicas each"
+      ]
+    },
+    {
+      "id": "allow",
+      "label": "Allow Request",
+      "icon": "✅",
+      "type": "process",
+      "badge": "Pass",
+      "color": "#10b981",
+      "description": "Request forwarded to backend service",
+      "items": [
+        "Add headers: X-RateLimit-Remaining",
+        "X-RateLimit-Reset: next window timestamp",
+        "Forward to API Gateway → microservices"
+      ]
+    },
+    {
+      "id": "deny",
+      "label": "Deny Request",
+      "icon": "🚫",
+      "type": "process",
+      "badge": "Block",
+      "color": "#f43f5e",
+      "description": "Return 429 with retry-after guidance",
+      "items": [
+        "HTTP 429 Too Many Requests",
+        "Retry-After: 60 header",
+        "Log to monitoring for abuse detection",
+        "Optionally queue request (backpressure)"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "label": "Monitoring & Analytics",
+      "icon": "📊",
+      "type": "process",
+      "badge": "Insight",
+      "color": "#f59e0b",
+      "description": "Track rate limit metrics and alert on anomalies",
+      "items": [
+        "Top throttled users / endpoints",
+        "429 rate alarm > 5% → Slack alert",
+        "DDoS detection: IP with 10K+ req/min",
+        "CloudWatch / Datadog dashboards"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "client",
+      "to": "edge-lb",
+      "style": "solid",
+      "animated": true,
+      "label": "request"
+    },
+    {
+      "from": "edge-lb",
+      "to": "rl-middleware",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "rl-middleware",
+      "to": "rules-engine",
+      "style": "dashed",
+      "label": "fetch rules"
+    },
+    {
+      "from": "rl-middleware",
+      "to": "redis-cluster",
+      "style": "solid",
+      "animated": true,
+      "label": "check & increment"
+    },
+    {
+      "from": "redis-cluster",
+      "to": "allow",
+      "label": "under limit",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "redis-cluster",
+      "to": "deny",
+      "label": "over limit",
+      "style": "dashed"
+    },
+    {
+      "from": "rl-middleware",
+      "to": "monitoring",
+      "style": "dashed",
+      "label": "metrics"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "id": "load-balancing",
+  "title": "Load Balancing",
+  "subtitle": "How Traffic is Distributed Across Servers",
+  "type": "flowchart",
+  "theme": "cyan",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client",
+      "icon": "👤",
+      "type": "start",
+      "description": "Browser, mobile app, or API consumer"
+    },
+    {
+      "id": "dns",
+      "label": "DNS Resolution",
+      "icon": "🌐",
+      "type": "process",
+      "description": "Resolves domain to Load Balancer IP"
+    },
+    {
+      "id": "lb",
+      "label": "Load Balancer",
+      "icon": "⚖️",
+      "type": "process",
+      "badge": "Core",
+      "color": "#06b6d4",
+      "description": "Distributes requests using configured algorithm"
+    },
+    {
+      "id": "algo",
+      "label": "Which Algorithm?",
+      "icon": "❓",
+      "type": "decision",
+      "description": "Load balancer selects target server"
+    },
+    {
+      "id": "round-robin",
+      "label": "Round Robin",
+      "icon": "🔁",
+      "type": "process",
+      "color": "#6366f1",
+      "description": "Each server gets requests in turn",
+      "items": ["Simple, uniform distribution", "Best when servers are equal"]
+    },
+    {
+      "id": "least-conn",
+      "label": "Least Connections",
+      "icon": "📉",
+      "type": "process",
+      "color": "#10b981",
+      "description": "Route to server with fewest active connections",
+      "items": [
+        "Best for long-lived connections",
+        "Handles slow servers better"
+      ]
+    },
+    {
+      "id": "ip-hash",
+      "label": "IP Hash",
+      "icon": "#",
+      "type": "process",
+      "color": "#f59e0b",
+      "description": "Hash client IP → always same server",
+      "items": ["Sticky sessions without cookies", "Useful for stateful apps"]
+    },
+    {
+      "id": "health-check",
+      "label": "Health Check",
+      "icon": "💓",
+      "type": "process",
+      "color": "#8b5cf6",
+      "description": "LB continuously pings servers",
+      "items": [
+        "HTTP /health endpoint",
+        "TCP ping",
+        "Remove unhealthy servers automatically",
+        "Grace period before marking unhealthy"
+      ]
+    },
+    {
+      "id": "l4-vs-l7",
+      "label": "L4 vs L7 LB",
+      "icon": "🔀",
+      "type": "process",
+      "badge": "Layers",
+      "color": "#f43f5e",
+      "description": "Network layer vs Application layer load balancing",
+      "items": [
+        "L4 (NLB): TCP/UDP, ultra-low latency, no HTTP inspect",
+        "L7 (ALB): HTTP headers, path routing, host routing",
+        "ALB: /api/* → microservice A, /static/* → S3",
+        "NLB: gaming, VoIP, IoT — millions of connections"
+      ]
+    },
+    {
+      "id": "server1",
+      "label": "Server 1",
+      "icon": "🖥️",
+      "type": "process",
+      "color": "#10b981"
+    },
+    {
+      "id": "server2",
+      "label": "Server 2",
+      "icon": "🖥️",
+      "type": "process",
+      "color": "#10b981"
+    },
+    {
+      "id": "server3",
+      "label": "Server 3",
+      "icon": "🖥️",
+      "type": "process",
+      "color": "#10b981"
+    },
+    {
+      "id": "response",
+      "label": "Response",
+      "icon": "✅",
+      "type": "end",
+      "description": "Result returned to client"
+    }
+  ],
+  "connections": [
+    { "from": "client", "to": "dns", "style": "solid" },
+    { "from": "dns", "to": "lb", "style": "solid" },
+    { "from": "lb", "to": "algo", "style": "solid" },
+    { "from": "algo", "to": "round-robin", "label": "uniform load" },
+    { "from": "algo", "to": "least-conn", "label": "variable load" },
+    { "from": "algo", "to": "ip-hash", "label": "sticky" },
+    { "from": "round-robin", "to": "server1", "animated": true },
+    { "from": "round-robin", "to": "server2", "animated": true },
+    { "from": "least-conn", "to": "server2", "animated": true },
+    { "from": "least-conn", "to": "server3", "animated": true },
+    { "from": "ip-hash", "to": "server1", "animated": true },
+    { "from": "ip-hash", "to": "server3", "animated": true },
+    {
+      "from": "lb",
+      "to": "health-check",
+      "style": "dashed",
+      "label": "monitors"
+    },
+    { "from": "server1", "to": "response" },
+    { "from": "server2", "to": "response" },
+    { "from": "server3", "to": "response" },
+    { "from": "l4-vs-l7", "to": "lb", "style": "dashed", "label": "choice" }
+  ]
+}

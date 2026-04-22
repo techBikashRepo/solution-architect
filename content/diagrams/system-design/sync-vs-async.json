@@ -1,0 +1,132 @@
+{
+  "id": "sync-vs-async",
+  "title": "Sync vs Async Communication",
+  "subtitle": "Two fundamental inter-service communication patterns and when to use each",
+  "type": "comparison",
+  "theme": "cyan",
+  "layout": "side-by-side",
+  "nodes": [
+    {
+      "id": "sync",
+      "label": "Synchronous",
+      "icon": "📞",
+      "type": "header-left",
+      "color": "#6366f1",
+      "description": "Caller waits for response before continuing execution"
+    },
+    {
+      "id": "async",
+      "label": "Asynchronous",
+      "icon": "📨",
+      "type": "header-right",
+      "color": "#10b981",
+      "description": "Caller sends message and continues — response comes later (or never)"
+    },
+    {
+      "id": "sync-how",
+      "label": "How It Works",
+      "icon": "🔄",
+      "type": "row-left",
+      "parent": "sync",
+      "items": [
+        "Client → Server → waits → response",
+        "HTTP REST: request/response cycle",
+        "gRPC: efficient binary request/response",
+        "GraphQL: query/response pattern"
+      ]
+    },
+    {
+      "id": "async-how",
+      "label": "How It Works",
+      "icon": "🔄",
+      "type": "row-right",
+      "parent": "async",
+      "items": [
+        "Producer → Queue ← Consumer",
+        "Producer doesn't wait for consumer to process",
+        "Message persisted until consumer ready",
+        "SQS, Kafka, SNS, RabbitMQ"
+      ]
+    },
+    {
+      "id": "sync-pros",
+      "label": "Advantages",
+      "icon": "✅",
+      "type": "row-left",
+      "parent": "sync",
+      "items": [
+        "Simple: easy to reason about flow",
+        "Immediate feedback (error handling simple)",
+        "Strong consistency — read your own write",
+        "Easy debugging with request tracing"
+      ]
+    },
+    {
+      "id": "async-pros",
+      "label": "Advantages",
+      "icon": "✅",
+      "type": "row-right",
+      "parent": "async",
+      "items": [
+        "High throughput — no waiting for downstream",
+        "Decoupling: services evolve independently",
+        "Resilient: consumer down ≠ producer down",
+        "Buffer absorbs traffic spikes naturally"
+      ]
+    },
+    {
+      "id": "sync-cons",
+      "label": "Disadvantages",
+      "icon": "❌",
+      "type": "row-left",
+      "parent": "sync",
+      "items": [
+        "Tight coupling: if downstream is slow, caller waits",
+        "Cascading failures: chain of timeouts",
+        "Hard to scale: threads blocked waiting",
+        "No natural traffic buffering"
+      ]
+    },
+    {
+      "id": "async-cons",
+      "label": "Disadvantages",
+      "icon": "❌",
+      "type": "row-right",
+      "parent": "async",
+      "items": [
+        "No immediate response — harder to debug",
+        "Eventual consistency — stale reads possible",
+        "Complexity: DLQ, retry logic, idempotency",
+        "Message ordering requires extra care"
+      ]
+    },
+    {
+      "id": "sync-use",
+      "label": "Use When",
+      "icon": "🎯",
+      "type": "footer-left",
+      "parent": "sync",
+      "color": "#6366f1",
+      "items": [
+        "User waits for response (login, search)",
+        "Result needed to continue (payment check)",
+        "Real-time data required",
+        "Simple low-traffic internal APIs"
+      ]
+    },
+    {
+      "id": "async-use",
+      "label": "Use When",
+      "icon": "🎯",
+      "type": "footer-right",
+      "parent": "async",
+      "color": "#10b981",
+      "items": [
+        "Fire-and-forget (email, notifications)",
+        "Heavy work that takes time (video encoding)",
+        "High-volume events (click tracking, logs)",
+        "Decoupling services across teams"
+      ]
+    }
+  ]
+}

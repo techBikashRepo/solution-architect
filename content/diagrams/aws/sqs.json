@@ -1,0 +1,161 @@
+{
+  "id": "sqs",
+  "title": "Amazon SQS",
+  "subtitle": "Simple Queue Service — fully managed message queuing for microservice decoupling",
+  "type": "architecture",
+  "theme": "violet",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "producer",
+      "label": "Message Producer",
+      "icon": "📤",
+      "type": "start",
+      "description": "Any AWS service or app: Lambda, EC2, API Gateway, EventBridge"
+    },
+    {
+      "id": "queue-types",
+      "label": "Queue Type",
+      "icon": "❓",
+      "type": "decision",
+      "description": "Choose Standard or FIFO based on ordering requirements"
+    },
+    {
+      "id": "standard",
+      "label": "Standard Queue",
+      "icon": "🔀",
+      "type": "process",
+      "badge": "Unlimited",
+      "color": "#8b5cf6",
+      "description": "Maximum throughput, best-effort ordering",
+      "items": [
+        "Nearly unlimited TPS",
+        "Best-effort ordering (may reorder)",
+        "At-least-once delivery (may duplicate)",
+        "Best for: high-throughput, order doesn't matter"
+      ]
+    },
+    {
+      "id": "fifo",
+      "label": "FIFO Queue",
+      "icon": "🔢",
+      "type": "process",
+      "badge": "Ordered",
+      "color": "#6366f1",
+      "description": "Strict ordering and exactly-once processing",
+      "items": [
+        "Up to 3,000 TPS with batching",
+        "First-In-First-Out guaranteed",
+        "Exactly-once with dedup ID",
+        "Best for: payments, order processing"
+      ]
+    },
+    {
+      "id": "message-lifecycle",
+      "label": "Message Lifecycle",
+      "icon": "🔄",
+      "type": "process",
+      "badge": "Flow",
+      "color": "#06b6d4",
+      "description": "How a message flows through SQS from send to delete",
+      "items": [
+        "1. Producer sends → message stored",
+        "2. Consumer receives → visibility timeout starts",
+        "3. Consumer processes → deletes message",
+        "4. On failure → message reappears after timeout"
+      ]
+    },
+    {
+      "id": "visibility",
+      "label": "Visibility Timeout",
+      "icon": "⏱️",
+      "type": "process",
+      "badge": "Safety",
+      "color": "#f59e0b",
+      "description": "Prevents other consumers from processing same message",
+      "items": [
+        "Default: 30 seconds",
+        "Set to > max processing time",
+        "Extend via ChangeMessageVisibility",
+        "After timeout: message reappears in queue"
+      ]
+    },
+    {
+      "id": "dlq",
+      "label": "Dead Letter Queue",
+      "icon": "💀",
+      "type": "process",
+      "badge": "Safety Net",
+      "color": "#f43f5e",
+      "description": "Captures messages that repeatedly fail processing",
+      "items": [
+        "After maxReceiveCount failures → DLQ",
+        "Inspect and debug failed messages",
+        "Redrive: replay DLQ to source queue",
+        "Alert: CloudWatch alarm on DLQ depth"
+      ]
+    },
+    {
+      "id": "consumer",
+      "label": "Message Consumer",
+      "icon": "📥",
+      "type": "process",
+      "badge": "Worker",
+      "color": "#10b981",
+      "description": "EC2, Lambda, ECS worker that processes messages",
+      "items": [
+        "Lambda: event source mapping auto-polls",
+        "EC2/ECS: long polling (WaitTimeSeconds=20)",
+        "Batch size: 1-10 messages per receive",
+        "Scale consumers with queue depth metric"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "producer",
+      "to": "queue-types",
+      "style": "solid",
+      "animated": true,
+      "label": "SendMessage"
+    },
+    {
+      "from": "queue-types",
+      "to": "standard",
+      "label": "unordered",
+      "style": "solid"
+    },
+    {
+      "from": "queue-types",
+      "to": "fifo",
+      "label": "ordered",
+      "style": "solid"
+    },
+    {
+      "from": "standard",
+      "to": "message-lifecycle",
+      "style": "solid",
+      "animated": true
+    },
+    {
+      "from": "fifo",
+      "to": "message-lifecycle",
+      "style": "solid",
+      "animated": true
+    },
+    { "from": "message-lifecycle", "to": "visibility", "style": "dashed" },
+    {
+      "from": "message-lifecycle",
+      "to": "consumer",
+      "style": "solid",
+      "animated": true,
+      "label": "deliver"
+    },
+    {
+      "from": "consumer",
+      "to": "dlq",
+      "style": "dashed",
+      "label": "on failure"
+    }
+  ]
+}

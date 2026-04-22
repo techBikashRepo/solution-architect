@@ -1,0 +1,138 @@
+{
+  "id": "rds",
+  "title": "Amazon RDS",
+  "subtitle": "Managed relational database service — offload undifferentiated heavy lifting",
+  "type": "hierarchy",
+  "theme": "emerald",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Amazon RDS",
+      "icon": "🗄️",
+      "type": "root",
+      "description": "Managed SQL database — AWS handles patching, backups, HA, and failover"
+    },
+    {
+      "id": "engines",
+      "label": "Database Engines",
+      "icon": "⚙️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Choose Engine",
+      "color": "#10b981",
+      "description": "Six supported database engines with different trade-offs"
+    },
+    {
+      "id": "postgres",
+      "label": "PostgreSQL",
+      "icon": "🐘",
+      "type": "leaf",
+      "parent": "engines",
+      "items": [
+        "Most feature-rich open source SQL",
+        "JSONB for hybrid SQL+NoSQL patterns",
+        "Full-text search, PostGIS, extensions",
+        "Best for: complex queries, analytics"
+      ]
+    },
+    {
+      "id": "mysql",
+      "label": "MySQL",
+      "icon": "🐬",
+      "type": "leaf",
+      "parent": "engines",
+      "items": [
+        "Most popular open source SQL",
+        "InnoDB: ACID, row-level locking",
+        "Wide ecosystem, massive community",
+        "Best for: web apps, general purpose"
+      ]
+    },
+    {
+      "id": "aurora",
+      "label": "Aurora",
+      "icon": "⭐",
+      "type": "leaf",
+      "parent": "engines",
+      "items": [
+        "AWS-rebuilt MySQL/PostgreSQL compatible",
+        "5× faster than MySQL, 3× faster than Postgres",
+        "Auto-grows storage 10GB to 128TB",
+        "6-way replication across 3 AZs"
+      ]
+    },
+    {
+      "id": "ha",
+      "label": "High Availability",
+      "icon": "🏗️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Resilience",
+      "color": "#6366f1",
+      "description": "RDS mechanisms for fault tolerance and zero-downtime operations"
+    },
+    {
+      "id": "multi-az-rds",
+      "label": "Multi-AZ Deployment",
+      "icon": "🌍",
+      "type": "leaf",
+      "parent": "ha",
+      "items": [
+        "Synchronous replica in standby AZ",
+        "Automatic failover in 1-2 minutes",
+        "DNS endpoint switches automatically",
+        "Zero data loss (synchronous replication)"
+      ]
+    },
+    {
+      "id": "read-replicas",
+      "label": "Read Replicas",
+      "icon": "📖",
+      "type": "leaf",
+      "parent": "ha",
+      "items": [
+        "Asynchronous replica for read scale-out",
+        "Up to 5 replicas (15 for Aurora)",
+        "Can be in same or different regions",
+        "Promote to primary if needed"
+      ]
+    },
+    {
+      "id": "backups",
+      "label": "Backup & Recovery",
+      "icon": "💾",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Recovery",
+      "color": "#f59e0b",
+      "description": "Automated and manual backup strategies"
+    },
+    {
+      "id": "automated",
+      "label": "Automated Backups",
+      "icon": "🔄",
+      "type": "leaf",
+      "parent": "backups",
+      "items": [
+        "Daily full backup + transaction logs",
+        "Point-in-time recovery to any second",
+        "Retention: 1-35 days",
+        "Stored in S3 at no extra cost"
+      ]
+    },
+    {
+      "id": "snapshots",
+      "label": "Manual Snapshots",
+      "icon": "📸",
+      "type": "leaf",
+      "parent": "backups",
+      "items": [
+        "Retained until explicitly deleted",
+        "Share across accounts and regions",
+        "Create before major schema changes",
+        "Restore to new RDS instance"
+      ]
+    }
+  ]
+}

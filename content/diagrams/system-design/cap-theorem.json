@@ -1,0 +1,145 @@
+{
+  "id": "cap-theorem",
+  "title": "CAP Theorem",
+  "subtitle": "Pick 2 of 3 — Consistency, Availability, Partition Tolerance",
+  "type": "comparison",
+  "theme": "violet",
+  "layout": "triangle",
+  "nodes": [
+    {
+      "id": "consistency",
+      "label": "Consistency",
+      "icon": "🔒",
+      "type": "pillar",
+      "badge": "C",
+      "color": "#6366f1",
+      "description": "Every read returns the most recent write or an error",
+      "items": [
+        "All nodes see same data simultaneously",
+        "Strong guarantees",
+        "May reject reads during partition"
+      ]
+    },
+    {
+      "id": "availability",
+      "label": "Availability",
+      "icon": "🟢",
+      "type": "pillar",
+      "badge": "A",
+      "color": "#10b981",
+      "description": "Every request receives a response (not necessarily the latest data)",
+      "items": [
+        "System always responds",
+        "Stale reads acceptable",
+        "No downtime guarantee"
+      ]
+    },
+    {
+      "id": "partition",
+      "label": "Partition Tolerance",
+      "icon": "🌐",
+      "type": "pillar",
+      "badge": "P",
+      "color": "#f59e0b",
+      "description": "System continues operating when network splits occur",
+      "items": [
+        "Required in distributed systems",
+        "Network failures are inevitable",
+        "Must be present in practice"
+      ]
+    },
+    {
+      "id": "cp",
+      "label": "CP Systems",
+      "icon": "🗄️",
+      "type": "result",
+      "badge": "C + P",
+      "color": "#6366f1",
+      "description": "Consistent + Partition Tolerant (sacrifices Availability)",
+      "items": [
+        "HBase",
+        "Zookeeper",
+        "MongoDB (default config)",
+        "Redis (primary-replica)"
+      ]
+    },
+    {
+      "id": "ap",
+      "label": "AP Systems",
+      "icon": "🚀",
+      "type": "result",
+      "badge": "A + P",
+      "color": "#10b981",
+      "description": "Available + Partition Tolerant (sacrifices Consistency)",
+      "items": ["Cassandra", "DynamoDB", "CouchDB", "DNS"]
+    },
+    {
+      "id": "ca",
+      "label": "CA Systems",
+      "icon": "🏛️",
+      "type": "result",
+      "badge": "C + A",
+      "color": "#f43f5e",
+      "description": "Consistent + Available (only on single node — no partitions)",
+      "items": [
+        "PostgreSQL (single node)",
+        "MySQL (single node)",
+        "Not practical for distributed systems"
+      ]
+    },
+    {
+      "id": "rule",
+      "label": "The Golden Rule",
+      "icon": "⚡",
+      "type": "insight",
+      "color": "#8b5cf6",
+      "description": "In a distributed system, network partitions WILL happen. So you must choose between C and A.",
+      "items": [
+        "P is non-negotiable in distributed systems",
+        "PACELC extends CAP for latency trade-offs",
+        "Most modern DBs offer tunable consistency",
+        "DynamoDB: tunable via ConsistentRead flag"
+      ]
+    },
+    {
+      "id": "pacelc",
+      "label": "PACELC Extension",
+      "icon": "🔬",
+      "type": "insight",
+      "color": "#f43f5e",
+      "description": "PACELC: during Partition → C or A; Else (no partition) → Latency or Consistency",
+      "items": [
+        "Extends CAP to cover normal operation",
+        "DynamoDB: PA/EL (available, low latency)",
+        "Spanner: PC/EC (consistent everywhere)",
+        "Cassandra: PA/EL by default, tunable"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "consistency",
+      "to": "availability",
+      "label": "vs",
+      "style": "dashed"
+    },
+    {
+      "from": "availability",
+      "to": "partition",
+      "label": "vs",
+      "style": "dashed"
+    },
+    {
+      "from": "partition",
+      "to": "consistency",
+      "label": "vs",
+      "style": "dashed"
+    },
+    { "from": "consistency", "to": "cp", "style": "solid" },
+    { "from": "partition", "to": "cp", "style": "solid" },
+    { "from": "availability", "to": "ap", "style": "solid" },
+    { "from": "partition", "to": "ap", "style": "solid" },
+    { "from": "consistency", "to": "ca", "style": "solid" },
+    { "from": "availability", "to": "ca", "style": "solid" }
+  ]
+}

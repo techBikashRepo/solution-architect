@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="LearnPath — Premium learning platform for Solution Architects covering System Design, AWS Cloud, and DSA."
+    />
+    <meta name="theme-color" content="#0c0c1d" id="theme-color-meta" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta
+      property="og:title"
+      content="LearnPath — Solution Architect Academy"
+    />
+    <meta
+      property="og:description"
+      content="Curated learning paths for System Design, AWS Cloud, and DSA."
+    />
+    <meta property="og:type" content="website" />
+    <!-- Emoji favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"
+    />
+    <title>LearnPath — Solution Architect Academy</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Highlight.js theme (swapped on dark/light toggle) -->
+    <link
+      rel="stylesheet"
+      id="hljs-theme"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+    />
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/diagrams.css" />
+
+    <!-- Marked.js (Markdown parser) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <!-- Highlight.js (syntax highlighting) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <noscript>
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #0c0c1d;
+          color: #e4e4f0;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+          padding: 2rem;
+          z-index: 9999;
+        "
+      >
+        <div>
+          <div style="font-size: 3rem; margin-bottom: 1rem">⚡</div>
+          <h1 style="font-size: 1.5rem; margin-bottom: 0.75rem">
+            JavaScript Required
+          </h1>
+          <p style="color: #9090b8">
+            LearnPath requires JavaScript to load and render content
+            dynamically.<br />Please enable JavaScript in your browser settings.
+          </p>
+        </div>
+      </div>
+    </noscript>
+    <!-- ══════════════════════════════════════════
+       STICKY HEADER
+  ══════════════════════════════════════════ -->
+    <header class="header" id="header" role="banner">
+      <div class="header__inner container">
+        <!-- Logo -->
+        <a class="logo" id="nav-home" href="#/" aria-label="LearnPath Home">
+          <span class="logo__icon" aria-hidden="true">⚡</span>
+          <span class="logo__text">LearnPath</span>
+        </a>
+
+        <!-- Global Search (desktop) -->
+        <div class="header-search" role="search">
+          <span class="header-search__icon" aria-hidden="true">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </span>
+          <input
+            type="search"
+            id="global-search"
+            class="header-search__input"
+            placeholder="Search topics… (⌘K)"
+            aria-label="Search topics"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <kbd class="header-search__kbd">⌘K</kbd>
+          <!-- Dropdown results -->
+          <div
+            class="search-dropdown"
+            id="search-dropdown"
+            role="listbox"
+            aria-label="Search results"
+            hidden
+          ></div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header__actions">
+          <!-- Keyboard shortcuts hint -->
+          <button
+            class="btn-icon"
+            id="btn-shortcuts"
+            aria-label="Keyboard shortcuts"
+            title="Keyboard shortcuts (?)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+            </svg>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button
+            class="btn-icon theme-btn"
+            id="theme-toggle"
+            aria-label="Toggle dark/light mode"
+            title="Toggle theme (D)"
+          >
+            <svg
+              class="icon-sun"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+
+          <!-- Hamburger (Mobile only) -->
+          <button
+            class="btn-icon hamburger"
+            id="hamburger"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-drawer"
+          >
+            <span class="hamburger__bar"></span>
+            <span class="hamburger__bar"></span>
+            <span class="hamburger__bar"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Reading-progress bar (shows when viewing a topic) -->
+      <div
+        class="reading-progress-bar"
+        id="reading-progress"
+        aria-hidden="true"
+      >
+        <div
+          class="reading-progress-bar__fill"
+          id="reading-progress-fill"
+        ></div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+       MOBILE DRAWER
+  ══════════════════════════════════════════ -->
+    <div class="drawer-overlay" id="drawer-overlay" aria-hidden="true"></div>
+    <nav
+      class="mobile-drawer"
+      id="mobile-drawer"
+      aria-label="Mobile navigation"
+      aria-hidden="true"
+    >
+      <div class="mobile-drawer__header">
+        <span class="logo__text">LearnPath</span>
+        <button
+          class="btn-icon"
+          id="drawer-close"
+          aria-label="Close navigation"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="mobile-drawer__body" id="mobile-drawer-body">
+        <!-- Populated by navigation.js -->
+      </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+       MAIN APPLICATION
+  ══════════════════════════════════════════ -->
+    <main class="main" id="main" role="main">
+      <!-- ─── DASHBOARD VIEW ─── -->
+      <section class="view" id="view-dashboard" aria-label="Dashboard">
+        <!-- Hero -->
+        <div class="hero container">
+          <div class="hero__left">
+            <p class="hero__greeting" id="hero-greeting">Good morning 👋</p>
+            <h1 class="hero__title">
+              Level up your<br /><span class="gradient-text">Architecture</span>
+              skills
+            </h1>
+            <p class="hero__subtitle">
+              Curated learning paths for System Design, AWS Cloud, and DSA —
+              built for Solution Architects.
+            </p>
+            <div class="hero__cta">
+              <button
+                class="btn btn--primary btn--lg"
+                id="btn-continue-learning"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Continue Learning
+              </button>
+              <button class="btn btn--ghost btn--lg" id="btn-shortcuts-hero">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                </svg>
+                Shortcuts
+              </button>
+            </div>
+            <!-- XP / overall progress bar -->
+            <div class="hero__xp" aria-label="Overall progress" role="group">
+              <div class="hero__xp-label">
+                <span>Overall Progress</span>
+                <span id="hero-xp-pct" class="hero__xp-pct">0%</span>
+              </div>
+              <div
+                class="hero__xp-track"
+                role="progressbar"
+                aria-valuenow="0"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                id="hero-xp-bar"
+              >
+                <div class="hero__xp-fill" id="hero-xp-fill"></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="hero__stats"
+            id="hero-stats"
+            role="group"
+            aria-label="Learning statistics"
+          >
+            <div class="stat-pill">
+              <span class="stat-pill__value" id="stat-total">—</span>
+              <span class="stat-pill__label">Total Topics</span>
+            </div>
+            <div class="stat-pill stat-pill--accent">
+              <span class="stat-pill__value" id="stat-completed">0</span>
+              <span class="stat-pill__label">Completed</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill__value" id="stat-pct">0%</span>
+              <span class="stat-pill__label">Progress</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar container">
+          <div class="filter-bar__search">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              type="search"
+              id="subject-search"
+              class="filter-bar__input"
+              placeholder="Filter subjects…"
+              aria-label="Filter subjects"
+            />
+          </div>
+          <div
+            class="filter-tags"
+            id="filter-tags"
+            role="group"
+            aria-label="Subject filters"
+          >
+            <button
+              class="tag tag--active"
+              data-filter="all"
+              aria-pressed="true"
+            >
+              All
+            </button>
+            <!-- More tags added dynamically -->
+          </div>
+        </div>
+
+        <!-- Subjects grid -->
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Subjects</h2>
+            <span class="section-badge" id="subjects-count"></span>
+          </div>
+          <div
+            class="subjects-grid"
+            id="subjects-grid"
+            role="list"
+            aria-label="Learning subjects"
+          >
+            <!-- Skeleton cards (replaced when manifest loads) -->
+            <div class="card-skeleton" aria-hidden="true">
+              <div class="skeleton-header"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line skeleton-line--short"></div>
+            </div>
+            <div class="card-skeleton" aria-hidden="true">
+              <div class="skeleton-header"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line skeleton-line--short"></div>
+            </div>
+            <div class="card-skeleton" aria-hidden="true">
+              <div class="skeleton-header"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line skeleton-line--short"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /view-dashboard -->
+
+      <!-- ─── CONTENT VIEW (Subject Overview + Topic Reader) ─── -->
+      <section
+        class="view"
+        id="view-content"
+        hidden
+        aria-label="Content viewer"
+      >
+        <div class="content-layout">
+          <!-- Sidebar -->
+          <aside
+            class="sidebar"
+            id="sidebar"
+            role="complementary"
+            aria-label="Course navigation"
+          >
+            <div class="sidebar__top">
+              <button
+                class="btn-back"
+                id="btn-back"
+                aria-label="Back to dashboard"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                All Subjects
+              </button>
+              <!-- Subject header in sidebar -->
+              <div class="sidebar__subject" id="sidebar-subject">
+                <!-- Populated by navigation.js -->
+              </div>
+              <!-- Progress bar -->
+              <div class="sidebar__progress" aria-label="Subject progress">
+                <div class="sidebar__progress-track">
+                  <div
+                    class="sidebar__progress-fill"
+                    id="sidebar-progress-fill"
+                  ></div>
+                </div>
+                <span
+                  class="sidebar__progress-label"
+                  id="sidebar-progress-label"
+                  >0 / 0</span
+                >
+              </div>
+            </div>
+
+            <!-- Section / Topic tree -->
+            <nav
+              class="sidebar__nav"
+              id="sidebar-nav"
+              aria-label="Topic navigation"
+            >
+              <!-- Populated by navigation.js -->
+            </nav>
+          </aside>
+
+          <!-- Main content -->
+          <div class="content-main" id="content-main">
+            <!-- Breadcrumb -->
+            <nav
+              class="breadcrumb"
+              id="breadcrumb"
+              aria-label="Breadcrumb"
+              aria-live="polite"
+            >
+              <!-- Populated by navigation.js -->
+            </nav>
+
+            <!-- Article area -->
+            <article class="content-article" id="content-article" tabindex="-1">
+              <!-- Subject overview or Markdown content rendered here -->
+            </article>
+
+            <!-- Prev / Complete / Next bar -->
+            <div class="topic-footer" id="topic-footer" hidden>
+              <button
+                class="btn btn--outline"
+                id="btn-prev"
+                aria-label="Previous topic"
+                disabled
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Previous
+              </button>
+              <button
+                class="btn btn--success"
+                id="btn-complete"
+                aria-label="Mark topic as complete"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span id="btn-complete-label">Mark Complete</span>
+              </button>
+              <button
+                class="btn btn--outline"
+                id="btn-next"
+                aria-label="Next topic"
+                disabled
+              >
+                Next
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table of Contents (desktop right panel) -->
+          <aside
+            class="toc-aside"
+            id="toc-aside"
+            role="complementary"
+            aria-label="Table of contents"
+          >
+            <div class="toc-aside__inner" id="toc-aside-inner">
+              <p class="toc-aside__title">On this page</p>
+              <nav id="toc-nav" aria-label="Page sections">
+                <!-- Populated by contentLoader.js -->
+              </nav>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <!-- /view-content -->
+
+      <!-- Loading overlay -->
+      <div
+        class="loading-overlay"
+        id="loading-overlay"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading content"
+        aria-hidden="true"
+        hidden
+      >
+        <div class="spinner" aria-hidden="true">
+          <div class="spinner__dot"></div>
+          <div class="spinner__dot"></div>
+          <div class="spinner__dot"></div>
+        </div>
+      </div>
+    </main>
+    <!-- /main -->
+
+    <!-- ══════════════════════════════════════════
+       DIAGRAM OVERLAY
+  ══════════════════════════════════════════ -->
+    <div
+      id="diagram-overlay"
+      class="diagram-overlay"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="diagram-title"
+    >
+      <!-- Toolbar -->
+      <div class="diagram-overlay__toolbar">
+        <div class="diagram-overlay__title-wrap">
+          <span id="diagram-title"></span>
+          <span id="diagram-subtitle"></span>
+        </div>
+        <div class="diagram-overlay__controls">
+          <!-- Zoom group -->
+          <div
+            class="diagram-zoom-group"
+            role="group"
+            aria-label="Zoom controls"
+          >
+            <button
+              class="btn-icon"
+              id="diagram-zoom-out"
+              aria-label="Zoom out"
+              title="Zoom out (-)"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+            <span id="diagram-zoom-level" aria-live="polite">100%</span>
+            <button
+              class="btn-icon"
+              id="diagram-zoom-in"
+              aria-label="Zoom in"
+              title="Zoom in (+)"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <span class="diagram-ctrl-sep" aria-hidden="true"></span>
+          <!-- Reset view -->
+          <button
+            class="btn-icon"
+            id="diagram-reset"
+            aria-label="Reset view"
+            title="Reset view (0)"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+          <!-- Fullscreen -->
+          <button
+            class="btn-icon"
+            id="diagram-fullscreen"
+            aria-label="Toggle fullscreen"
+            title="Fullscreen (F)"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+              />
+            </svg>
+          </button>
+          <span class="diagram-ctrl-sep" aria-hidden="true"></span>
+          <!-- Close -->
+          <button
+            class="btn-icon"
+            id="diagram-close"
+            aria-label="Close diagram (Esc)"
+            title="Close (Esc)"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Diagram body -->
+      <div class="diagram-overlay__body">
+        <!-- Pan/zoom viewport -->
+        <div
+          id="diagram-viewport"
+          class="diagram-viewport"
+          aria-label="Diagram canvas — drag to pan, scroll to zoom"
+        >
+          <div id="diagram-canvas-wrapper" class="diagram-canvas-wrapper"></div>
+        </div>
+
+        <!-- Minimap -->
+        <div class="diagram-minimap" aria-hidden="true">
+          <canvas id="diagram-minimap-canvas" width="160" height="100"></canvas>
+        </div>
+
+        <!-- Loading -->
+        <div
+          id="diagram-loading"
+          class="diagram-loading"
+          hidden
+          aria-live="polite"
+          aria-label="Loading diagram"
+        >
+          <div class="spinner">
+            <div class="spinner__dot"></div>
+            <div class="spinner__dot"></div>
+            <div class="spinner__dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /diagram-overlay -->
+
+    <!-- ══════════════════════════════════════════
+       TOAST CONTAINER
+  ══════════════════════════════════════════ -->
+    <div
+      class="toast-container"
+      id="toast-container"
+      role="region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+
+    <!-- ══════════════════════════════════════════
+       KEYBOARD SHORTCUTS MODAL
+  ══════════════════════════════════════════ -->
+    <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true"></div>
+    <dialog
+      class="modal"
+      id="shortcuts-modal"
+      aria-labelledby="shortcuts-title"
+    >
+      <div class="modal__header">
+        <h2 class="modal__title" id="shortcuts-title">Keyboard Shortcuts</h2>
+        <button class="btn-icon" id="modal-close" aria-label="Close modal">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="shortcuts-grid">
+          <div class="shortcut"><kbd>⌘K</kbd><span>Focus search</span></div>
+          <div class="shortcut"><kbd>?</kbd><span>Show shortcuts</span></div>
+          <div class="shortcut"><kbd>Esc</kbd><span>Back / Close</span></div>
+          <div class="shortcut"><kbd>←</kbd><span>Previous topic</span></div>
+          <div class="shortcut"><kbd>→</kbd><span>Next topic</span></div>
+          <div class="shortcut"><kbd>Space</kbd><span>Mark complete</span></div>
+          <div class="shortcut"><kbd>D</kbd><span>Toggle dark mode</span></div>
+          <div class="shortcut"><kbd>H</kbd><span>Go to dashboard</span></div>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- ══════════════════════════════════════════
+       JAVASCRIPT (load order matters)
+  ══════════════════════════════════════════ -->
+
+    <!-- ── Boot guard: runs before modules, catches all silent failures ── -->
+    <script>
+      (function () {
+        /* 1 — Refuse to run from file:// (ES modules are CORS-blocked) */
+        if (location.protocol === "file:") {
+          document.addEventListener("DOMContentLoaded", function () {
+            var grid = document.getElementById("subjects-grid");
+            if (grid) {
+              grid.innerHTML =
+                '<div class="server-notice" style="grid-column:1/-1">' +
+                '<div class="server-notice__icon">🚧</div>' +
+                '<h2 class="server-notice__title">Local server required</h2>' +
+                '<p class="server-notice__body">ES modules are blocked on <code>file://</code>.<br>' +
+                "Open a terminal in the project folder and run:</p>" +
+                '<code class="server-notice__code">npx serve . --listen 8080</code>' +
+                '<p class="server-notice__body" style="margin-top:12px">Then open <strong>http://localhost:8080</strong></p>' +
+                "</div>";
+            }
+          });
+          return; /* skip rest of guard */
+        }
+
+        /* 2 — Catch any unhandled module/promise errors and show on screen */
+        window.addEventListener("unhandledrejection", function (e) {
+          console.error("LearnPath boot error:", e.reason);
+          var grid = document.getElementById("subjects-grid");
+          if (grid && grid.querySelector(".card-skeleton")) {
+            grid.innerHTML =
+              '<div class="server-notice" style="grid-column:1/-1">' +
+              '<div class="server-notice__icon">⚠️</div>' +
+              '<h2 class="server-notice__title">JavaScript Error</h2>' +
+              '<p class="server-notice__body">Error: ' +
+              String(e.reason) +
+              "</p>" +
+              '<p class="server-notice__body">Open DevTools → Console for details.</p>' +
+              "</div>";
+          }
+        });
+
+        /* 3 — Timeout safety net: if skeleton cards are still there after 10s,
+               something went silently wrong */
+        document.addEventListener("DOMContentLoaded", function () {
+          setTimeout(function () {
+            var grid = document.getElementById("subjects-grid");
+            if (grid && grid.querySelector(".card-skeleton")) {
+              grid.innerHTML =
+                '<div class="server-notice" style="grid-column:1/-1">' +
+                '<div class="server-notice__icon">⏱️</div>' +
+                '<h2 class="server-notice__title">Load Timeout</h2>' +
+                '<p class="server-notice__body">App failed to initialise within 10 seconds.</p>' +
+                '<p class="server-notice__body">Open DevTools → Console and look for red errors, then hard-refresh with <kbd>Ctrl+Shift+R</kbd>.</p>' +
+                "</div>";
+            }
+          }, 10000);
+        });
+      })();
+    </script>
+
+    <!-- App JS — single ES module entry point (all imports resolved automatically) -->
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

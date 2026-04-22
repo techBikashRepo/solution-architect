@@ -1,0 +1,188 @@
+{
+  "id": "scalability",
+  "title": "Scalability",
+  "subtitle": "Vertical vs Horizontal Scaling Strategies",
+  "type": "hierarchy",
+  "theme": "indigo",
+  "layout": "top-down",
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Scalability",
+      "icon": "⚡",
+      "type": "root",
+      "description": "A system's ability to handle increasing load without degrading performance"
+    },
+    {
+      "id": "vertical",
+      "label": "Vertical Scaling",
+      "icon": "⬆️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Scale Up",
+      "color": "#6366f1",
+      "description": "Add more CPU, RAM, or SSD to the existing machine"
+    },
+    {
+      "id": "v-pros",
+      "label": "Pros",
+      "icon": "✅",
+      "type": "leaf",
+      "parent": "vertical",
+      "items": [
+        "Simple — no code changes",
+        "Low latency (no network hop)",
+        "ACID transactions easy"
+      ]
+    },
+    {
+      "id": "v-cons",
+      "label": "Cons",
+      "icon": "❌",
+      "type": "leaf",
+      "parent": "vertical",
+      "items": [
+        "Hardware ceiling",
+        "Single point of failure",
+        "Downtime to resize"
+      ]
+    },
+    {
+      "id": "v-example",
+      "label": "AWS Example",
+      "icon": "☁️",
+      "type": "leaf",
+      "parent": "vertical",
+      "items": [
+        "t3.micro → m5.4xlarge",
+        "Modify RDS instance class",
+        "Resize EBS volume"
+      ]
+    },
+    {
+      "id": "horizontal",
+      "label": "Horizontal Scaling",
+      "icon": "↔️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Scale Out",
+      "color": "#10b981",
+      "description": "Add more machines to distribute the load"
+    },
+    {
+      "id": "h-pros",
+      "label": "Pros",
+      "icon": "✅",
+      "type": "leaf",
+      "parent": "horizontal",
+      "items": [
+        "No hardware ceiling",
+        "High availability & fault tolerance",
+        "Cost-effective at scale"
+      ]
+    },
+    {
+      "id": "h-cons",
+      "label": "Cons",
+      "icon": "❌",
+      "type": "leaf",
+      "parent": "horizontal",
+      "items": [
+        "Complex distributed logic",
+        "Data consistency challenges",
+        "Network overhead"
+      ]
+    },
+    {
+      "id": "h-example",
+      "label": "AWS Example",
+      "icon": "☁️",
+      "type": "leaf",
+      "parent": "horizontal",
+      "items": [
+        "EC2 Auto Scaling Group",
+        "ECS Service auto-scale",
+        "DynamoDB on-demand capacity"
+      ]
+    },
+    {
+      "id": "lb",
+      "label": "Load Balancer",
+      "icon": "⚖️",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Enabler",
+      "color": "#f59e0b",
+      "description": "Distributes incoming requests across multiple servers"
+    },
+    {
+      "id": "lb-types",
+      "label": "Algorithms",
+      "icon": "🔁",
+      "type": "leaf",
+      "parent": "lb",
+      "items": ["Round Robin", "Least Connections", "IP Hash / Sticky Sessions"]
+    },
+    {
+      "id": "lb-aws",
+      "label": "AWS Options",
+      "icon": "☁️",
+      "type": "leaf",
+      "parent": "lb",
+      "items": [
+        "ALB (Layer 7 HTTP/HTTPS)",
+        "NLB (Layer 4, ultra-low latency)",
+        "CLB (legacy)"
+      ]
+    },
+    {
+      "id": "stateless",
+      "label": "Stateless Design",
+      "icon": "🔓",
+      "type": "branch",
+      "parent": "root",
+      "badge": "Prerequisite",
+      "color": "#8b5cf6",
+      "description": "Services must be stateless before horizontal scaling is possible"
+    },
+    {
+      "id": "session-ext",
+      "label": "External Session Store",
+      "icon": "💾",
+      "type": "leaf",
+      "parent": "stateless",
+      "items": [
+        "Move sessions to Redis / ElastiCache",
+        "JWT tokens: stateless authentication",
+        "Any server can handle any request",
+        "Sticky sessions = anti-pattern for scale"
+      ]
+    },
+    {
+      "id": "db-scale",
+      "label": "Database Scaling",
+      "icon": "🗄️",
+      "type": "leaf",
+      "parent": "stateless",
+      "items": [
+        "Read replicas: scale read traffic",
+        "Sharding: partition data by user_id / region",
+        "CQRS: separate read and write models",
+        "Connection pooling: PgBouncer / RDS Proxy"
+      ]
+    },
+    {
+      "id": "auto-scale",
+      "label": "Auto Scaling",
+      "icon": "📈",
+      "type": "leaf",
+      "parent": "stateless",
+      "items": [
+        "ASG: EC2 fleet scales on CPU/custom metric",
+        "Lambda: scales to 10,000 concurrent automatically",
+        "ECS/Fargate: task count scales with ALB metrics",
+        "k8s HPA: pod replicas scale on CPU/memory"
+      ]
+    }
+  ]
+}
