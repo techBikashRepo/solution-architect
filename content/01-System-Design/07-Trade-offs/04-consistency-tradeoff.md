@@ -49,6 +49,38 @@ STRONG ────────────────────────�
 
 ### 4. How to Choose
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef strong fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef eventual fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef mid fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    Q["❓ Data consistency need?"]
+    Money["💰 Financial / Critical?"]
+    SocialFeed["📱 Social / High-traffic reads?"]
+    OwnPosts["📝 User sees own changes?"]
+
+    Strong["🔐 Strong Consistency RDS Multi-AZ, DynamoDB TransactWrite"]
+    Eventual["⚡ Eventual Consistency DynamoDB, Cassandra, S3"]
+    ReadYourWrites["👁️ Read-Your-Writes Sticky sessions, write+read same replica"]
+
+    Q --> Money
+    Q --> SocialFeed
+    Q --> OwnPosts
+    Money -->|yes| Strong
+    SocialFeed -->|yes| Eventual
+    OwnPosts -->|yes| ReadYourWrites
+
+    Q:::client
+    Money:::client
+    SocialFeed:::client
+    OwnPosts:::client
+    Strong:::strong
+    Eventual:::eventual
+    ReadYourWrites:::mid
+```
+
 ```
 STRONG CONSISTENCY WHEN:
   ✅ Financial data: balance, transfers, payments

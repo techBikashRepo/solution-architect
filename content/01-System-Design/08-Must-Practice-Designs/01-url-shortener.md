@@ -60,6 +60,45 @@ SHORT CODE SPACE:
 
 ### High-Level Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Client["🌐 Client"]
+    CDN["🌍 CloudFront CDN"]
+    APIGW["🚨 API Gateway"]
+    ShortenSvc["🖥️ URL Shortener ECS"]
+    RedirectSvc["⚡ Redirect Service Lambda"]
+    Redis["⚡ Redis Cache hot codes"]
+    DDB["🗄️ DynamoDB source of truth"]
+    Analytics["📩 Analytics Queue SQS"]
+
+    Client -->|GET /abc123| CDN --> APIGW
+    APIGW -->|POST /shorten| ShortenSvc
+    APIGW -->|GET /code| RedirectSvc
+    ShortenSvc -->|store mapping| DDB
+    RedirectSvc -->|cache lookup| Redis
+    Redis -->|HIT 301| Client
+    Redis -->|MISS| DDB
+    DDB -->|longURL| RedirectSvc
+    RedirectSvc -->|redirect 301| Client
+    RedirectSvc -->|log click| Analytics
+
+    Client:::client
+    CDN:::lb
+    APIGW:::lb
+    ShortenSvc:::server
+    RedirectSvc:::server
+    Redis:::cache
+    DDB:::db
+    Analytics:::queue
+```
+
 ```
                         [DNS: short.ly]
                               ↓

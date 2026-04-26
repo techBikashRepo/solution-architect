@@ -42,6 +42,43 @@ Two primary goals:
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef replica fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef monitor fill:#FFFDE7,stroke:#F9A825,color:#000
+
+    WriteClient["🌐 Write Client"]
+    ReadClient["🌐 Read Client"]
+    Primary["🗄️ Primary DB All Writes"]
+
+    subgraph Replicas["📖 Read Replicas"]
+        R1["🗄️ Replica 1 Async"]
+        R2["🗄️ Replica 2 Async"]
+    end
+
+    MultiAZ["🗄️ Multi-AZ Replica Sync"]
+    Monitor["🔍 Health Monitor"]
+
+    WriteClient -->|writes| Primary
+    Primary -. async .-> R1
+    Primary -. async .-> R2
+    Primary -->|sync| MultiAZ
+    ReadClient -->|reads| R1
+    ReadClient -->|reads| R2
+    Monitor -->|health check| Primary
+    Monitor -->|promote on failure| MultiAZ
+
+    WriteClient:::client
+    ReadClient:::client
+    Primary:::db
+    R1:::replica
+    R2:::replica
+    MultiAZ:::db
+    Monitor:::monitor
+```
+
 ```
 PRIMARY-REPLICA (Single Primary / Leader-Follower):
 ─────────────────────────────────────────────────

@@ -141,8 +141,32 @@ function addCopyButtons(container) {
 function highlightCode(container) {
   if (typeof hljs === "undefined") return;
   container.querySelectorAll("pre code").forEach((block) => {
+    if (block.classList.contains("language-mermaid")) return; // rendered by mermaid.js
     hljs.highlightElement(block);
   });
+}
+
+/* ── Render mermaid diagram blocks ───────────────────────── */
+async function renderMermaid(container) {
+  if (typeof mermaid === "undefined") return;
+  const blocks = container.querySelectorAll("pre code.language-mermaid");
+  if (!blocks.length) return;
+  blocks.forEach((codeEl) => {
+    const pre = codeEl.parentElement;
+    const graphDef = codeEl.textContent;
+    const wrapper = document.createElement("div");
+    wrapper.className = "mermaid-diagram-wrapper";
+    const div = document.createElement("div");
+    div.className = "mermaid";
+    div.textContent = graphDef;
+    wrapper.appendChild(div);
+    pre.replaceWith(wrapper);
+  });
+  try {
+    await mermaid.run({ nodes: container.querySelectorAll(".mermaid") });
+  } catch (e) {
+    console.warn("Mermaid render error", e);
+  }
 }
 
 /* ── Generate Table of Contents ─────────────────────────── */
@@ -337,6 +361,7 @@ async function loadTopic(subject, section, topic) {
 
     const mdContainer = articleEl.querySelector(".md-content");
     highlightCode(mdContainer);
+    await renderMermaid(mdContainer);
     addCopyButtons(mdContainer);
     generateTOC(mdContainer);
 
@@ -406,9 +431,27 @@ function loadSubjectOverview(subject) {
   if (tocAside) tocAside.style.visibility = "hidden";
 }
 
-/* ── Init (configure marked.js) ─────────────────────────── */
+/* ── Init (configure marked.js + mermaid) ───────────────── */
 function init() {
   configureMarked();
+  if (typeof mermaid !== "undefined") {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#E3F2FD",
+        primaryTextColor: "#000",
+        primaryBorderColor: "#1E88E5",
+        lineColor: "#555",
+        background: "#ffffff",
+        nodeBorder: "#999",
+        clusterBkg: "#f5f5f5",
+        edgeLabelBackground: "#ffffff",
+      },
+      securityLevel: "loose",
+      fontFamily: "Inter, system-ui, sans-serif",
+    });
+  }
 }
 
 export const ContentLoader = {

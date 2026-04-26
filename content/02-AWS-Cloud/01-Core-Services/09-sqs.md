@@ -47,6 +47,38 @@ Think of SQS as: a **durable buffer** between services — producers never wait 
 
 ### 4. Visibility Timeout
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    Queue["📩 SQS Queue Message M"]
+    Consumer["🖥️ Consumer A"]
+    Invisible["🔕 Message invisible 30s"]
+    Success["✅ DeleteMessage → gone"]
+    Fail["❌ Timeout expires → reappears"]
+    Dupe["⚠️ Slow >30s → duplicate pickup"]
+    DLQ["📁 DLQ after maxReceiveCount"]
+
+    Queue -->|ReceiveMessage| Consumer
+    Consumer --> Invisible
+    Invisible -->|success| Success
+    Invisible -->|failure| Fail
+    Invisible -->|too slow| Dupe
+    Fail -->|retry 3x| DLQ
+
+    Queue:::queue
+    Consumer:::server
+    Invisible:::client
+    Success:::good
+    Fail:::bad
+    Dupe:::bad
+    DLQ:::bad
+```
+
 ```
 VISIBILITY TIMEOUT FLOW:
 ─────────────────────────────────────────────────────────

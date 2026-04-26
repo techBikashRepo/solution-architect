@@ -41,6 +41,43 @@ Users get a reduced experience instead of a broken one. Revenue continues. SLA m
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef fail fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef fallback fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    Request["🌐 User Request"]
+    Primary["🖥️ Primary: Personalized"]
+    Redis["⚡ Redis: Cached Data"]
+    Static["📄 Static: Default Content"]
+
+    subgraph Fallback["🪜 Fallback Hierarchy"]
+        L1["🌟 Level 1: Real-time personalized"]
+        L2["📆 Level 2: Cached stale data"]
+        L3["📄 Level 3: Static defaults"]
+        L1 -->|service down| L2
+        L2 -->|cache miss| L3
+    end
+
+    Request --> Primary
+    Primary -->|failure| Redis
+    Redis -->|miss| Static
+    Primary -->|success| Request
+    Redis -->|stale ok| Request
+    Static -->|always works| Request
+
+    Request:::client
+    Primary:::server
+    Redis:::fallback
+    Static:::good
+    L1:::server
+    L2:::fallback
+    L3:::good
+```
+
 ```
 FEATURE FLAGS — toggle features under load:
 ─────────────────────────────────────────────────

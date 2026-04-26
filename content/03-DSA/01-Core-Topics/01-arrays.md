@@ -13,6 +13,44 @@
 
 An **array** is a contiguous block of memory storing elements of the same type. O(1) index access. The foundation of most DSA problems.
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    subgraph Patterns["🔑 Array Problem Patterns"]
+        TP["👈👉 Two Pointers O(n)"]
+        SW["🪟 Sliding Window O(n)"]
+        PS["∑ Prefix Sum O(n)"]
+        BS["🔍 Binary Search O(log n) sorted"]
+        Sort["📊 Sort First O(n log n)"]
+    end
+
+    subgraph Complexity["⏱ Time Complexity"]
+        O1["⚡ O(1) index access"]
+        On["📈 O(n) search unsorted"]
+        Ologn["🔍 O(log n) binary search sorted"]
+    end
+
+    Problem["❓ Array Problem"] --> TP
+    Problem --> SW
+    Problem --> PS
+    Problem --> BS
+    Problem --> Sort
+
+    Problem:::blue
+    TP:::good
+    SW:::good
+    PS:::good
+    BS:::warn
+    Sort:::warn
+    O1:::good
+    On:::warn
+    Ologn:::good
+```
+
 ```
 ARRAY FUNDAMENTALS:
   Access by index: O(1)

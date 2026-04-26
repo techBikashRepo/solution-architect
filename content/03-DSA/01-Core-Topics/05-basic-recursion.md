@@ -17,6 +17,44 @@
 2. **Recursive case**: call self with smaller input
 3. **Trust the recursion**: assume the recursive call returns the correct answer
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    Call["📞 f(n) called"]
+    Base["✅ Base Case n<=1 return immediately"]
+    Recurse["🔄 Recursive Case f(n-1) or f(n/2)"]
+    Trust["🤝 Trust: f(n-1) returns correct answer"]
+    Combine["⚙️ Combine result + current work"]
+    Return["↩️ Return final answer"]
+
+    Call -->|n is base| Base
+    Call -->|n > base| Recurse
+    Recurse --> Trust --> Combine --> Return
+    Base --> Return
+
+    subgraph Complexity["⏱ T(n) Patterns"]
+        Halving["T(n/2)+O(1) → O(log n)"]
+        Linear["T(n-1)+O(1) → O(n)"]
+        MergeSort["2T(n/2)+O(n) → O(n log n)"]
+        Exponential["2T(n-1)+O(1) → O(2^n) BAD"]
+    end
+
+    Call:::blue
+    Base:::good
+    Recurse:::warn
+    Trust:::good
+    Combine:::good
+    Return:::good
+    Halving:::good
+    Linear:::warn
+    MergeSort:::warn
+    Exponential:::bad
+```
+
 ```
 RECURSION FUNDAMENTALS:
   Call stack: each call occupies stack frame

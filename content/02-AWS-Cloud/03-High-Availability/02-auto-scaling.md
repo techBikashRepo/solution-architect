@@ -51,6 +51,38 @@ LAUNCH TEMPLATE vs LAUNCH CONFIGURATION:
 
 ### 3. Scaling Policies
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef monitor fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    ALB["⚖️ ALB"]
+    CW["📊 CloudWatch Metric ALBRequestCountPerTarget"]
+    ASG["↔️ Auto Scaling Group"]
+    ScaleOut["⬆️ Scale Out Add EC2"]
+    ScaleIn["⬇️ Scale In Remove EC2"]
+    EC2["🖥️ EC2 Instances Min:2 Desired:4 Max:10"]
+
+    ALB -->|requests/target metric| CW
+    CW -->|> target 1000 rps| ScaleOut
+    CW -->|< target 1000 rps| ScaleIn
+    ScaleOut --> ASG
+    ScaleIn --> ASG
+    ASG --> EC2
+    EC2 --> ALB
+
+    ALB:::lb
+    CW:::monitor
+    ASG:::client
+    ScaleOut:::good
+    ScaleIn:::bad
+    EC2:::server
+```
+
 ```
 1. TARGET TRACKING (recommended for most cases):
    Set a target value for a metric; ASG adjusts to maintain it

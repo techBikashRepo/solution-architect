@@ -55,6 +55,53 @@ Storage:
 
 ### High-Level Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    OrderSvc["📦 Order Service"]
+    AuthSvc["🔐 Auth Service"]
+    Marketing["📣 Marketing"]
+    SNS["📩 SNS notification-events"]
+    SQS["📩 SQS per-priority queue"]
+    NotifSvc["🖥️ Notification Service"]
+    Push["📱 Push Worker APNs/FCM"]
+    Email["📧 Email Worker SES"]
+    SMS["📲 SMS Worker SNS SMS"]
+    DDB["🗄️ DynamoDB notification_status"]
+    DLQ["⚠️ DLQ retries"]
+
+    OrderSvc --> SNS
+    AuthSvc --> SNS
+    Marketing --> SNS
+    SNS --> SQS
+    SQS --> NotifSvc
+    NotifSvc --> Push
+    NotifSvc --> Email
+    NotifSvc --> SMS
+    Push --> DDB
+    Email --> DDB
+    SMS --> DDB
+    Push -->|fail| DLQ
+    Email -->|fail| DLQ
+
+    OrderSvc:::client
+    AuthSvc:::client
+    Marketing:::client
+    SNS:::queue
+    SQS:::queue
+    NotifSvc:::server
+    Push:::server
+    Email:::server
+    SMS:::server
+    DDB:::db
+    DLQ:::db
+```
+
 ```
 PRODUCERS (what triggers notifications):
   Order Service → "order.shipped"

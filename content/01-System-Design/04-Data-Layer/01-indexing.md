@@ -42,6 +42,38 @@ Unindexed queries on large tables = the #1 cause of production DB slowdowns.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef index fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef result fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    Query["🔍 Query: WHERE email = 'alice'"]
+
+    subgraph WithIndex["✅ With B-tree Index"]
+        BTree["🌳 B-tree Lookup 3-4 hops"]
+        RowPtr["📄 Row Pointer"]
+        Row["🗄️ Fetch Row"]
+        BTree --> RowPtr --> Row
+    end
+
+    subgraph NoIndex["❌ Without Index"]
+        Scan["💣 Full Table Scan 100M rows"]
+        Slow["⏳ ~10 seconds"]
+        Scan --> Slow
+    end
+
+    Query --> WithIndex
+    Query --> NoIndex
+
+    Query:::server
+    BTree:::index
+    RowPtr:::index
+    Row:::db
+    Scan:::db
+```
+
 ```
 B-tree Index (most common — for range and equality queries):
   Table: users (10M rows)

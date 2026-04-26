@@ -42,6 +42,38 @@ Key metrics: CloudFront has **450+ PoPs** across 90+ cities. Average latency imp
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef cdn fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef hit fill:#E8F5E9,stroke:#43A047,color:#000
+    classDef miss fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    UserIN["🌐 User (Mumbai)"]
+    PoP["🌍 CDN PoP Mumbai"]
+    Origin["🖥️ Origin Server US-East"]
+
+    subgraph CacheMiss["🟡 First Request (MISS)"]
+        UserIN -->|request| PoP
+        PoP -->|fetch from origin| Origin
+        Origin -->|response + cache| PoP
+    end
+
+    subgraph CacheHit["🟢 Subsequent Requests (HIT)"]
+        User2["🌐 User (Mumbai)"]
+        PoP2["🌍 CDN PoP Mumbai"]
+        User2 -->|request| PoP2
+        PoP2 -->|served instantly ~5ms| User2
+    end
+
+    UserIN:::client
+    User2:::client
+    PoP:::cdn
+    PoP2:::cdn
+    Origin:::server
+```
+
 ```
 Without CDN:
   User (Mumbai) → Origin Server (US-East) = 180ms RTT

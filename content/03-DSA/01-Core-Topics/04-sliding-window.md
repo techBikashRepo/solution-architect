@@ -13,6 +13,48 @@
 
 **Sliding Window** eliminates redundant work in subarray/substring problems by maintaining a window that slides through the array. Instead of re-computing the whole subarray for every position, you add one element (right) and remove one element (left) — O(n) instead of O(n²) or O(n³).
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    BF["❌ Brute Force O(n²) or O(n³)"]
+    SW["✅ Sliding Window O(n)"]
+
+    subgraph Fixed["📏 Fixed Window size=k"]
+        F1["Build initial window sum(0..k)"]
+        F2["Slide: sum += nums[right] - nums[left]"]
+        F3["Track max/min each step"]
+        F1 --> F2 --> F3
+    end
+
+    subgraph Variable["🔄 Variable Window"]
+        V1["Expand right pointer"]
+        V2["Condition violated?"]
+        V3["Shrink left pointer"]
+        V4["Update answer"]
+        V1 --> V2
+        V2 -->|yes| V3 --> V1
+        V2 -->|no| V4 --> V1
+    end
+
+    BF -->|replace with| SW
+    SW --> Fixed
+    SW --> Variable
+
+    BF:::bad
+    SW:::good
+    F1:::warn
+    F2:::good
+    F3:::good
+    V1:::blue
+    V2:::warn
+    V3:::bad
+    V4:::good
+```
+
 ```
 WITHOUT SLIDING WINDOW:
   "Max sum of subarray of length k"

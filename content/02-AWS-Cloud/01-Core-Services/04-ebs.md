@@ -32,6 +32,37 @@ Unlike S3 (object storage, accessed via API), EBS behaves like a disk — you fo
 
 ### 3. Volume Types
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef ssd fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef hdd fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef perf fill:#FCE4EC,stroke:#D81B60,color:#000
+
+    EC2["🖥️ EC2 Instance"]
+
+    subgraph SSD["💻 SSD Volumes"]
+        GP3["⚡ gp3 16K IOPS General default"]
+        IO2["🚀 io2 256K IOPS Mission-critical DBs"]
+    end
+
+    subgraph HDD["💿 HDD Volumes"]
+        ST1["📊 st1 Throughput Big data / Kafka"]
+        SC1["❄️ sc1 Cold Archival infrequent"]
+    end
+
+    EC2 --> GP3
+    EC2 --> IO2
+    EC2 --> ST1
+    EC2 --> SC1
+
+    EC2:::client
+    GP3:::ssd
+    IO2:::perf
+    ST1:::hdd
+    SC1:::hdd
+```
+
 | Type                  | Category             | Max IOPS     | Max Throughput | Use Case                                       |
 | --------------------- | -------------------- | ------------ | -------------- | ---------------------------------------------- |
 | **gp3**               | General SSD          | 16,000 IOPS  | 1,000 MB/s     | Default; OS volumes, most workloads            |

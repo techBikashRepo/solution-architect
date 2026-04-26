@@ -18,6 +18,41 @@
 
 ### 2. Side-by-Side Comparison
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    subgraph Sync["🔄 Synchronous"]
+        SC["🌐 Client"]
+        SS["🖥️ Server"]
+        SR["✅ Response"]
+        SC -->|blocked waiting| SS -->|immediate| SR --> SC
+    end
+
+    subgraph Async["⚡ Asynchronous"]
+        AC["🌐 Client"]
+        AQ["📩 SQS / Kafka"]
+        AW["🖥️ Worker"]
+        AN["📨 Callback / Webhook"]
+        AC -->|fire & forget| AQ
+        AC -->|continues| AC
+        AQ -->|polls| AW
+        AW -->|done| AN
+        AN -->|notifies| AC
+    end
+
+    SC:::client
+    SS:::server
+    SR:::good
+    AC:::client
+    AQ:::queue
+    AW:::server
+    AN:::good
+```
+
 ```
 SYNCHRONOUS:
   Client → [API Call] → Server processes → [Response] → Client continues

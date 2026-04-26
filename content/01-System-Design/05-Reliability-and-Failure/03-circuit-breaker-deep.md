@@ -15,6 +15,39 @@
 
 ### 1. Circuit Breaker + Retry Together
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    subgraph Wrong["❌ Wrong: Retry into Open Circuit"]
+        Req1["🌐 Request"]
+        CB1["🔴 CB Open"]
+        Retry1["Retry immediately"]
+        Fail1["💥 Amplified failure"]
+        Req1 --> CB1 --> Retry1 --> CB1
+        CB1 --> Fail1
+    end
+
+    subgraph Correct["✅ Correct: CB wraps Retry"]
+        Req2["🌐 Request"]
+        RetryLayer["↻ Retry 3x Backoff"]
+        CB2["🔶 Circuit Breaker"]
+        HalfOpen["🟡 HALF-OPEN Probe"]
+        Closed["🟢 CLOSED Recovery"]
+        Req2 --> RetryLayer --> CB2
+        CB2 -->|trip after 3 fail| HalfOpen
+        HalfOpen -->|success| Closed
+    end
+
+    Req1:::bad
+    Fail1:::bad
+    Req2:::good
+    Closed:::good
+    HalfOpen:::warn
+```
+
 ```
 WRONG — Retry into open circuit (amplifies failure):
   Request → CB open → fail fast → immediate retry → CB open → fail fast → ...

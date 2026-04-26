@@ -134,6 +134,38 @@ end
 
 ### High-Level Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef reject fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    Client["🌐 Client"]
+    APIGW["🚪 API Gateway / LB"]
+    RateLimiter["🚦 Rate Limiter Middleware"]
+    Redis["⚡ Redis Cluster INCR per user+window"]
+    AppServer["🖥️ Application Server"]
+    Allow["✅ ALLOWED 200 OK"]
+    Deny["❌ DENIED 429 Too Many Requests"]
+
+    Client --> APIGW --> RateLimiter
+    RateLimiter -->|check + increment| Redis
+    Redis -->|count ≤ limit| Allow --> AppServer
+    Redis -->|count > limit| Deny
+
+    Client:::client
+    APIGW:::lb
+    RateLimiter:::server
+    Redis:::cache
+    AppServer:::server
+    Allow:::good
+    Deny:::reject
+```
+
 ```
 [Client] → [API Gateway / Load Balancer]
                     ↓

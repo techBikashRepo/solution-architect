@@ -29,6 +29,42 @@
 
 ### 3. How Does it Work?
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef part fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Query["🔍 Query: created_at > 2025-01-01"]
+    Router["🔀 DB Engine Partition Pruning"]
+
+    subgraph RangePartitions["📅 Range Partitioning"]
+        P2023["🗄️ orders_2023"]
+        P2024["🗄️ orders_2024"]
+        P2025["🗄️ orders_2025 ← only this scanned"]
+    end
+
+    subgraph ListPartitions["🌍 List Partitioning"]
+        PUS["🗄️ orders_us"]
+        PEU["🗄️ orders_eu"]
+        PAPAC["🗄️ orders_apac"]
+    end
+
+    Query --> Router
+    Router --> P2025
+    Router -. skip .-> P2023
+    Router -. skip .-> P2024
+
+    Query:::server
+    Router:::server
+    P2023:::db
+    P2024:::db
+    P2025:::part
+    PUS:::db
+    PEU:::db
+    PAPAC:::db
+```
+
 ```
 RANGE PARTITIONING (by date — most common):
   orders_2023 → rows where created_at in 2023

@@ -49,6 +49,26 @@ States:
 
 ### 4. How Does it Work? (State Machine)
 
+```mermaid
+graph TD
+    classDef closed fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef open fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef halfopen fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    CLOSED["🟢 CLOSED All requests pass"]
+    OPEN["🔴 OPEN Fail fast fallback"]
+    HALFOPEN["🟡 HALF-OPEN Probe 1-5 requests"]
+
+    CLOSED -->|failure rate > 50%| OPEN
+    OPEN -->|wait 30s timeout| HALFOPEN
+    HALFOPEN -->|3 successes| CLOSED
+    HALFOPEN -->|any failure| OPEN
+
+    CLOSED:::closed
+    OPEN:::open
+    HALFOPEN:::halfopen
+```
+
 ```
       [All requests pass through]
               CLOSED ──────────────────────────────────────┐

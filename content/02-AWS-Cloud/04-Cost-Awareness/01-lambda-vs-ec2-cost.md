@@ -25,6 +25,40 @@ Lambda and EC2 represent two fundamentally different compute pricing models. Cho
 
 ### 2. Lambda Pricing
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+
+    subgraph LowTraffic["Low Traffic: Lambda Wins"]
+        L1["⚡ Lambda 1M req/mo ~$1.87"]
+        E1["🖥️ EC2 t3.medium ~$30/mo fixed"]
+        L1:::good
+        E1:::bad
+    end
+
+    subgraph HighTraffic["High Traffic >5M req/mo: EC2 Wins"]
+        L2["⚡ Lambda 100M req/mo ~$186"]
+        E2["🖥️ EC2 Reserved ~$18/mo 1yr"]
+        L2:::bad
+        E2:::good
+    end
+
+    Decision["❓ Traffic pattern?"]
+    Spiky["📈 Spiky / infrequent"]
+    Steady["➡️ Steady / high volume"]
+
+    Decision --> Spiky --> L1
+    Decision --> Steady --> E2
+
+    Decision:::client
+    Spiky:::cache
+    Steady:::cache
+```
+
 ```
 LAMBDA PRICING (us-east-1, 2024):
   Requests: $0.20 per 1M invocations (first 1M/month free)

@@ -42,6 +42,40 @@ The **SQL vs NoSQL** choice is a foundational data storage decision. SQL databas
 
 ### 4. Decision Framework
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Decision["❓ Which database?"]
+    ACID["🔐 Need ACID transactions?"]
+    Complex["🔗 Complex JOINs / relations?"]
+    Scale["📈 Massive scale >1M writes/sec?"]
+    Access["📍 Simple access by key?"]
+
+    SQL["🗄️ PostgreSQL / MySQL / Aurora ACID, JOINs, reporting"]
+    NoSQL["⚡ DynamoDB / Cassandra / Redis scale, low-latency, flexible"]
+
+    Decision --> ACID
+    Decision --> Scale
+    ACID -->|yes| SQL
+    Complex -->|yes| SQL
+    Scale -->|yes| NoSQL
+    Access -->|yes| NoSQL
+    ACID --> Complex
+    Scale --> Access
+
+    Decision:::client
+    SQL:::db
+    NoSQL:::cache
+    ACID:::client
+    Complex:::client
+    Scale:::client
+    Access:::client
+```
+
 ```
 USE SQL WHEN:
   ✅ Data has complex relationships (foreign keys, JOINs needed)

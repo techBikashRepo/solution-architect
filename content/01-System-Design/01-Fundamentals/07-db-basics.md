@@ -42,6 +42,36 @@ Neither is better — they serve different access patterns.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef nosql fill:#E8F5E9,stroke:#43A047,color:#000
+
+    App["🖥️ Application"]
+
+    subgraph SQL["🗄️ SQL — Normalized Tables"]
+        Users["users id · name · email"]
+        Orders["orders id · user_id · total"]
+        Items["order_items id · order_id · sku"]
+        Users -->|1:N| Orders
+        Orders -->|1:N| Items
+    end
+
+    subgraph NoSQL["📦 NoSQL — Denormalized Document"]
+        UserDoc["user_id: 1 orders: embedded"]
+    end
+
+    App --> SQL
+    App --> NoSQL
+
+    App:::server
+    Users:::db
+    Orders:::db
+    Items:::db
+    UserDoc:::nosql
+```
+
 ```
 SQL — Normalized Relational:
   users         orders          order_items

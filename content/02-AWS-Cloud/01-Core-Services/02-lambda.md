@@ -69,6 +69,55 @@ Lambda handles: scaling, patching, availability, capacity — you handle only th
 
 ### 5. Cold Start Optimization
 
+```mermaid
+graph TD
+    classDef trigger fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef cold fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef warm fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    subgraph Triggers["⚡ Event Triggers"]
+        APIGW["🚨 API Gateway Sync"]
+        S3T["🪣 S3 Event Async"]
+        SQST["📩 SQS Queue Async"]
+        CWE["🕐 CloudWatch Scheduled"]
+    end
+
+    Lambda["🖥️ AWS Lambda"]
+
+    subgraph Outputs["📤 Downstream"]
+        DDB["🗄️ DynamoDB"]
+        S3Out["🪣 S3 Bucket"]
+        SNS["📢 SNS Topic"]
+    end
+
+    subgraph ColdWarm["❄️ Cold vs Warm"]
+        Cold["❄️ Cold Start ~100ms-1s"]
+        Warm["⭐ Warm Start <1ms"]
+    end
+
+    APIGW --> Lambda
+    S3T --> Lambda
+    SQST --> Lambda
+    CWE --> Lambda
+    Lambda --> DDB
+    Lambda --> S3Out
+    Lambda --> SNS
+
+    APIGW:::trigger
+    S3T:::trigger
+    SQST:::trigger
+    CWE:::trigger
+    Lambda:::server
+    DDB:::db
+    S3Out:::db
+    SNS:::queue
+    Cold:::cold
+    Warm:::warm
+```
+
 ```
 WHAT CAUSES COLD STARTS:
   Lambda needs to:

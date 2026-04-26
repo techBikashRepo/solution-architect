@@ -53,6 +53,40 @@ EVENT-DRIVEN:
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef queue fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef event fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef consumer fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    subgraph RequestDriven["❌ Request-Driven (Tight Coupling)"]
+        OS1["🖥️ Order Service"]
+        IS1["🖥️ Inventory Service"]
+        NS1["🖥️ Notification Service"]
+        OS1 -->|direct call| IS1 -->|direct call| NS1
+    end
+
+    subgraph EventDriven["✅ Event-Driven (Decoupled)"]
+        OS2["🖥️ Order Service"]
+        EB["📩 Event Bus order.placed"]
+        IS2["🖥️ Inventory Service"]
+        NS2["🖥️ Notification Service"]
+        AS["🖥️ Analytics Service"]
+        OS2 --> EB
+        EB --> IS2
+        EB --> NS2
+        EB --> AS
+    end
+
+    OS1:::server
+    OS2:::server
+    EB:::queue
+    IS2:::consumer
+    NS2:::consumer
+    AS:::consumer
+```
+
 ```
 KEY COMPONENTS:
 ─────────────────────────────────────────────────────────

@@ -31,6 +31,40 @@ Core principle: **Least Privilege** — grant only the permissions actually need
 
 ### 3. Policy Types
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef org fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Principal["👤 Principal User/Role/Service"]
+    IAMPolicy["📜 Identity Policy attached to principal"]
+    ResPol["📜 Resource Policy S3 bucket policy, SQS"]
+    Boundary["🛡️ Permission Boundary max cap"]
+    SCP["🌐 SCP Org-level guardrail"]
+    Decision["❓ IAM Decision Engine"]
+    Allow["✅ ALLOW"]
+    Deny["❌ DENY explicit or implicit"]
+
+    Principal --> IAMPolicy --> Decision
+    ResPol --> Decision
+    Boundary --> Decision
+    SCP --> Decision
+    Decision -->|allow present, no deny| Allow
+    Decision -->|explicit deny OR no allow| Deny
+
+    Principal:::client
+    IAMPolicy:::server
+    ResPol:::server
+    Boundary:::org
+    SCP:::org
+    Decision:::client
+    Allow:::good
+    Deny:::bad
+```
+
 ```
 POLICY EVALUATION ORDER (all must allow, none must deny):
   Deny-first: explicit Deny always wins

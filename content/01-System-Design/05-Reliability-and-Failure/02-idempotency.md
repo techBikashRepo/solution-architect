@@ -48,6 +48,38 @@ Idempotency is the **safety net for retries**.
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    Client["🌐 Client"]
+    Header["🔑 Idempotency-Key: uuid"]
+    Server["🖥️ Server"]
+    Redis["⚡ Redis / DB Key Store"]
+    Process["⚙️ Process Payment"]
+    Return["✅ Return Cached Response"]
+
+    Client -->|POST /payments| Header
+    Header --> Server
+    Server -->|check key| Redis
+    Redis -->|NEW key| Process
+    Redis -->|SEEN key| Return
+    Process -->|store result| Redis
+    Process -->|respond| Client
+    Return --> Client
+
+    Client:::client
+    Server:::server
+    Redis:::cache
+    Process:::server
+    Return:::good
+```
+
 ```
 CLIENT SIDE — Idempotency Key:
 ─────────────────────────────────────────────────

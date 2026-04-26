@@ -64,6 +64,38 @@ COST OPTIMIZATION:
 
 ### Why Direct-to-S3 Upload (Not Via App Server)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Client["🌐 Client"]
+    AppServer["🖥️ App Server POST /upload/initiate"]
+    S3["🗄️ S3 Bucket"]
+    Lambda["⚡ Lambda thumbnail/transcode trigger"]
+    DDB["🗄️ DynamoDB file_metadata"]
+    CDN["🌍 CloudFront Download"]
+
+    Client -->|Step 1: POST /upload/initiate| AppServer
+    AppServer -->|Step 2: presigned URL TTL=15min| Client
+    Client -->|Step 3: PUT 5GB direct to S3| S3
+    S3 -->|Step 4: event trigger| Lambda
+    Lambda --> DDB
+    CDN -->|Step 5: download| Client
+    S3 --> CDN
+
+    Client:::client
+    AppServer:::server
+    S3:::db
+    Lambda:::cache
+    DDB:::db
+    CDN:::good
+```
+
 ```
 BAD APPROACH — upload through app server:
   Client → [POST /upload body=5GB] → [App Server] → [S3]

@@ -32,6 +32,40 @@ Client → API Gateway → Lambda → DynamoDB
 
 ### 3. Architecture Deep Dive
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef auth fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef monitor fill:#FFFDE7,stroke:#F9A825,color:#000
+
+    Client["🌐 Client Mobile / Web"]
+    APIGW["🚨 API Gateway TLS · Auth · Rate Limit"]
+    Cognito["🛡️ Cognito JWT Authorizer"]
+    Lambda["🖥️ Lambda Business Logic"]
+    DDB["🗄️ DynamoDB"]
+    CW["📊 CloudWatch Logs"]
+
+    Client -->|HTTPS request| APIGW
+    APIGW -->|validate JWT| Cognito
+    Cognito -->|401 invalid| Client
+    APIGW -->|invoke| Lambda
+    Lambda -->|PutItem / GetItem| DDB
+    DDB -->|response| Lambda
+    Lambda -->|response| APIGW
+    APIGW -->|HTTP response| Client
+    Lambda -->|logs| CW
+
+    Client:::client
+    APIGW:::gw
+    Cognito:::auth
+    Lambda:::server
+    DDB:::db
+    CW:::monitor
+```
+
 ```
 FULL REQUEST FLOW:
 ─────────────────────────────────────────────────────────

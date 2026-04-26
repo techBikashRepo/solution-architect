@@ -45,6 +45,38 @@ Types of limits:
 
 ### 4. How Does it Work? — Algorithms
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef allow fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef reject fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef algo fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Client["🌐 Client Request"]
+    Redis["⚡ Redis Rate Counter"]
+    Allow["✅ Forward to API 200 OK"]
+    Throttle["🚫 Reject 429 Too Many Requests"]
+
+    subgraph Algorithms["🧠 Algorithms"]
+        TB["🪣 Token Bucket burst allowed"]
+        FW["🪟 Fixed Window simple"]
+        SW["📊 Sliding Window no spikes"]
+    end
+
+    Client -->|check limit| Redis
+    Redis -->|under limit| Allow
+    Redis -->|exceeded| Throttle
+
+    Client:::client
+    Redis:::cache
+    Allow:::allow
+    Throttle:::reject
+    TB:::algo
+    FW:::algo
+    SW:::algo
+```
+
 ```
 TOKEN BUCKET (most common):
   - Bucket capacity: 10 tokens

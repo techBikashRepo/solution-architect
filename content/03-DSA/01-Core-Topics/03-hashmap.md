@@ -13,6 +13,51 @@
 
 **HashMap** (dict in Python, HashMap in Java, Map in JavaScript) maps keys to values with O(1) average time for get/set/delete. The most versatile data structure for turning O(n²) brute-force solutions into O(n).
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    BF["❌ Brute Force O(n²)"]
+    HM["✅ HashMap O(n)"]
+
+    subgraph UseCases["🔑 HashMap Use Cases"]
+        Complement["Find complement Two Sum"]
+        Freq["Count frequency Anagram, top-k"]
+        Memo["Memoize dp cache"]
+        Index["Track index first/last seen"]
+        Group["Group by key groupAnagram"]
+    end
+
+    subgraph Ops["⏱ Operations O(1) avg"]
+        Get["✅ get / set"]
+        Del["✅ delete"]
+        Has["✅ contains key"]
+        Iter["📊 iterate O(n)"]
+    end
+
+    BF -->|replace with| HM
+    HM --> Complement
+    HM --> Freq
+    HM --> Memo
+    HM --> Index
+    HM --> Group
+
+    BF:::bad
+    HM:::good
+    Complement:::good
+    Freq:::good
+    Memo:::good
+    Index:::good
+    Group:::good
+    Get:::good
+    Del:::good
+    Has:::good
+    Iter:::warn
+```
+
 ```
 HASHMAP COMPLEXITIES:
   Get/Set/Delete: O(1) average, O(n) worst (hash collisions)

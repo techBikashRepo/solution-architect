@@ -39,6 +39,42 @@ Single AZ:                  Multi-AZ:
 
 ### 3. Multi-AZ per AWS Service
 
+```mermaid
+graph TD
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    ALB["⚖️ ALB spans all AZs"]
+
+    subgraph AZ1["us-east-1a"]
+        EC2A["🖥️ EC2 ASG"]
+        RDSP["🗄️ RDS Primary"]
+        RedisP["⚡ Redis Primary"]
+    end
+
+    subgraph AZ2["us-east-1b"]
+        EC2B["🖥️ EC2 ASG"]
+        RDSS["🗄️ RDS Standby failover 60-120s"]
+        RedisR["⚡ Redis Replica failover ~30s"]
+    end
+
+    ALB --> EC2A
+    ALB --> EC2B
+    RDSP <-->|sync replication| RDSS
+    RedisP <-->|async replication| RedisR
+
+    ALB:::lb
+    EC2A:::server
+    EC2B:::server
+    RDSP:::db
+    RDSS:::db
+    RedisP:::cache
+    RedisR:::cache
+```
+
 ```
 EC2 + AUTO SCALING GROUP:
   ASG spans 2+ AZs

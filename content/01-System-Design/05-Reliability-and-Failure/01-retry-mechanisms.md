@@ -29,6 +29,38 @@ A **retry mechanism** automatically re-attempts a failed operation — typically
 
 ### 3. Retry Strategies
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef best fill:#E8F5E9,stroke:#2E7D32,color:#000
+
+    subgraph Immediate["❌ Immediate Retry"]
+        I1["Try"] --> I2["Fail"]
+        I2 --> I3["Retry immediately"]
+        I3 --> I4["Thundering herd"]
+    end
+
+    subgraph Exponential["✅ Exponential Backoff"]
+        E1["Try"] --> E2["Fail"]
+        E2 -->|wait 1s| E3["Retry"]
+        E3 -->|wait 2s| E4["Retry"]
+        E4 -->|wait 4s| E5["Retry"]
+    end
+
+    subgraph Jitter["🏆 Backoff + Jitter"]
+        J1["Try"] --> J2["Fail"]
+        J2 -->|random delay| J3["Retry"]
+        J3 -->|random delay| J4["Success"]
+    end
+
+    I1:::bad
+    E1:::good
+    J1:::best
+    J4:::best
+```
+
 ```
 IMMEDIATE RETRY (bad for most cases):
   Try → Fail → Retry immediately → Fail → Retry immediately

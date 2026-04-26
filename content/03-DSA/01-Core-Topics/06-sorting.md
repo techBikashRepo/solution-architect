@@ -13,6 +13,45 @@
 
 **Sorting** transforms an unsorted collection into a sorted one. More importantly, sorting often _enables_ more efficient algorithms — binary search, two pointers, interval merging, and many greedy solutions all require sorted input.
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    subgraph Fast["⚡ O(n log n) — Use These"]
+        MS["✅ Merge Sort stable, O(n) space"]
+        QS["✅ Quick Sort in-place, O(n²) worst"]
+        TS["⭐ Timsort Python built-in, stable"]
+    end
+
+    subgraph Slow["🐌 O(n²) — Avoid"]
+        BS["❌ Bubble Sort"]
+        SS["❌ Selection Sort"]
+        IS["⚠️ Insertion Sort small n only"]
+    end
+
+    subgraph Linear["🚀 O(n+k) — Special Cases"]
+        CS["✅ Counting Sort bounded integers"]
+        RS["✅ Radix Sort fixed-width keys"]
+    end
+
+    Decision["❓ Which sort?"] --> Fast
+    Decision --> Slow
+    Decision --> Linear
+
+    Decision:::blue
+    MS:::good
+    QS:::good
+    TS:::good
+    BS:::bad
+    SS:::bad
+    IS:::warn
+    CS:::good
+    RS:::good
+```
+
 ```
 SORTING ALGORITHM COMPARISON:
   Algorithm      | Time (avg)  | Time (worst) | Space | Stable?

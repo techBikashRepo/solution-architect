@@ -41,6 +41,41 @@ Bottom line: **your system must grow with demand, or it becomes the bottleneck**
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+
+    subgraph HS["↔️ Horizontal Scaling"]
+        Users["🌐 Users"]
+        LB["⚖️ Load Balancer"]
+        subgraph Cluster[" "]
+            S1["🖥️ Server 1"]
+            S2["🖥️ Server 2"]
+            S3["🖥️ Server 3"]
+        end
+        Users --> LB
+        LB --> S1
+        LB --> S2
+        LB --> S3
+    end
+
+    subgraph VS["⬆️ Vertical Scaling"]
+        SmallEC2["🖥️ Small EC2"]
+        LargeEC2["🖥️ Large EC2 🚀"]
+        SmallEC2 -->|upgrade| LargeEC2
+    end
+
+    Users:::client
+    LB:::lb
+    S1:::server
+    S2:::server
+    S3:::server
+    SmallEC2:::server
+    LargeEC2:::server
+```
+
 ```
 VERTICAL SCALING (Scale Up)
 ────────────────────────────

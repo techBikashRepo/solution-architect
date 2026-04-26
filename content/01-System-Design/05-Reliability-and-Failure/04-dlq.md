@@ -40,6 +40,34 @@ Think of it as the **"quarantine zone"** for problematic messages.
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef queue fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef dlq fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef good fill:#E8F5E9,stroke:#2E7D32,color:#000
+
+    Producer["🖥️ Producer"]
+    Queue["📩 Main SQS Queue"]
+    Consumer["🖥️ Consumer"]
+    DLQ["💀 Dead Letter Queue"]
+    Alert["🔔 CloudWatch Alarm"]
+
+    Producer -->|publish| Queue
+    Queue -->|poll| Consumer
+    Consumer -->|SUCCESS delete msg| Queue
+    Consumer -->|FAIL attempt 1| Queue
+    Consumer -->|FAIL attempt 2| Queue
+    Consumer -->|FAIL attempt 3| DLQ
+    DLQ -->|depth > 0| Alert
+
+    Producer:::server
+    Queue:::queue
+    Consumer:::server
+    DLQ:::dlq
+    Alert:::dlq
+```
+
 ```
 NORMAL FLOW:
   Producer → [Main Queue (SQS)] → [Consumer (Lambda/EC2)]

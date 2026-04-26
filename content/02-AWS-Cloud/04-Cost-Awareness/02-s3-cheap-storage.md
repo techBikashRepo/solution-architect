@@ -45,6 +45,35 @@ STORAGE COST SPECTRUM (us-east-1, 2024):
 
 ### 3. S3 Lifecycle Policies
 
+```mermaid
+graph TD
+    classDef hot fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef warm fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef cold fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef frozen fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Upload["📄 New Log Object"]
+    Standard["⚡ S3 Standard Day 0-30 $0.023/GB"]
+    IA["📊 Standard-IA Day 31-90 $0.0125/GB"]
+    Glacier["❄️ Glacier Flexible Day 91-365 $0.0036/GB"]
+    Delete["🗑️ Auto Delete Day 366+"]
+    Deep["🛠️ Glacier Deep Archive 7yr compliance $0.00099/GB"]
+
+    Upload --> Standard
+    Standard -->|Lifecycle Rule| IA
+    IA -->|Lifecycle Rule| Glacier
+    Glacier -->|Expire| Delete
+    Glacier -->|Compliance| Deep
+
+    Upload:::hot
+    Standard:::hot
+    IA:::warm
+    Glacier:::cold
+    Delete:::good
+    Deep:::frozen
+```
+
 ```
 LIFECYCLE RULES (automate tier transitions):
   Example: application logs

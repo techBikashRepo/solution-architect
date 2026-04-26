@@ -37,6 +37,40 @@ DynamoDB is a key-value and document database designed for applications that nee
 
 ### 3. Data Modeling Philosophy
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+
+    subgraph SQL["SQL Normalized"]
+        Users["🗄️ Users table"]
+        Orders["🗄️ Orders table"]
+        Items["🗄️ Items table"]
+        Users -->|JOIN| Orders -->|JOIN| Items
+    end
+
+    subgraph DDB["DynamoDB Single-Table"]
+        PK1["🔑 PK: USER#123 SK: PROFILE"]
+        PK2["🔑 PK: USER#123 SK: ORDER#456"]
+        PK3["🔑 PK: ORDER#456 SK: ITEM#111"]
+        PK1 -.->|one GetItem| PK2
+        PK2 -.->|Query SK begins_with ORDER| PK3
+    end
+
+    Pattern["📈 Access pattern first → design schema"]
+    Pattern --> DDB
+
+    Users:::db
+    Orders:::db
+    Items:::db
+    PK1:::good
+    PK2:::good
+    PK3:::good
+    Pattern:::client
+```
+
 ```
 RELATIONAL MODEL (SQL):
   Normalize data → multiple tables → JOIN at query time

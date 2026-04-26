@@ -52,6 +52,32 @@ Add **20–30% overhead** for indexes, metadata, replication.
 
 ### 4. Worked Example — "Design Twitter"
 
+```mermaid
+graph TD
+    classDef input fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef calc fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef result fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFE0B2,stroke:#FB8C00,color:#000
+
+    Writes["✏️ 17K writes/sec"]
+    Size["📦 Avg tweet: 0.5 KB"]
+    PerDay["📅 Per day: 17K × 0.5KB × 86400 = 734 GB"]
+    PerYear["📆 Per year: 734 GB × 365 = 268 TB"]
+    FiveYear["⏳ 5-year: 268 TB × 5 = 1.34 PB"]
+    Overhead["➕ +20% overhead: ~1.6 PB total"]
+
+    Writes --> PerDay
+    Size --> PerDay
+    PerDay --> PerYear --> FiveYear --> Overhead
+
+    Writes:::input
+    Size:::input
+    PerDay:::calc
+    PerYear:::calc
+    FiveYear:::warn
+    Overhead:::result
+```
+
 ```
 Inputs:
   - 17,000 write RPS (from RPS estimation)

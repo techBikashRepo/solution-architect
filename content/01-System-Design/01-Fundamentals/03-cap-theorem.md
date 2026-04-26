@@ -44,6 +44,43 @@ This decision **shapes your entire database and architecture choice**.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cp fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef ap fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef warn fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    Client["🌐 Client"]
+    NodeA["🗄️ Node A"]
+    NodeB["🗄️ Node B"]
+    Partition["⚡ Network Partition"]
+
+    subgraph CP["🔒 CP — Consistency"]
+        CP1["❌ Refuse request"]
+        CP2["HBase · ZooKeeper"]
+    end
+
+    subgraph AP["🌐 AP — Availability"]
+        AP1["⚠️ Serve stale data"]
+        AP2["DynamoDB · Cassandra"]
+    end
+
+    Client --> NodeA
+    NodeA -. "✗ split" .-> NodeB
+    NodeA --> Partition
+    Partition --> CP
+    Partition --> AP
+
+    Client:::client
+    NodeA:::db
+    NodeB:::db
+    Partition:::warn
+    CP1:::cp
+    AP1:::ap
+```
+
 ```
 Normal Operation (no partition):
   [Client] → [Node A] ←sync→ [Node B]

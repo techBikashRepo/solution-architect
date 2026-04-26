@@ -41,6 +41,52 @@ A **message queue** is a durable buffer that decouples a **producer** (who creat
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef queue fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef dlq fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    Producer["🖥️ Order Service"]
+    Queue["📩 SQS Queue"]
+    C1["🖥️ Fulfillment"]
+    C2["🖥️ Email Service"]
+    DLQ["💀 Dead Letter Queue"]
+
+    subgraph Kafka["📦 Kafka — Topic: orders"]
+        P0["📂 Partition 0"]
+        P1["📂 Partition 1"]
+        P2["📂 Partition 2"]
+    end
+
+    CGA["🖥️ Consumer Group A"]
+    CGB["🖥️ Consumer Group B"]
+
+    Producer -->|publish| Queue
+    Queue -->|poll| C1
+    Queue -->|poll| C2
+    C1 -->|max retries| DLQ
+
+    Producer -->|write| P0
+    Producer -->|write| P1
+    Producer -->|write| P2
+    P0 --> CGA
+    P1 --> CGA
+    P2 --> CGA
+    P0 --> CGB
+    P1 --> CGB
+    P2 --> CGB
+
+    Producer:::server
+    Queue:::queue
+    C1:::server
+    C2:::server
+    DLQ:::dlq
+    CGA:::server
+    CGB:::server
+```
+
 ```
 BASIC QUEUE (SQS):
 ────────────────────────────────────────────

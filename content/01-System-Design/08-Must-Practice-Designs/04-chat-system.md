@@ -57,6 +57,39 @@ Online status updates:
 
 ### Core Communication: WebSocket
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    SenderApp["📱 Sender App"]
+    ChatA["🖥️ Chat Server A"]
+    Redis["⚡ Redis Pub/Sub user:{receiver_id}"]
+    ChatB["🖥️ Chat Server B"]
+    ReceiverApp["📱 Receiver App"]
+    MsgDB["🗄️ Cassandra Messages"]
+    StatusDB["🗄️ Redis Online Status"]
+
+    SenderApp -->|WebSocket| ChatA
+    ChatA -->|store message| MsgDB
+    ChatA -->|pub to channel| Redis
+    Redis -->|sub + push| ChatB
+    ChatB -->|WebSocket| ReceiverApp
+    ChatA -->|heartbeat| StatusDB
+    ReceiverApp -->|heartbeat| StatusDB
+
+    SenderApp:::client
+    ReceiverApp:::client
+    ChatA:::server
+    ChatB:::server
+    Redis:::cache
+    MsgDB:::db
+    StatusDB:::cache
+```
+
 ```
 WHY WEBSOCKET FOR CHAT:
   HTTP (polling): Client polls every 1s → wasteful, 1s latency

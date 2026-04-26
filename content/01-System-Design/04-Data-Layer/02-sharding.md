@@ -41,6 +41,33 @@ Sharding is the answer when **vertical scaling hits the ceiling and read replica
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef router fill:#C8E6C9,stroke:#43A047,color:#000
+
+    App["🖥️ Application"]
+    Router["🔀 Shard Router hash(user_id) % 3"]
+
+    subgraph Shards["🗄️ Database Shards"]
+        S0["🗄️ Shard 0 id % 3 = 0"]
+        S1["🗄️ Shard 1 id % 3 = 1"]
+        S2["🗄️ Shard 2 id % 3 = 2"]
+    end
+
+    App --> Router
+    Router --> S0
+    Router --> S1
+    Router --> S2
+
+    App:::server
+    Router:::router
+    S0:::db
+    S1:::db
+    S2:::db
+```
+
 ```
 RANGE-BASED SHARDING:
   Shard 1: user_id 1 – 10,000,000

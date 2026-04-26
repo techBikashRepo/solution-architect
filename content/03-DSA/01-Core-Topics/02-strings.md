@@ -13,6 +13,41 @@
 
 Strings are sequences of characters. In Python, strings are **immutable** — operations like concatenation create new strings. Key operations and complexities:
 
+```mermaid
+graph TD
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+    classDef blue fill:#BBDEFB,stroke:#1E88E5,color:#000
+
+    subgraph Patterns["🔑 String Problem Patterns"]
+        TP["👈👉 Two Pointers palindrome, reverse"]
+        SW["🪟 Sliding Window substring problems"]
+        HM["🗺️ HashMap char frequency"]
+        Sort["📊 Sort chars anagram detection"]
+    end
+
+    subgraph Complexity["⏱ Complexity"]
+        Concat["⚠️ s + s O(n) each — use join()"]
+        Slice["✅ s[l:r] O(r-l)"]
+        Search["🔍 KMP O(n+m) vs naive O(n×m)"]
+    end
+
+    Problem["❓ String Problem"] --> TP
+    Problem --> SW
+    Problem --> HM
+    Problem --> Sort
+
+    Problem:::blue
+    TP:::good
+    SW:::good
+    HM:::good
+    Sort:::warn
+    Concat:::bad
+    Slice:::good
+    Search:::warn
+```
+
 ```
 STRING FUNDAMENTALS:
   Access by index: O(1)

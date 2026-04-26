@@ -32,6 +32,51 @@ Internet → ALB → EC2 Auto Scaling Group → RDS (Multi-AZ)
 
 ### 3. Multi-AZ Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    User["🌐 User"]
+    R53["🚪 Route 53"]
+    ALB["⚖️ ALB alb.myapp.com HTTPS :443"]
+
+    subgraph AZ1["AZ us-east-1a"]
+        EC2A1["🖥️ EC2 t3.medium"]
+        EC2A2["🖥️ EC2 t3.medium"]
+        RDSP["🗄️ RDS Primary MySQL write"]
+    end
+
+    subgraph AZ2["AZ us-east-1b"]
+        EC2B1["🖥️ EC2 t3.medium"]
+        EC2B2["🖥️ EC2 t3.medium"]
+        RDSS["🗄️ RDS Standby sync replica"]
+    end
+
+    User --> R53 --> ALB
+    ALB --> EC2A1
+    ALB --> EC2A2
+    ALB --> EC2B1
+    ALB --> EC2B2
+    EC2A1 --> RDSP
+    EC2B1 --> RDSP
+    RDSP <-->|sync replication| RDSS
+    RDSS -->|failover 60-120s| RDSP
+
+    User:::client
+    R53:::gw
+    ALB:::lb
+    EC2A1:::server
+    EC2A2:::server
+    EC2B1:::server
+    EC2B2:::server
+    RDSP:::db
+    RDSS:::db
+```
+
 ```
 PRODUCTION LAYOUT:
 ─────────────────────────────────────────────────────────

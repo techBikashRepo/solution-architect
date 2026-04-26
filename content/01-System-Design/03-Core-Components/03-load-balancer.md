@@ -11,6 +11,46 @@
 
 ## Quick Reference
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+
+    Client["🌐 Client"]
+
+    subgraph LBTier["⚖️ Load Balancer Layer"]
+        ALB["⚖️ ALB L7 HTTP path routing"]
+        NLB["⚖️ NLB L4 TCP ultra-low latency"]
+    end
+
+    subgraph AppPool["🖥️ App Server Pool"]
+        S1["🖥️ Server 1"]
+        S2["🖥️ Server 2"]
+        S3["🖥️ Server 3"]
+    end
+
+    DB["🗄️ RDS Database"]
+
+    Client --> ALB
+    Client --> NLB
+    ALB -->|round robin / least conn| S1
+    ALB -->|round robin / least conn| S2
+    ALB -->|round robin / least conn| S3
+    S1 --> DB
+    S2 --> DB
+    S3 --> DB
+
+    Client:::client
+    ALB:::lb
+    NLB:::lb
+    S1:::server
+    S2:::server
+    S3:::server
+    DB:::db
+```
+
 ### What it does
 
 Distributes incoming requests across a pool of backend servers. Detects unhealthy servers via health checks and removes them from rotation.

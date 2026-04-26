@@ -42,6 +42,44 @@ Without understanding this distinction, engineers over-optimize the wrong thing.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef note fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    subgraph Latency["⏱️ Latency — Single Request"]
+        C1["🌐 Client"]
+        Net1["🔗 Network ~20ms"]
+        App1["🖥️ App Server ~5ms"]
+        DB1["🗄️ Database ~10ms"]
+        Net2["🔗 Network ~20ms"]
+        Total1["📦 Response ~60ms"]
+        C1 --> Net1 --> App1 --> DB1 --> App1 --> Net2 --> Total1
+    end
+
+    subgraph Throughput["📊 Throughput — System Wide"]
+        LB["⚖️ Load Balancer"]
+        S1["🖥️ Server 1 500 RPS"]
+        S2["🖥️ Server 2 500 RPS"]
+        S3["🖥️ Server 3 500 RPS"]
+        Total2["📈 Total: 1500 RPS"]
+        LB --> S1 --> Total2
+        LB --> S2 --> Total2
+        LB --> S3 --> Total2
+    end
+
+    C1:::client
+    App1:::server
+    DB1:::db
+    LB:::lb
+    S1:::server
+    S2:::server
+    S3:::server
+```
+
 ```
 LATENCY (single request view):
 ──────────────────────────────

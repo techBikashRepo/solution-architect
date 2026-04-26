@@ -36,6 +36,51 @@
 
 ### 3. Public vs Private Subnets
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Internet["🌐 Internet"]
+    IGW["🚪 Internet Gateway"]
+    NAT["🔄 NAT Gateway public subnet"]
+    ALB["⚖️ ALB Public Subnet"]
+
+    subgraph AZ1["AZ us-east-1a"]
+        PubA["🌐 Public: 10.0.1.0/24 ALB, NAT"]
+        PrivA["🖥️ Private: 10.0.11.0/24 EC2 App Servers"]
+        DBA["🗄️ Private DB: 10.0.21.0/24 RDS Primary"]
+    end
+
+    subgraph AZ2["AZ us-east-1b"]
+        PubB["🌐 Public: 10.0.2.0/24 ALB node"]
+        PrivB["🖥️ Private: 10.0.12.0/24 EC2 App Servers"]
+        DBB["🗄️ Private DB: 10.0.22.0/24 RDS Standby"]
+    end
+
+    Internet --> IGW --> PubA
+    Internet --> IGW --> PubB
+    PubA --> PrivA
+    PubB --> PrivB
+    PrivA --> NAT --> Internet
+    PrivA --> DBA
+    PrivB --> DBB
+    DBA <-->|sync replication| DBB
+
+    Internet:::client
+    IGW:::gw
+    PubA:::lb
+    PubB:::lb
+    PrivA:::server
+    PrivB:::server
+    DBA:::db
+    DBB:::db
+    NAT:::gw
+```
+
 ```
 VPC CIDR: 10.0.0.0/16 (65,536 IPs)
   Public Subnets:

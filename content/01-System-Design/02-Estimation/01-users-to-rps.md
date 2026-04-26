@@ -46,6 +46,28 @@ Every system design problem starts here:
 
 ### 4. The Formula
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef calc fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef result fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef warn fill:#FFE0B2,stroke:#FB8C00,color:#000
+
+    DAU["👥 DAU 100M users"]
+    ReqDay["📊 Requests/day DAU × 10 = 1B"]
+    BaseRPS["⚡ Base RPS 1B ÷ 86400 = 11,574"]
+    PeakRPS["📈 Peak RPS × 3 = 35K RPS"]
+    Servers["🖥️ Servers 35K ÷ 1K RPS = 35 servers"]
+
+    DAU --> ReqDay --> BaseRPS --> PeakRPS --> Servers
+
+    DAU:::client
+    ReqDay:::calc
+    BaseRPS:::calc
+    PeakRPS:::warn
+    Servers:::result
+```
+
 **Step 1: DAU → Requests/day**
 
 $$\text{Requests/day} = \text{DAU} \times \text{avg requests per user per day}$$

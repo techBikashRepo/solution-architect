@@ -55,6 +55,37 @@ Think of SNS as: a **broadcast megaphone** — everyone subscribed hears the mes
 
 ### 4. Message Filtering
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Publisher["📦 Order Service"]
+    Topic["📣 SNS Topic order-events"]
+    SQS1["📩 SQS: inventory-queue filter: type=ORDER_PLACED"]
+    SQS2["📩 SQS: shipping-queue filter: type=ORDER_SHIPPED"]
+    SQS3["📩 SQS: all-events-queue no filter"]
+    Lambda["⚡ Lambda email-notify filter: type=ORDER_PLACED"]
+    HTTP["🌍 HTTP Webhook 3rd-party"]
+
+    Publisher -->|publish event| Topic
+    Topic -->|match filter| SQS1
+    Topic -->|match filter| SQS2
+    Topic -->|no filter| SQS3
+    Topic -->|match filter| Lambda
+    Topic --> HTTP
+
+    Publisher:::client
+    Topic:::queue
+    SQS1:::queue
+    SQS2:::queue
+    SQS3:::queue
+    Lambda:::server
+    HTTP:::good
+```
+
 ```
 WITHOUT FILTERING:
   Order service publishes ALL order events to topic

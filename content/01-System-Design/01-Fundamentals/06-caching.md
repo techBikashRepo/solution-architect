@@ -44,6 +44,40 @@ Rule of thumb: **cache the top 20% of data that handles 80% of reads**.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+
+    Client["🌐 Client"]
+    CDN["🌍 CDN Edge Cache"]
+    LB["⚖️ Load Balancer"]
+    App["🖥️ App Server"]
+    Redis["⚡ Redis Cache"]
+    DB["🗄️ Primary DB"]
+    Replica["🗄️ Read Replica"]
+
+    Client -->|static assets| CDN
+    Client -->|API requests| LB --> App
+    App -->|GET key| Redis
+    Redis -->|HIT| App
+    Redis -->|MISS| App
+    App -->|query on miss| Replica
+    Replica -->|result| App
+    App -->|writes| DB
+    DB -. replicate .-> Replica
+
+    Client:::client
+    LB:::lb
+    App:::server
+    Redis:::cache
+    DB:::db
+    Replica:::db
+```
+
 ```
 CACHE-ASIDE (most common pattern):
 ─────────────────────────────────

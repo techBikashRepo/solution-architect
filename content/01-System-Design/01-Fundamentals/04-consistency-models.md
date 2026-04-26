@@ -41,6 +41,45 @@ In a distributed system with replicas across nodes/regions, data takes time to p
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef strong fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef eventual fill:#FFF9C4,stroke:#F57F17,color:#000
+
+    subgraph Strong["✅ Strong Consistency"]
+        WC["🌐 Client Write"]
+        P["🗄️ Primary"]
+        R1["🗄️ Replica 1"]
+        R2["🗄️ Replica 2"]
+        WC -->|write| P
+        P -->|sync ACK| R1
+        P -->|sync ACK| R2
+        P -->|success after quorum| WC
+    end
+
+    subgraph Eventual["⚡ Eventual Consistency"]
+        WC2["🌐 Client Write"]
+        P2["🗄️ Primary"]
+        R3["🗄️ Replica 1"]
+        R4["🗄️ Replica 2"]
+        WC2 -->|write| P2
+        P2 -->|instant success| WC2
+        P2 -. async .-> R3
+        P2 -. async .-> R4
+    end
+
+    WC:::client
+    WC2:::client
+    P:::db
+    P2:::db
+    R1:::db
+    R2:::db
+    R3:::db
+    R4:::db
+```
+
 ```
 Write happens on Node A:
   User writes: balance = $500

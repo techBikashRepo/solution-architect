@@ -45,6 +45,55 @@
 
 ### 4. How Does it Work?
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef queue fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Client["🌐 Client"]
+    GW["🚨 API Gateway"]
+
+    subgraph Services["🖥️ Microservices"]
+        UserSvc["🖥️ User Service"]
+        OrderSvc["🖥️ Order Service"]
+        ProductSvc["🖥️ Product Service"]
+        PaymentSvc["🖥️ Payment Service"]
+    end
+
+    subgraph Databases["🗄️ Owned Databases"]
+        UserDB["🗄️ Users DB"]
+        OrderDB["🗄️ Orders DB"]
+        ProductDB["🗄️ Products DB"]
+        PaymentDB["🗄️ Payment DB"]
+    end
+
+    MQ["📩 Kafka Event Bus"]
+    NotifSvc["🖥️ Notification"]
+
+    Client --> GW
+    GW --> UserSvc --> UserDB
+    GW --> OrderSvc --> OrderDB
+    GW --> ProductSvc --> ProductDB
+    GW --> PaymentSvc --> PaymentDB
+    OrderSvc -->|order.created| MQ --> NotifSvc
+
+    Client:::client
+    GW:::gw
+    UserSvc:::server
+    OrderSvc:::server
+    ProductSvc:::server
+    PaymentSvc:::server
+    UserDB:::db
+    OrderDB:::db
+    ProductDB:::db
+    PaymentDB:::db
+    MQ:::queue
+    NotifSvc:::server
+```
+
 ```
 MONOLITH:
   [All logic in one codebase] → [One shared DB]

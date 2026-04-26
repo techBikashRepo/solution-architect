@@ -47,6 +47,41 @@ Supported engines: **PostgreSQL, MySQL, MariaDB, Oracle, SQL Server, Aurora (Pos
 
 ### 4. Multi-AZ vs Read Replica
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef replica fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef standby fill:#FFFDE7,stroke:#F9A825,color:#000
+
+    subgraph MultiAZ["🔒 Multi-AZ (High Availability)"]
+        Primary["🗄️ Primary DB us-east-1a"]
+        Standby["🗄️ Standby us-east-1b"]
+        Primary -->|sync replication| Standby
+    end
+
+    subgraph ReadReplicas["📖 Read Replicas (Scale Reads)"]
+        WriteClient["🌐 App Writes"]
+        ReadClient["🌐 App Reads"]
+        PrimaryRR["🗄️ Primary DB"]
+        RR1["🗄️ Read Replica 1"]
+        RR2["🗄️ Read Replica 2"]
+        WriteClient --> PrimaryRR
+        PrimaryRR -. async .-> RR1
+        PrimaryRR -. async .-> RR2
+        ReadClient --> RR1
+        ReadClient --> RR2
+    end
+
+    Primary:::db
+    Standby:::standby
+    PrimaryRR:::db
+    RR1:::replica
+    RR2:::replica
+    WriteClient:::client
+    ReadClient:::client
+```
+
 ```
 MULTI-AZ (High Availability, NOT performance):
 ─────────────────────────────────────────────────────────

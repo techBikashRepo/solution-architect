@@ -23,6 +23,53 @@ The **Monolith vs Microservices** decision is one of the most consequential arch
 
 ### 2. The Spectrum
 
+```mermaid
+graph TD
+    classDef simple fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef mid fill:#FFF9C4,stroke:#F57F17,color:#000
+    classDef complex fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    subgraph Monolith["🧱 Monolith — 0-5 devs, MVP"]
+        M1["🖥️ Single Deploy"]
+        M2["🗄️ One Shared DB"]
+        M1 --> M2
+    end
+
+    subgraph Modular["📦 Modular Monolith — 5-20 devs"]
+        MM1["🖌️ Module A"]
+        MM2["🖌️ Module B"]
+        MM3["🗄️ Shared DB"]
+        MM1 --> MM3
+        MM2 --> MM3
+    end
+
+    subgraph Microservices["⚙️ Microservices — 20+ devs"]
+        SvcA["🖥️ Auth Service"]
+        SvcB["🖥️ Order Service"]
+        SvcC["🖥️ Payment Service"]
+        DBA["🗄️ Auth DB"]
+        DBB["🗄️ Order DB"]
+        DBC["🗄️ Payment DB"]
+        SvcA --> DBA
+        SvcB --> DBB
+        SvcC --> DBC
+    end
+
+    M1:::simple
+    M2:::db
+    MM1:::mid
+    MM2:::mid
+    MM3:::db
+    SvcA:::complex
+    SvcB:::complex
+    SvcC:::complex
+    DBA:::db
+    DBB:::db
+    DBC:::db
+```
+
 ```
 ← SIMPLE ──────────────────────────────────── COMPLEX →
 

@@ -38,6 +38,40 @@ The **Read/Write Ratio** tells you the proportion of read operations vs write op
 
 ### 3. How the Ratio Shapes Your Design
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef queue fill:#C8E6C9,stroke:#43A047,color:#000
+
+    subgraph ReadHeavy["📍 Read-Heavy (100:1) e.g. Twitter"]
+        Writer["🖥️ Write once"]
+        Cache["⚡ Redis Timeline Cache"]
+        CDN["🌍 CDN Media"]
+        Readers["🌐 Millions Read"]
+        Writer --> Cache
+        Cache --> Readers
+        CDN --> Readers
+    end
+
+    subgraph WriteHeavy["📉 Write-Heavy (1:100) e.g. IoT"]
+        Sensors["📡 Sensors"]
+        Kafka["📩 Kafka Ingestion"]
+        Cassandra["🗄️ Cassandra"]
+        Analytics["📊 Batch Analytics"]
+        Sensors --> Kafka --> Cassandra --> Analytics
+    end
+
+    Writer:::server
+    Cache:::cache
+    Readers:::client
+    Sensors:::client
+    Kafka:::queue
+    Cassandra:::db
+```
+
 ```
 READ-HEAVY (Twitter timeline: 100:1):
   Write once (tweet) → read by millions of followers

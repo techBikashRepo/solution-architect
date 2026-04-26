@@ -37,6 +37,44 @@
 
 ### 3. Routing Rules
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    Client["🌐 Client"]
+    ALB["⚖️ ALB Listener :443"]
+
+    R1["🔗 Rule 1 host=api.myapp.com"]
+    R2["🔗 Rule 2 path=/images/*"]
+    R3["🔗 Rule 3 header X-Beta=true"]
+    RD["🔗 Default Rule"]
+
+    TG1["🖥️ api-target-group"]
+    TG2["🔄 Redirect CloudFront URL"]
+    TG3["🖥️ beta-target-group"]
+    TGD["🖥️ main-target-group"]
+
+    Client --> ALB
+    ALB --> R1 --> TG1
+    ALB --> R2 --> TG2
+    ALB --> R3 --> TG3
+    ALB --> RD --> TGD
+
+    Client:::client
+    ALB:::lb
+    R1:::lb
+    R2:::lb
+    R3:::lb
+    RD:::lb
+    TG1:::server
+    TG2:::good
+    TG3:::server
+    TGD:::server
+```
+
 ```
 ALB LISTENER (port 443):
   Rule 1: Host header is api.myapp.com → forward to [api-target-group]

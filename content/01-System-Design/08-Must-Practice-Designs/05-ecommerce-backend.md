@@ -59,6 +59,57 @@ Storage:
 
 ### Microservices Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+
+    Client["🌐 Mobile/Web Client"]
+    CDN["🌍 CloudFront CDN"]
+    APIGW["🚪 API Gateway auth + routing"]
+    EventBus["📩 SNS/EventBridge"]
+
+    UserSvc["🖥️ User Service"]
+    ProductSvc["🖥️ Product Service"]
+    CartSvc["🖥️ Cart Service"]
+    InvSvc["🖥️ Inventory ACID"]
+    OrderSvc["🖥️ Order Service"]
+    PaySvc["🖥️ Payment Service"]
+
+    RDS1["🗄️ RDS PostgreSQL"]
+    DDB["🗄️ DynamoDB"]
+    CartRedis["⚡ Redis Cart TTL"]
+
+    Client --> CDN --> APIGW
+    APIGW --> UserSvc --> RDS1
+    APIGW --> ProductSvc --> DDB
+    APIGW --> CartSvc --> CartRedis
+    APIGW --> InvSvc --> RDS1
+    APIGW --> OrderSvc --> RDS1
+    APIGW --> PaySvc
+    OrderSvc --> EventBus
+    InvSvc --> EventBus
+
+    Client:::client
+    CDN:::lb
+    APIGW:::gw
+    UserSvc:::server
+    ProductSvc:::server
+    CartSvc:::server
+    InvSvc:::server
+    OrderSvc:::server
+    PaySvc:::server
+    RDS1:::db
+    DDB:::db
+    CartRedis:::cache
+    EventBus:::queue
+```
+
 ```
 [Mobile/Web Client]
         ↓

@@ -4,6 +4,30 @@
 ================================================================ */
 
 /* ────────────────────────────────────────────────────────────
+   MERMAID INLINE DIAGRAM BLOCKS
+──────────────────────────────────────────────────────────── */
+.mermaid-diagram-wrapper {
+  margin: var(--sp-6) 0;
+  padding: var(--sp-5);
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--radius-lg, 12px);
+  overflow-x: auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mermaid-diagram-wrapper .mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid-diagram-wrapper svg {
+  max-width: 100%;
+  height: auto;
+  font-family: Inter, system-ui, sans-serif !important;
+}
+
+/* ────────────────────────────────────────────────────────────
    TOPIC TRIGGER BUTTON (shown in article header)
 ──────────────────────────────────────────────────────────── */
 .dg-topic-trigger {

@@ -34,6 +34,35 @@ User → CloudFront Edge → (cache hit) → serve instantly
 
 ### 3. CloudFront Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef lb fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef cache fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+
+    User["🌐 User Global"]
+    Edge["🌍 CloudFront Edge 450+ locations"]
+    RegEdge["⚡ Regional Edge Cache 13 global"]
+    S3["🗄️ S3 Origin OAC protected"]
+    Browser["💻 Browser Cache"]
+
+    User --> Browser
+    Browser -->|miss| Edge
+    Edge -->|HIT| User
+    Edge -->|miss| RegEdge
+    RegEdge -->|HIT| Edge
+    RegEdge -->|miss| S3
+    S3 --> RegEdge
+
+    User:::client
+    Browser:::cache
+    Edge:::cache
+    RegEdge:::cache
+    S3:::db
+```
+
 ```
 CLOUDFRONT KEY CONCEPTS:
   Distribution: your CloudFront setup (CDN config)

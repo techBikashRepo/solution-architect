@@ -47,6 +47,44 @@ With an API Gateway: clients talk to one URL. All policies enforced centrally.
 
 ### 4. How Does it Work? (High-Level)
 
+```mermaid
+graph TD
+    classDef client fill:#BBDEFB,stroke:#1E88E5,color:#000
+    classDef gw fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef db fill:#FCE4EC,stroke:#D81B60,color:#000
+
+    Client["🌐 Client"]
+
+    subgraph GW["🚨 API Gateway"]
+        TLS["🔐 TLS Termination"]
+        Auth["🛡️ Auth JWT / API Key"]
+        Rate["🚦 Rate Limiter"]
+        Router["🔀 Request Router"]
+        TLS --> Auth --> Rate --> Router
+    end
+
+    OrderSvc["🖥️ Order Service"]
+    ProductSvc["🖥️ Product Service"]
+    UserSvc["🖥️ User Service"]
+    OrderDB["🗄️ Orders DB"]
+    ProductDB["🗄️ Products DB"]
+    UserDB["🗄️ Users DB"]
+
+    Client --> TLS
+    Router -->|/api/orders| OrderSvc --> OrderDB
+    Router -->|/api/products| ProductSvc --> ProductDB
+    Router -->|/api/users| UserSvc --> UserDB
+
+    Client:::client
+    OrderSvc:::server
+    ProductSvc:::server
+    UserSvc:::server
+    OrderDB:::db
+    ProductDB:::db
+    UserDB:::db
+```
+
 ```
 Client
   ↓

@@ -43,6 +43,41 @@ The three pillars CloudWatch covers:
 
 ### 3. Metrics
 
+```mermaid
+graph TD
+    classDef server fill:#FFE0B2,stroke:#FB8C00,color:#000
+    classDef monitor fill:#FFFDE7,stroke:#F9A825,color:#000
+    classDef queue fill:#F3E5F5,stroke:#8E24AA,color:#000
+    classDef good fill:#C8E6C9,stroke:#43A047,color:#000
+    classDef bad fill:#FFCCBC,stroke:#BF360C,color:#000
+
+    EC2["🖥️ EC2 / Lambda / ALB"]
+    Metrics["📊 CloudWatch Metrics CPUUtil, Errors, Latency"]
+    Logs["📝 CloudWatch Logs Log Groups + Streams"]
+    Insights["🔍 Log Insights SQL-like query"]
+    Alarm["🔔 CloudWatch Alarm threshold breach"]
+    SNS["📣 SNS Alert"]
+    ASG["↔️ Auto Scaling scale out/in"]
+    Lambda["⚡ Lambda auto-remediate"]
+
+    EC2 -->|emit| Metrics
+    EC2 -->|stream| Logs
+    Metrics -->|threshold| Alarm
+    Logs --> Insights
+    Alarm -->|notify| SNS
+    Alarm -->|trigger| ASG
+    Alarm -->|trigger| Lambda
+
+    EC2:::server
+    Metrics:::monitor
+    Logs:::monitor
+    Insights:::monitor
+    Alarm:::bad
+    SNS:::queue
+    ASG:::good
+    Lambda:::good
+```
+
 ```
 METRIC RESOLUTION:
   Standard resolution: 1 minute (default, free for AWS services)
