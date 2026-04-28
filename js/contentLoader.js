@@ -3,6 +3,8 @@
 ================================================================ */
 import { UI } from "./ui.js";
 import { ProgressManager } from "./progress.js";
+import { renderTopicList, mountTopicListHandlers } from "./topicList.js";
+import { renderVideoPlayer } from "./videoPlayer.js";
 
 // TOC IntersectionObserver handle (module-level, no self-reference needed)
 let _tocObserver = null;
@@ -429,6 +431,35 @@ function loadSubjectOverview(subject) {
 
   if (tocNav) tocNav.innerHTML = "";
   if (tocAside) tocAside.style.visibility = "hidden";
+
+  // Inject Video Topics section
+  if (articleEl) {
+    const topicsHTML = renderTopicList(subject.id);
+    if (topicsHTML) {
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = topicsHTML;
+      articleEl.appendChild(wrapper.firstElementChild);
+      mountTopicListHandlers(articleEl);
+    }
+  }
+}
+
+/* ── Load video player into article ─────────────────────── */
+function loadVideoPlayer(topic, subjectId, subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  if (articleEl) {
+    articleEl.innerHTML = renderVideoPlayer(topic, subjectId, subject);
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
 }
 
 /* ── Init (configure marked.js + mermaid) ───────────────── */
@@ -458,6 +489,7 @@ export const ContentLoader = {
   init,
   loadTopic,
   loadSubjectOverview,
+  loadVideoPlayer,
   renderMarkdown,
   buildFilePath,
   setDiagramInjector,

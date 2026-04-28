@@ -7,6 +7,7 @@ import { ProgressManager } from "./progress.js";
 import { UI } from "./ui.js";
 import { Search } from "./search.js";
 import { ThemeManager } from "./theme.js";
+import { findVideoTopic } from "./topicsData.js";
 
 let _manifest = null;
 let _currentSubject = null;
@@ -43,6 +44,10 @@ function parseHash(hash = window.location.hash) {
       sectionId: parts[2],
       topicId: parts[3],
     };
+  }
+
+  if (parts[0] === "video" && parts[1] && parts[2]) {
+    return { view: "video", subjectId: parts[1], topicId: parts[2] };
   }
 
   return { view: "dashboard" };
@@ -269,6 +274,38 @@ function renderTopicView(subjectId, sectionId, topicId) {
   updateSidebarProgress(subject);
 
   // Update document title
+  document.title = `${topic.title} — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
+     VIDEO VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderVideoView(subjectId, topicId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  const topic = findVideoTopic(subjectId, topicId);
+  if (!topic) {
+    window.location.hash = `#/subject/${subjectId}`;
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null);
+  hideTopicFooter();
+  ContentLoader.loadVideoPlayer(topic, subjectId, subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
   document.title = `${topic.title} — ${subject.title} | LearnPath`;
 }
 
@@ -595,6 +632,9 @@ function handleHashChange() {
       break;
     case "topic":
       renderTopicView(route.subjectId, route.sectionId, route.topicId);
+      break;
+    case "video":
+      renderVideoView(route.subjectId, route.topicId);
       break;
     default:
       renderDashboard();
