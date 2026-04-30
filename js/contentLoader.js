@@ -5,6 +5,8 @@ import { UI } from "./ui.js";
 import { ProgressManager } from "./progress.js";
 import { renderTopicList, mountTopicListHandlers } from "./topicList.js";
 import { renderVideoPlayer } from "./videoPlayer.js";
+import { getTopics, getEmbedUrl } from "./topicsData.js";
+import { getPdfs, getPdfUrl } from "./pdfData.js";
 
 // TOC IntersectionObserver handle (module-level, no self-reference needed)
 let _tocObserver = null;
@@ -462,6 +464,219 @@ function loadVideoPlayer(topic, subjectId, subject) {
   if (tocAside) tocAside.style.visibility = "hidden";
 }
 
+/* ── Load all-videos gallery page ─────────────────────── */
+function loadVideosPage(subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const topics = getTopics(subject.id);
+
+  const cardsHTML = topics
+    .map(
+      (t) => `
+      <div
+        class="video-gallery-card"
+        data-subject-id="${subject.id}"
+        data-topic-id="${t.id}"
+        role="listitem"
+        tabindex="0"
+        aria-label="Watch: ${t.title}"
+      >
+        <div class="video-gallery-card__thumb" aria-hidden="true">
+          <svg class="video-gallery-card__play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </div>
+        <div class="video-gallery-card__body">
+          <span class="topic-card__badge">YouTube</span>
+          <h3 class="video-gallery-card__title">${t.title}</h3>
+        </div>
+        <svg class="video-gallery-card__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
+    `,
+    )
+    .join("");
+
+  const html = `
+    <div class="videos-page">
+      <div class="videos-page__header" style="background:${subject.gradient}">
+        <span class="videos-page__icon" aria-hidden="true">${subject.icon}</span>
+        <div class="videos-page__header-text">
+          <h1 class="videos-page__title">${subject.title}</h1>
+          <p class="videos-page__subtitle">Video Topics</p>
+        </div>
+      </div>
+      <p class="videos-page__meta">${topics.length} videos &mdash; click any card to watch</p>
+      <div class="videos-page__grid" role="list">
+        ${cardsHTML}
+      </div>
+    </div>
+  `;
+
+  if (articleEl) {
+    articleEl.innerHTML = html;
+    articleEl.querySelectorAll(".video-gallery-card").forEach((card) => {
+      const activate = () => {
+        window.location.hash = `#/video/${card.dataset.subjectId}/${card.dataset.topicId}`;
+      };
+      card.addEventListener("click", activate);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
+/* ── Load PDF gallery page ─────────────────────────── */
+function loadPdfsPage(subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const pdfs = getPdfs(subject.id);
+
+  const cardsHTML = pdfs.length
+    ? pdfs
+        .map(
+          (p) => `
+      <div
+        class="pdf-gallery-card"
+        data-subject-id="${subject.id}"
+        data-pdf-id="${p.id}"
+        role="listitem"
+        tabindex="0"
+        aria-label="Read: ${p.title}"
+      >
+        <div class="pdf-gallery-card__thumb" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <div class="pdf-gallery-card__body">
+          <span class="pdf-badge">PDF</span>
+          <h3 class="pdf-gallery-card__title">${p.title}</h3>
+        </div>
+        <svg class="pdf-gallery-card__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
+    `,
+        )
+        .join("")
+    : `<p class="pdfs-page__empty">No PDFs available yet for this subject.</p>`;
+
+  const html = `
+    <div class="pdfs-page">
+      <div class="pdfs-page__header" style="background:${subject.gradient}">
+        <span class="pdfs-page__icon" aria-hidden="true">${subject.icon}</span>
+        <div class="pdfs-page__header-text">
+          <h1 class="pdfs-page__title">${subject.title}</h1>
+          <p class="pdfs-page__subtitle">Reference PDFs</p>
+        </div>
+      </div>
+      <p class="pdfs-page__meta">${pdfs.length} document${pdfs.length !== 1 ? "s" : ""} &mdash; click to read inline</p>
+      <div class="pdfs-page__grid" role="list">
+        ${cardsHTML}
+      </div>
+    </div>
+  `;
+
+  if (articleEl) {
+    articleEl.innerHTML = html;
+    articleEl.querySelectorAll(".pdf-gallery-card").forEach((card) => {
+      const activate = () => {
+        window.location.hash = `#/pdf/${card.dataset.subjectId}/${card.dataset.pdfId}`;
+      };
+      card.addEventListener("click", activate);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
+/* ── Load PDF reader (inline iframe) ───────────────────── */
+function loadPdfReader(pdf, subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const pdfUrl = getPdfUrl(pdf);
+  const backUrl = `#/pdfs/${subject.id}`;
+
+  const html = `
+    <div class="pdf-reader">
+      <div class="pdf-reader__toolbar">
+        <a href="${backUrl}" class="btn-back pdf-reader__back" aria-label="Back to ${subject.title} PDFs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to PDFs
+        </a>
+        <h1 class="pdf-reader__title">${pdf.title}</h1>
+        <a
+          class="pdf-reader__download"
+          href="${pdfUrl}"
+          download="${pdf.file}"
+          aria-label="Download ${pdf.title}"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download
+        </a>
+      </div>
+      <div class="pdf-reader__frame-wrap">
+        <iframe
+          class="pdf-reader__frame"
+          src="${pdfUrl}"
+          title="${pdf.title}"
+        ></iframe>
+      </div>
+    </div>
+  `;
+
+  if (articleEl) {
+    articleEl.innerHTML = html;
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
 /* ── Init (configure marked.js + mermaid) ───────────────── */
 function init() {
   configureMarked();
@@ -490,6 +705,9 @@ export const ContentLoader = {
   loadTopic,
   loadSubjectOverview,
   loadVideoPlayer,
+  loadVideosPage,
+  loadPdfsPage,
+  loadPdfReader,
   renderMarkdown,
   buildFilePath,
   setDiagramInjector,

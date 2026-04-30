@@ -8,6 +8,7 @@ import { UI } from "./ui.js";
 import { Search } from "./search.js";
 import { ThemeManager } from "./theme.js";
 import { findVideoTopic } from "./topicsData.js";
+import { findPdf } from "./pdfData.js";
 
 let _manifest = null;
 let _currentSubject = null;
@@ -24,6 +25,10 @@ let _currentTopic = null;
  *   #/                                    → dashboard
  *   #/subject/:subjectId                  → subject overview
  *   #/topic/:subjectId/:sectionId/:topicId → topic view
+ *   #/videos/:subjectId                   → all videos gallery
+ *   #/video/:subjectId/:topicId           → single video player
+ *   #/pdfs/:subjectId                    → all PDFs gallery
+ *   #/pdf/:subjectId/:pdfId              → PDF reader
  */
 function parseHash(hash = window.location.hash) {
   const clean = hash.replace(/^#/, "") || "/";
@@ -46,8 +51,20 @@ function parseHash(hash = window.location.hash) {
     };
   }
 
+  if (parts[0] === "videos" && parts[1]) {
+    return { view: "videos", subjectId: parts[1] };
+  }
+
   if (parts[0] === "video" && parts[1] && parts[2]) {
     return { view: "video", subjectId: parts[1], topicId: parts[2] };
+  }
+
+  if (parts[0] === "pdfs" && parts[1]) {
+    return { view: "pdfs", subjectId: parts[1] };
+  }
+
+  if (parts[0] === "pdf" && parts[1] && parts[2]) {
+    return { view: "pdf", subjectId: parts[1], pdfId: parts[2] };
   }
 
   return { view: "dashboard" };
@@ -278,6 +295,32 @@ function renderTopicView(subjectId, sectionId, topicId) {
 }
 
 /* ─────────────────────────────────────────────────────────
+     VIDEOS GALLERY VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderVideosView(subjectId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "videos");
+  hideTopicFooter();
+  ContentLoader.loadVideosPage(subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `Videos — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
      VIDEO VIEW
   ───────────────────────────────────────────────────────── */
 
@@ -307,6 +350,64 @@ function renderVideoView(subjectId, topicId) {
   updateSidebarProgress(subject);
 
   document.title = `${topic.title} — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
+     PDFS GALLERY VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderPdfsView(subjectId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "pdfs");
+  hideTopicFooter();
+  ContentLoader.loadPdfsPage(subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `PDFs — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
+     PDF READER VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderPdfReaderView(subjectId, pdfId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  const pdf = findPdf(subjectId, pdfId);
+  if (!pdf) {
+    window.location.hash = `#/pdfs/${subjectId}`;
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "pdf-reader");
+  hideTopicFooter();
+  ContentLoader.loadPdfReader(pdf, subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `${pdf.title} — ${subject.title} | LearnPath`;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -415,7 +516,7 @@ function updateSidebarProgress(subject) {
      BREADCRUMB
   ───────────────────────────────────────────────────────── */
 
-function updateBreadcrumb(subject, section, topic) {
+function updateBreadcrumb(subject, section, topic, pageType = null) {
   const el = document.getElementById("breadcrumb");
   if (!el) return;
 
@@ -436,6 +537,55 @@ function updateBreadcrumb(subject, section, topic) {
           <span class="breadcrumb__current" aria-current="page">${topic.title}</span>
         </span>`,
     );
+  }
+
+  if (pageType === "videos") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <span class="breadcrumb__current" aria-current="page">Videos</span>
+        </span>`,
+    );
+  }
+
+  if (pageType === "pdfs") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <span class="breadcrumb__current" aria-current="page">PDFs</span>
+        </span>`,
+    );
+  }
+
+  if (pageType === "pdf-reader") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <a class="breadcrumb__link" href="#/pdfs/${subject.id}">PDFs</a>
+        </span>`,
+    );
+  }
+
+  // Action pills pushed to far right — hidden on their own gallery pages
+  const pills = [];
+  if (pageType !== "videos") {
+    pills.push(
+      `<a class="breadcrumb__videos-btn" href="#/videos/${subject.id}" aria-label="View all videos for ${subject.title}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Videos
+      </a>`,
+    );
+  }
+  if (pageType !== "pdfs" && pageType !== "pdf-reader") {
+    pills.push(
+      `<a class="breadcrumb__pdf-btn" href="#/pdfs/${subject.id}" aria-label="View all PDFs for ${subject.title}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        PDF
+      </a>`,
+    );
+  }
+  if (pills.length) {
+    items.push(`<span class="breadcrumb__pills">${pills.join("")}</span>`);
   }
 
   el.innerHTML = items.join("");
@@ -633,8 +783,17 @@ function handleHashChange() {
     case "topic":
       renderTopicView(route.subjectId, route.sectionId, route.topicId);
       break;
+    case "videos":
+      renderVideosView(route.subjectId);
+      break;
     case "video":
       renderVideoView(route.subjectId, route.topicId);
+      break;
+    case "pdfs":
+      renderPdfsView(route.subjectId);
+      break;
+    case "pdf":
+      renderPdfReaderView(route.subjectId, route.pdfId);
       break;
     default:
       renderDashboard();
