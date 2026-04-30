@@ -174,6 +174,21 @@ export const BYTEBYTEGO_TOPICS = {
       title: "A Framework For System Design Interviews",
       youtubeUrl: "https://youtu.be/oVdphFbJbb4",
     },
+    {
+      id: "bbg-sd-4",
+      title: "Design A Rate Limiter",
+      youtubeUrl: "https://youtu.be/P6QSxEg3Vy4",
+    },
+    {
+      id: "bbg-sd-5",
+      title: "Design Consistent Hashing",
+      youtubeUrl: "https://youtu.be/mp-wquY-fyE",
+    },
+    {
+      id: "bbg-sd-6",
+      title: "Design A Key-value Store",
+      youtubeUrl: "https://youtu.be/nuiX3dFbZt8",
+    },
   ],
   "aws-cloud": [],
   dsa: [],
