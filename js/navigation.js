@@ -9,6 +9,7 @@ import { Search } from "./search.js";
 import { ThemeManager } from "./theme.js";
 import { findVideoTopic, findByteByteGoTopic } from "./topicsData.js";
 import { findPdf } from "./pdfData.js";
+import { getDocs, findDoc } from "./docsData.js";
 
 let _manifest = null;
 let _currentSubject = null;
@@ -73,6 +74,14 @@ function parseHash(hash = window.location.hash) {
 
   if (parts[0] === "bbvideo" && parts[1] && parts[2]) {
     return { view: "bbvideo", subjectId: parts[1], topicId: parts[2] };
+  }
+
+  if (parts[0] === "docs" && parts[1]) {
+    return { view: "docs", subjectId: parts[1] };
+  }
+
+  if (parts[0] === "doc" && parts[1] && parts[2]) {
+    return { view: "doc", subjectId: parts[1], docId: parts[2] };
   }
 
   return { view: "dashboard" };
@@ -477,6 +486,64 @@ function renderBbVideoView(subjectId, topicId) {
 }
 
 /* ─────────────────────────────────────────────────────────
+     DOCS GALLERY VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderDocsView(subjectId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "docs");
+  hideTopicFooter();
+  ContentLoader.loadDocsPage(subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `Interview Docs — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
+     DOC READER VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderDocReaderView(subjectId, docId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  const doc = findDoc(subjectId, docId);
+  if (!doc) {
+    window.location.hash = `#/docs/${subjectId}`;
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "doc-reader");
+  hideTopicFooter();
+  ContentLoader.loadDocReader(doc, subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `${doc.title} — Interview Docs | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
      SIDEBAR
   ───────────────────────────────────────────────────────── */
 
@@ -645,6 +712,24 @@ function updateBreadcrumb(subject, section, topic, pageType = null) {
     );
   }
 
+  if (pageType === "docs") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <span class="breadcrumb__current" aria-current="page">Interview Docs</span>
+        </span>`,
+    );
+  }
+
+  if (pageType === "doc-reader") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <a class="breadcrumb__link" href="#/docs/${subject.id}">Interview Docs</a>
+        </span>`,
+    );
+  }
+
   // Action pills pushed to far right — hidden on their own gallery pages
   const pills = [];
   if (pageType !== "videos" && pageType !== "bytebytego") {
@@ -660,6 +745,21 @@ function updateBreadcrumb(subject, section, topic, pageType = null) {
       `<a class="breadcrumb__pdf-btn" href="#/pdfs/${subject.id}" aria-label="View all PDFs for ${subject.title}">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         PDF
+      </a>`,
+    );
+  }
+  if (
+    getDocs(subject.id).length > 0 &&
+    pageType !== "docs" &&
+    pageType !== "doc-reader"
+  ) {
+    pills.push(
+      `<a class="breadcrumb__docs-btn" href="#/docs/${subject.id}" aria-label="View Interview Docs for ${subject.title}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        Interview Docs
       </a>`,
     );
   }
@@ -879,6 +979,12 @@ function handleHashChange() {
       break;
     case "bbvideo":
       renderBbVideoView(route.subjectId, route.topicId);
+      break;
+    case "docs":
+      renderDocsView(route.subjectId);
+      break;
+    case "doc":
+      renderDocReaderView(route.subjectId, route.docId);
       break;
     default:
       renderDashboard();

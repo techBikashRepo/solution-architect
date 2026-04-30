@@ -7,6 +7,7 @@ import { renderTopicList, mountTopicListHandlers } from "./topicList.js";
 import { renderVideoPlayer } from "./videoPlayer.js";
 import { getTopics, getEmbedUrl, getByteByteGoTopics } from "./topicsData.js";
 import { getPdfs, getPdfUrl } from "./pdfData.js";
+import { getDocs, getDocUrl } from "./docsData.js";
 
 // TOC IntersectionObserver handle (module-level, no self-reference needed)
 let _tocObserver = null;
@@ -840,6 +841,167 @@ function loadPdfReader(pdf, subject) {
   if (tocAside) tocAside.style.visibility = "hidden";
 }
 
+/* ── Load Interview Docs gallery page ──────────────────── */
+function loadDocsPage(subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const docs = getDocs(subject.id);
+
+  const cardsHTML = docs.length
+    ? docs
+        .map(
+          (d, i) => `
+      <div
+        class="doc-gallery-card"
+        data-subject-id="${subject.id}"
+        data-doc-id="${d.id}"
+        role="listitem"
+        tabindex="0"
+        aria-label="Read: ${d.title}"
+      >
+        <span class="doc-gallery-card__num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+        <div class="doc-gallery-card__body">
+          <span class="doc-badge">Word Doc</span>
+          <h3 class="doc-gallery-card__title">${d.title}</h3>
+        </div>
+        <span class="doc-gallery-card__cta" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          Read
+        </span>
+      </div>
+    `,
+        )
+        .join("")
+    : `<div class="docs-page__empty">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        <p>No interview docs yet for this subject.</p>
+      </div>`;
+
+  const html = `
+    <div class="docs-page">
+      <div class="docs-page__header" style="background:${subject.gradient}">
+        <span class="docs-page__icon" aria-hidden="true">${subject.icon}</span>
+        <div class="docs-page__header-text">
+          <h1 class="docs-page__title">${subject.title}</h1>
+          <p class="docs-page__subtitle">Interview Docs</p>
+        </div>
+      </div>
+      <p class="docs-page__meta">${docs.length} document${docs.length !== 1 ? "s" : ""} &mdash; click to read</p>
+      <div class="docs-page__list" role="list">
+        ${cardsHTML}
+      </div>
+    </div>
+  `;
+
+  if (articleEl) {
+    articleEl.innerHTML = html;
+    articleEl.querySelectorAll(".doc-gallery-card").forEach((card) => {
+      const activate = () => {
+        window.location.hash = `#/doc/${card.dataset.subjectId}/${card.dataset.docId}`;
+      };
+      card.addEventListener("click", activate);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
+/* ── Load Interview Doc reader (mammoth.js → HTML) ─────── */
+async function loadDocReader(doc, subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const docUrl = getDocUrl(doc);
+  const backUrl = `#/docs/${subject.id}`;
+
+  // Show loading skeleton immediately
+  if (articleEl) {
+    articleEl.innerHTML = `
+      <div class="doc-reader">
+        <div class="doc-reader__toolbar">
+          <a href="${backUrl}" class="btn-back doc-reader__back" aria-label="Back to Interview Docs">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Interview Docs
+          </a>
+          <h1 class="doc-reader__title">${doc.title}</h1>
+          <a class="doc-reader__download" href="${docUrl}" download="${doc.file}" aria-label="Download ${doc.title}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download
+          </a>
+        </div>
+        <div class="doc-reader__body" id="doc-reader-body">
+          <div class="doc-reader__loading">
+            <div class="doc-reader__spinner" aria-hidden="true"></div>
+            <p>Loading document&hellip;</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  try {
+    const response = await fetch(docUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const arrayBuffer = await response.arrayBuffer();
+
+    if (typeof mammoth === "undefined") {
+      throw new Error("mammoth.js not loaded");
+    }
+
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const bodyEl = document.getElementById("doc-reader-body");
+    if (bodyEl) {
+      bodyEl.innerHTML = `<div class="doc-reader__content">${result.value}</div>`;
+      // Highlight code blocks if any
+      highlightCode(bodyEl);
+    }
+  } catch (err) {
+    const bodyEl = document.getElementById("doc-reader-body");
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <div class="server-notice">
+          <div class="server-notice__icon">⚠️</div>
+          <h2 class="server-notice__title">Could not load document</h2>
+          <p class="server-notice__body">${err.message}</p>
+        </div>
+      `;
+    }
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
 /* ── Init (configure marked.js + mermaid) ───────────────── */
 function init() {
   configureMarked();
@@ -873,6 +1035,8 @@ export const ContentLoader = {
   loadByteByteGoVideo,
   loadPdfsPage,
   loadPdfReader,
+  loadDocsPage,
+  loadDocReader,
   renderMarkdown,
   buildFilePath,
   setDiagramInjector,
