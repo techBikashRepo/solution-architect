@@ -5,7 +5,7 @@ import { UI } from "./ui.js";
 import { ProgressManager } from "./progress.js";
 import { renderTopicList, mountTopicListHandlers } from "./topicList.js";
 import { renderVideoPlayer } from "./videoPlayer.js";
-import { getTopics, getEmbedUrl } from "./topicsData.js";
+import { getTopics, getEmbedUrl, getByteByteGoTopics } from "./topicsData.js";
 import { getPdfs, getPdfUrl } from "./pdfData.js";
 
 // TOC IntersectionObserver handle (module-level, no self-reference needed)
@@ -475,6 +475,40 @@ function loadVideosPage(subject) {
   UI.scrollToTop(false);
 
   const topics = getTopics(subject.id);
+  const bbgCount = getByteByteGoTopics(subject.id).length;
+
+  // ByteByteGo channel card (shown only when BBG has videos for this subject)
+  const channelCardHTML =
+    bbgCount > 0
+      ? `
+    <div
+      class="channel-card"
+      data-channel="bytebytego"
+      data-subject-id="${subject.id}"
+      role="button"
+      tabindex="0"
+      aria-label="Open ByteByteGo curated lessons — ${bbgCount} lessons"
+    >
+      <div class="channel-card__icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div class="channel-card__body">
+        <div class="channel-card__header-row">
+          <span class="channel-card__badge">Curated</span>
+          <span class="channel-card__count-pill">${bbgCount} lessons</span>
+        </div>
+        <h3 class="channel-card__title">ByteByteGo</h3>
+        <p class="channel-card__desc">In-depth system design lessons by Bikash Shaw</p>
+      </div>
+      <svg class="channel-card__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </div>
+  `
+      : "";
 
   const cardsHTML = topics
     .map(
@@ -513,6 +547,7 @@ function loadVideosPage(subject) {
           <p class="videos-page__subtitle">Video Topics</p>
         </div>
       </div>
+      ${channelCardHTML}
       <p class="videos-page__meta">${topics.length} videos &mdash; click any card to watch</p>
       <div class="videos-page__grid" role="list">
         ${cardsHTML}
@@ -522,6 +557,22 @@ function loadVideosPage(subject) {
 
   if (articleEl) {
     articleEl.innerHTML = html;
+
+    // Channel card click → BBG list page
+    const channelCard = articleEl.querySelector(".channel-card");
+    if (channelCard) {
+      const goChannel = () => {
+        window.location.hash = `#/bytebytego/${channelCard.dataset.subjectId}`;
+      };
+      channelCard.addEventListener("click", goChannel);
+      channelCard.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          goChannel();
+        }
+      });
+    }
+
     articleEl.querySelectorAll(".video-gallery-card").forEach((card) => {
       const activate = () => {
         window.location.hash = `#/video/${card.dataset.subjectId}/${card.dataset.topicId}`;
@@ -533,6 +584,118 @@ function loadVideosPage(subject) {
           activate();
         }
       });
+    });
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
+/* ── ByteByteGo channel page ──────────────────────── */
+function loadByteByteGoPage(subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  const topics = getByteByteGoTopics(subject.id);
+
+  const lessonIndex = (i) => String(i + 1).padStart(3, "0");
+
+  const cardsHTML = topics
+    .map(
+      (t, i) => `
+      <div
+        class="bbg-lesson-item"
+        data-subject-id="${subject.id}"
+        data-topic-id="${t.id}"
+        data-channel="bytebytego"
+        role="listitem"
+        tabindex="0"
+        aria-label="Lesson ${lessonIndex(i)}: ${t.title}"
+      >
+        <span class="bbg-lesson-item__num" aria-hidden="true">${lessonIndex(i)}</span>
+        <div class="bbg-lesson-item__body">
+          <h3 class="bbg-lesson-item__title">${t.title}</h3>
+          <span class="bbg-lesson-item__tag">Video Lesson</span>
+        </div>
+        <span class="bbg-lesson-item__cta" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Watch
+        </span>
+      </div>
+    `,
+    )
+    .join("");
+
+  const html = `
+    <div class="bbg-page">
+      <div class="bbg-page__hero">
+        <div class="bbg-page__hero-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="bbg-page__hero-text">
+          <p class="bbg-page__hero-eyebrow">Curated Lessons &mdash; Bikash Shaw</p>
+          <h1 class="bbg-page__hero-title">ByteByteGo</h1>
+          <p class="bbg-page__hero-sub">Hand-picked system design deep-dives to sharpen your architecture thinking</p>
+        </div>
+        <a class="bbg-page__back-link" href="#/videos/${subject.id}" aria-label="Back to all videos">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          All Videos
+        </a>
+      </div>
+      <div class="bbg-page__meta-row">
+        <span class="bbg-page__lesson-count">${topics.length} Lessons</span>
+        <span class="bbg-page__meta-hint">Click a lesson to watch</span>
+      </div>
+      <ol class="bbg-lesson-list" role="list">
+        ${cardsHTML}
+      </ol>
+    </div>
+  `;
+
+  if (articleEl) {
+    articleEl.innerHTML = html;
+    articleEl.querySelectorAll(".bbg-lesson-item").forEach((card) => {
+      const activate = () => {
+        window.location.hash = `#/bbvideo/${card.dataset.subjectId}/${card.dataset.topicId}`;
+      };
+      card.addEventListener("click", activate);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  if (tocNav) tocNav.innerHTML = "";
+  if (tocAside) tocAside.style.visibility = "hidden";
+}
+
+/* ── ByteByteGo video player ──────────────────────── */
+function loadByteByteGoVideo(topic, subjectId, subject) {
+  const articleEl = document.getElementById("content-article");
+  const tocNav = document.getElementById("toc-nav");
+  const tocAside = document.getElementById("toc-aside");
+
+  cleanupTOC();
+  UI.resetReadingProgress();
+  UI.scrollToTop(false);
+
+  if (articleEl) {
+    articleEl.innerHTML = renderVideoPlayer(topic, subjectId, subject, {
+      url: `#/bytebytego/${subjectId}`,
+      label: "ByteByteGo Videos",
     });
   }
 
@@ -706,6 +869,8 @@ export const ContentLoader = {
   loadSubjectOverview,
   loadVideoPlayer,
   loadVideosPage,
+  loadByteByteGoPage,
+  loadByteByteGoVideo,
   loadPdfsPage,
   loadPdfReader,
   renderMarkdown,

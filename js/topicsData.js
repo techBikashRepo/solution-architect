@@ -152,3 +152,41 @@ export function getTopics(subjectId) {
 export function findVideoTopic(subjectId, topicId) {
   return (TOPICS[subjectId] || []).find((t) => t.id === topicId) || null;
 }
+
+/* ================================================================
+   BYTEBYTEGO CHANNEL — Curated ByteByteGo system design videos
+================================================================ */
+
+export const BYTEBYTEGO_TOPICS = {
+  "system-design": [
+    {
+      id: "bbg-sd-1",
+      title: "Scaling From Zero To Millions",
+      youtubeUrl: "https://youtu.be/gUxmd3a6REA",
+    },
+    {
+      id: "bbg-sd-2",
+      title: "Back-of-the-envelope Estimation",
+      youtubeUrl: "https://youtu.be/hxVnYuLf8pc",
+    },
+    {
+      id: "bbg-sd-3",
+      title: "A Framework For System Design Interviews",
+      youtubeUrl: "https://youtu.be/oVdphFbJbb4",
+    },
+  ],
+  "aws-cloud": [],
+  dsa: [],
+};
+
+/** Return ByteByteGo topics for a subject, or []. */
+export function getByteByteGoTopics(subjectId) {
+  return BYTEBYTEGO_TOPICS[subjectId] || [];
+}
+
+/** Find a single ByteByteGo topic by subjectId + topicId. */
+export function findByteByteGoTopic(subjectId, topicId) {
+  return (
+    (BYTEBYTEGO_TOPICS[subjectId] || []).find((t) => t.id === topicId) || null
+  );
+}

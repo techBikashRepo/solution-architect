@@ -8,12 +8,14 @@ import { getEmbedUrl } from "./topicsData.js";
  * @param {{ id: string, title: string, youtubeUrl: string }} topic
  * @param {string} subjectId
  * @param {{ title: string }|null} subject  manifest subject object
+ * @param {{ url?: string, label?: string }|null} [back]  override back button
  * @returns {string}
  */
-export function renderVideoPlayer(topic, subjectId, subject) {
+export function renderVideoPlayer(topic, subjectId, subject, back = null) {
   const embedUrl = getEmbedUrl(topic.youtubeUrl);
   const subjectTitle = subject ? subject.title : "Subject";
-  const backUrl = `#/subject/${subjectId}`;
+  const backUrl = back?.url ?? `#/subject/${subjectId}`;
+  const backLabel = back?.label ?? subjectTitle;
 
   if (!embedUrl) {
     return `
@@ -27,11 +29,11 @@ export function renderVideoPlayer(topic, subjectId, subject) {
 
   return `
     <div class="video-player">
-      <a href="${backUrl}" class="btn-back video-player__back" aria-label="Back to ${subjectTitle}">
+      <a href="${backUrl}" class="btn-back video-player__back" aria-label="Back to ${backLabel}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
-        ${subjectTitle}
+        ${backLabel}
       </a>
 
       <h1 class="video-player__title">${topic.title}</h1>

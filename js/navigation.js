@@ -7,7 +7,7 @@ import { ProgressManager } from "./progress.js";
 import { UI } from "./ui.js";
 import { Search } from "./search.js";
 import { ThemeManager } from "./theme.js";
-import { findVideoTopic } from "./topicsData.js";
+import { findVideoTopic, findByteByteGoTopic } from "./topicsData.js";
 import { findPdf } from "./pdfData.js";
 
 let _manifest = null;
@@ -65,6 +65,14 @@ function parseHash(hash = window.location.hash) {
 
   if (parts[0] === "pdf" && parts[1] && parts[2]) {
     return { view: "pdf", subjectId: parts[1], pdfId: parts[2] };
+  }
+
+  if (parts[0] === "bytebytego" && parts[1]) {
+    return { view: "bytebytego", subjectId: parts[1] };
+  }
+
+  if (parts[0] === "bbvideo" && parts[1] && parts[2]) {
+    return { view: "bbvideo", subjectId: parts[1], topicId: parts[2] };
   }
 
   return { view: "dashboard" };
@@ -411,6 +419,64 @@ function renderPdfReaderView(subjectId, pdfId) {
 }
 
 /* ─────────────────────────────────────────────────────────
+     BYTEBYTEGO CHANNEL VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderByteByteGoView(subjectId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "bytebytego");
+  hideTopicFooter();
+  ContentLoader.loadByteByteGoPage(subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `ByteByteGo Videos — ${subject.title} | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
+     BYTEBYTEGO VIDEO PLAYER VIEW
+  ───────────────────────────────────────────────────────── */
+
+function renderBbVideoView(subjectId, topicId) {
+  const subject = findSubject(subjectId);
+  if (!subject) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  const topic = findByteByteGoTopic(subjectId, topicId);
+  if (!topic) {
+    window.location.hash = `#/bytebytego/${subjectId}`;
+    return;
+  }
+
+  _currentSubject = subject;
+  _currentSection = null;
+  _currentTopic = null;
+
+  showView("view-content");
+  renderSidebar(subject, null, null);
+  updateBreadcrumb(subject, null, null, "bytebytego");
+  hideTopicFooter();
+  ContentLoader.loadByteByteGoVideo(topic, subjectId, subject);
+  updateMobileDrawer(subject);
+  updateSidebarProgress(subject);
+
+  document.title = `${topic.title} — ByteByteGo | LearnPath`;
+}
+
+/* ─────────────────────────────────────────────────────────
      SIDEBAR
   ───────────────────────────────────────────────────────── */
 
@@ -566,9 +632,22 @@ function updateBreadcrumb(subject, section, topic, pageType = null) {
     );
   }
 
+  if (pageType === "bytebytego") {
+    items.push(
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <a class="breadcrumb__link" href="#/videos/${subject.id}">Videos</a>
+        </span>`,
+      `<span class="breadcrumb__sep" aria-hidden="true">/</span>`,
+      `<span class="breadcrumb__item">
+          <span class="breadcrumb__current" aria-current="page">ByteByteGo</span>
+        </span>`,
+    );
+  }
+
   // Action pills pushed to far right — hidden on their own gallery pages
   const pills = [];
-  if (pageType !== "videos") {
+  if (pageType !== "videos" && pageType !== "bytebytego") {
     pills.push(
       `<a class="breadcrumb__videos-btn" href="#/videos/${subject.id}" aria-label="View all videos for ${subject.title}">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -794,6 +873,12 @@ function handleHashChange() {
       break;
     case "pdf":
       renderPdfReaderView(route.subjectId, route.pdfId);
+      break;
+    case "bytebytego":
+      renderByteByteGoView(route.subjectId);
+      break;
+    case "bbvideo":
+      renderBbVideoView(route.subjectId, route.topicId);
       break;
     default:
       renderDashboard();
