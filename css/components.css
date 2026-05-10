@@ -2264,6 +2264,81 @@
   line-height: var(--leading-relaxed);
 }
 
+/* Strip inline background-color injected by mammoth (Word default white) — exclude mark highlights */
+.doc-reader__content *:not(mark) {
+  background-color: transparent !important;
+}
+
+/* ── Word highlight colors → dark-theme marks ──────────────── */
+.doc-reader__content mark {
+  border-radius: 2px;
+  padding: 0 2px;
+}
+.doc-reader__content mark.hl-yellow {
+  background: rgba(250, 204, 21, 0.22);
+  color: #fef9c3;
+}
+.doc-reader__content mark.hl-cyan {
+  background: rgba(34, 211, 238, 0.18);
+  color: #cffafe;
+}
+.doc-reader__content mark.hl-green {
+  background: rgba(74, 222, 128, 0.18);
+  color: #dcfce7;
+}
+.doc-reader__content mark.hl-magenta {
+  background: rgba(232, 121, 249, 0.18);
+  color: #fae8ff;
+}
+.doc-reader__content mark.hl-red {
+  background: rgba(248, 113, 113, 0.18);
+  color: #fee2e2;
+}
+.doc-reader__content mark.hl-blue {
+  background: rgba(96, 165, 250, 0.18);
+  color: #dbeafe;
+}
+.doc-reader__content mark.hl-darkblue {
+  background: rgba(30, 58, 138, 0.4);
+  color: #bfdbfe;
+}
+.doc-reader__content mark.hl-darkcyan {
+  background: rgba(8, 51, 68, 0.55);
+  color: #a5f3fc;
+}
+.doc-reader__content mark.hl-darkgreen {
+  background: rgba(5, 46, 22, 0.55);
+  color: #bbf7d0;
+}
+.doc-reader__content mark.hl-darkmagenta {
+  background: rgba(59, 7, 100, 0.45);
+  color: #f5d0fe;
+}
+.doc-reader__content mark.hl-darkred {
+  background: rgba(69, 10, 10, 0.55);
+  color: #fca5a5;
+}
+.doc-reader__content mark.hl-darkyellow {
+  background: rgba(113, 63, 18, 0.45);
+  color: #fef08a;
+}
+.doc-reader__content mark.hl-lightgray {
+  background: rgba(209, 213, 219, 0.14);
+  color: #e2e8f0;
+}
+.doc-reader__content mark.hl-darkgray {
+  background: rgba(55, 65, 81, 0.5);
+  color: #d1d5db;
+}
+.doc-reader__content mark.hl-white {
+  background: rgba(249, 250, 251, 0.12);
+  color: #f1f5f9;
+}
+.doc-reader__content mark.hl-black {
+  background: rgba(17, 24, 39, 0.65);
+  color: #9ca3af;
+}
+
 .doc-reader__content h1,
 .doc-reader__content h2,
 .doc-reader__content h3,

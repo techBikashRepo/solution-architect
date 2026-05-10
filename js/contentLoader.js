@@ -978,7 +978,27 @@ async function loadDocReader(doc, subject) {
       throw new Error("mammoth.js not loaded");
     }
 
-    const result = await mammoth.convertToHtml({ arrayBuffer });
+    // Map all Word highlight colors → dark-theme mark elements
+    const styleMap = [
+      "highlight[color='yellow']       => mark.hl-yellow",
+      "highlight[color='cyan']         => mark.hl-cyan",
+      "highlight[color='green']        => mark.hl-green",
+      "highlight[color='magenta']      => mark.hl-magenta",
+      "highlight[color='red']          => mark.hl-red",
+      "highlight[color='blue']         => mark.hl-blue",
+      "highlight[color='darkBlue']     => mark.hl-darkblue",
+      "highlight[color='darkCyan']     => mark.hl-darkcyan",
+      "highlight[color='darkGreen']    => mark.hl-darkgreen",
+      "highlight[color='darkMagenta']  => mark.hl-darkmagenta",
+      "highlight[color='darkRed']      => mark.hl-darkred",
+      "highlight[color='darkYellow']   => mark.hl-darkyellow",
+      "highlight[color='lightGray']    => mark.hl-lightgray",
+      "highlight[color='darkGray']     => mark.hl-darkgray",
+      "highlight[color='white']        => mark.hl-white",
+      "highlight[color='black']        => mark.hl-black",
+    ];
+
+    const result = await mammoth.convertToHtml({ arrayBuffer }, { styleMap });
     const bodyEl = document.getElementById("doc-reader-body");
     if (bodyEl) {
       bodyEl.innerHTML = `<div class="doc-reader__content">${result.value}</div>`;
