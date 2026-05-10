@@ -2271,72 +2271,73 @@
 
 /* ── Word highlight colors → dark-theme marks ──────────────── */
 .doc-reader__content mark {
-  border-radius: 2px;
-  padding: 0 2px;
+  border-radius: 3px;
+  padding: 1px 3px;
+  color: #fff;
 }
 .doc-reader__content mark.hl-yellow {
-  background: rgba(250, 204, 21, 0.22);
+  background: rgba(234, 179, 8, 0.4);
   color: #fef9c3;
 }
 .doc-reader__content mark.hl-cyan {
-  background: rgba(34, 211, 238, 0.18);
+  background: rgba(6, 182, 212, 0.35);
   color: #cffafe;
 }
 .doc-reader__content mark.hl-green {
-  background: rgba(74, 222, 128, 0.18);
-  color: #dcfce7;
+  background: rgba(22, 163, 74, 0.35);
+  color: #bbf7d0;
 }
 .doc-reader__content mark.hl-magenta {
-  background: rgba(232, 121, 249, 0.18);
+  background: rgba(217, 70, 239, 0.3);
   color: #fae8ff;
 }
 .doc-reader__content mark.hl-red {
-  background: rgba(248, 113, 113, 0.18);
-  color: #fee2e2;
+  background: rgba(220, 38, 38, 0.35);
+  color: #fecaca;
 }
 .doc-reader__content mark.hl-blue {
-  background: rgba(96, 165, 250, 0.18);
-  color: #dbeafe;
+  background: rgba(37, 99, 235, 0.4);
+  color: #bfdbfe;
 }
 .doc-reader__content mark.hl-darkblue {
-  background: rgba(30, 58, 138, 0.4);
+  background: rgba(30, 58, 138, 0.6);
   color: #bfdbfe;
 }
 .doc-reader__content mark.hl-darkcyan {
-  background: rgba(8, 51, 68, 0.55);
+  background: rgba(8, 145, 178, 0.4);
   color: #a5f3fc;
 }
 .doc-reader__content mark.hl-darkgreen {
-  background: rgba(5, 46, 22, 0.55);
+  background: rgba(21, 128, 61, 0.4);
   color: #bbf7d0;
 }
 .doc-reader__content mark.hl-darkmagenta {
-  background: rgba(59, 7, 100, 0.45);
+  background: rgba(134, 25, 143, 0.45);
   color: #f5d0fe;
 }
 .doc-reader__content mark.hl-darkred {
-  background: rgba(69, 10, 10, 0.55);
+  background: rgba(185, 28, 28, 0.45);
   color: #fca5a5;
 }
 .doc-reader__content mark.hl-darkyellow {
-  background: rgba(113, 63, 18, 0.45);
+  background: rgba(161, 109, 0, 0.45);
   color: #fef08a;
 }
 .doc-reader__content mark.hl-lightgray {
-  background: rgba(209, 213, 219, 0.14);
-  color: #e2e8f0;
-}
-.doc-reader__content mark.hl-darkgray {
-  background: rgba(55, 65, 81, 0.5);
-  color: #d1d5db;
-}
-.doc-reader__content mark.hl-white {
-  background: rgba(249, 250, 251, 0.12);
+  background: rgba(148, 163, 184, 0.28);
   color: #f1f5f9;
 }
+.doc-reader__content mark.hl-darkgray {
+  background: rgba(75, 85, 99, 0.55);
+  color: #e2e8f0;
+}
+.doc-reader__content mark.hl-white {
+  background: rgba(226, 232, 240, 0.18);
+  color: #f8fafc;
+}
 .doc-reader__content mark.hl-black {
-  background: rgba(17, 24, 39, 0.65);
-  color: #9ca3af;
+  background: rgba(15, 23, 42, 0.7);
+  color: #cbd5e1;
 }
 
 .doc-reader__content h1,
