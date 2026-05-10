@@ -34,6 +34,36 @@ export const DOCS = {
       file: "102 CAP Theorem.docx",
       dir: "content/01-System-Design/interview-questions",
     },
+    {
+      id: "sd-doc-6",
+      title: "Consistency Models (Strong vs Eventual)",
+      file: "103 Consistency Models (Strong vs Eventual).docx",
+      dir: "content/01-System-Design/interview-questions",
+    },
+    {
+      id: "sd-doc-7",
+      title: "Load Balancing",
+      file: "104 Load Balancing.docx",
+      dir: "content/01-System-Design/interview-questions",
+    },
+    {
+      id: "sd-doc-8",
+      title: "Caching (Redis Basics + Invalidation)",
+      file: "105 Caching (Redis basics + invalidation basics).docx",
+      dir: "content/01-System-Design/interview-questions",
+    },
+    {
+      id: "sd-doc-9",
+      title: "Database Basics (SQL vs NoSQL)",
+      file: "106 Database Basics (SQL vs NoSQL).docx",
+      dir: "content/01-System-Design/interview-questions",
+    },
+    {
+      id: "sd-doc-10",
+      title: "Estimation — Users to Requests/sec",
+      file: "107 Estimation - Users → Requestssec.docx",
+      dir: "content/01-System-Design/interview-questions",
+    },
   ],
   "aws-cloud": [],
   dsa: [],
@@ -51,5 +81,5 @@ export function findDoc(subjectId, docId) {
 
 /** Build the fetch URL for a doc. */
 export function getDocUrl(doc) {
-  return `${doc.dir}/${doc.file}`;
+  return `${doc.dir}/${encodeURIComponent(doc.file)}`;
 }
