@@ -938,6 +938,20 @@ async function loadDocReader(doc, subject) {
   const docUrl = getDocUrl(doc);
   const backUrl = `#/docs/${subject.id}`;
 
+  // Build YouTube button + modal if this doc has a linked video
+  const ytVideoId = doc.youtubeUrl
+    ? new URL(doc.youtubeUrl).searchParams.get("v")
+    : null;
+  // Build YouTube button HTML (modal appended to body separately after render)
+  const ytButtonHtml = ytVideoId
+    ? `<button class="doc-reader__yt-btn" id="doc-yt-btn" aria-label="Watch video for ${doc.title}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        Watch Video
+      </button>`
+    : "";
+
   // Show loading skeleton immediately
   if (articleEl) {
     articleEl.innerHTML = `
@@ -950,14 +964,17 @@ async function loadDocReader(doc, subject) {
             Interview Docs
           </a>
           <h1 class="doc-reader__title">${doc.title}</h1>
-          <a class="doc-reader__download" href="${docUrl}" download="${doc.file}" aria-label="Download ${doc.title}">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download
-          </a>
+          <div class="doc-reader__toolbar-actions">
+            ${ytButtonHtml}
+            <a class="doc-reader__download" href="${docUrl}" download="${doc.file}" aria-label="Download ${doc.title}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download
+            </a>
+          </div>
         </div>
         <div class="doc-reader__body" id="doc-reader-body">
           <div class="doc-reader__loading">
@@ -967,6 +984,72 @@ async function loadDocReader(doc, subject) {
         </div>
       </div>
     `;
+
+    // Wire up YouTube modal — appended to body so position:fixed works correctly
+    if (ytVideoId) {
+      // Remove any leftover modal from a previous doc load
+      const existing = document.getElementById("doc-yt-modal");
+      if (existing) existing.remove();
+
+      // Build modal DOM and append to body (avoids stacking context issues)
+      const modalEl = document.createElement("div");
+      modalEl.className = "doc-yt-modal";
+      modalEl.id = "doc-yt-modal";
+      modalEl.setAttribute("role", "dialog");
+      modalEl.setAttribute("aria-modal", "true");
+      modalEl.setAttribute("aria-label", `Video: ${doc.title}`);
+      modalEl.hidden = true;
+      modalEl.innerHTML = `
+        <div class="doc-yt-modal__backdrop" id="doc-yt-backdrop"></div>
+        <div class="doc-yt-modal__box">
+          <div class="doc-yt-modal__header">
+            <span class="doc-yt-modal__title">${doc.title}</span>
+            <div class="doc-yt-modal__actions">
+              <a class="doc-yt-modal__yt-link" href="${doc.youtubeUrl}" target="_blank" rel="noopener noreferrer" aria-label="Open in YouTube">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                Open in YouTube
+              </a>
+              <button class="doc-yt-modal__close" id="doc-yt-close" aria-label="Close video">✕</button>
+            </div>
+          </div>
+          <div class="doc-yt-modal__embed">
+            <iframe id="doc-yt-iframe" title="${doc.title}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+        </div>`;
+      document.body.appendChild(modalEl);
+
+      const btn = document.getElementById("doc-yt-btn");
+      const iframe = document.getElementById("doc-yt-iframe");
+      const closeBtn = document.getElementById("doc-yt-close");
+      const backdrop = document.getElementById("doc-yt-backdrop");
+
+      const openModal = () => {
+        // Lazy-load iframe src only when opening
+        iframe.src = `https://www.youtube.com/embed/${ytVideoId}?rel=0&modestbranding=1&autoplay=1`;
+        modalEl.hidden = false;
+        document.body.classList.add("modal-open");
+      };
+      const closeModal = () => {
+        // Clear src to stop playback
+        iframe.src = "";
+        modalEl.hidden = true;
+        document.body.classList.remove("modal-open");
+      };
+
+      btn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+      backdrop.addEventListener("click", closeModal);
+      document.addEventListener("keydown", function escHandler(e) {
+        if (e.key === "Escape" && !modalEl.hidden) {
+          closeModal();
+          document.removeEventListener("keydown", escHandler);
+        }
+      });
+    }
   }
 
   try {
